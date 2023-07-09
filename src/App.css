@@ -22,6 +22,19 @@
   height: 90vh;
 }
 
+.App-home-image {
+  height: 450px;
+  width: 450px;
+}
+
+.App-about p {
+  font-size: large;
+}
+
+.App-contact h4 {
+  font-weight: normal;
+}
+
 .App-footer {
   text-align: left;
   background-color: #ff585d;
@@ -42,6 +55,7 @@
   color: #ffffff;
   text-decoration: none;
   margin-left: 5vw;
+  font-weight: normal;
 }
 
 .App-footer-signoff {

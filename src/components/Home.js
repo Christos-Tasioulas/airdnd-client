@@ -12,9 +12,18 @@ export default function Home(props) {
         )
     })
 
+    const usersImages = userArray.map(user => {
+        return (
+            <div key={user.id}>
+                <img className="App-home-image" src={user.image} alt="user"/>
+            </div>
+        )
+    })
+
     return(
         <main className='App-home'>
             <h2>{userElements}</h2>
+            {usersImages}
         </main>
     )
 }
