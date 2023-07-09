@@ -1,6 +1,6 @@
 .App {
-  text-align: center;
   background-color: whitesmoke;
+  text-align: center;
 }
 
 .App-logo {
@@ -18,51 +18,33 @@
   box-shadow: 0px 2.98256px 7.4564px rgba(0, 0, 0, 0.1);
 }
 
-.App-navbar {
-  margin-left: auto;
-}
-
-.App-navbar-buttons {
-  display: flex;
-  gap: 40px;
-  list-style: none;
-}
-
-.App-navbar-button {
-  width: 125px;
-  height: 37.5px;
-}
-
-.App-navbar-button a {
-  text-decoration: none;
-  color: #484848;
-  font-size: 30px;
-  width: 125px;
-  height: 37.5px;
-}
-
-.App-navbar-button:hover {
-  background-color: #484848;
-  border-radius: 10px;
-  width: 125px;
-  height: 37.5px;
-  color: #ffffff;
-  cursor: pointer;
-}
-
-.App-navbar-button:hover a{
-  color: #ffffff;
-  width: 125px;
-  height: 37.5px;
-}
-
 .App-body {
   height: 90vh;
 }
 
 .App-footer {
+  text-align: left;
   background-color: #ff585d;
   color: #ffffff;
-  height: 20vh;
   box-shadow: 0px -2.98256px 7.4564px rgba(0, 0, 0, 0.1);
+}
+
+.App-footer-title {
+  margin-top: 10px;
+  margin-left: 5vw;
+}
+
+.App-footer-list {
+  list-style: none;
+}
+
+.App-footer-link {
+  color: #ffffff;
+  text-decoration: none;
+  margin-left: 5vw;
+}
+
+.App-footer-signoff {
+  text-align: center;
+  font-size: small;
 }
