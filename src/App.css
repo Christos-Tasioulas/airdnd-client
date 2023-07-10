@@ -27,6 +27,49 @@
   width: 450px;
 }
 
+.App-signup-form-container {
+  height: 90vh;
+  padding: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: -20px;
+  margin-bottom: 100px;
+}
+
+.App-signup-form {
+  background-color: white;
+  padding: 50px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
+}
+
+.App-signup-form-input {
+  width: 100%;
+  margin: 20px;
+  height: 40px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  padding: 5px;
+  font-size: large;
+}
+
+.App-signup-form-submit {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  background-color: #ff585d;
+  border: none;   
+  cursor: pointer;
+  font-size: large; 
+}
+
 .App-about p {
   font-size: large;
 }
