@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function NavbarButton(props) {
   return (
-    <li className={props.className} onClick={props.toggle}>
+    <li className={props.className} >
       <Link to={props.path}>{props.name}</Link>
     </li>
   );
