@@ -1,6 +1,9 @@
 import React from "react";
 
 export default function SignupTextInput(props) {
+
+    // console.log(props.value)
+
     return(
         <input 
             type={props.type} 

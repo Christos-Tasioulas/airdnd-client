@@ -2,7 +2,6 @@ import React from "react";
 import './Signup.css';
 import { Link } from 'react-router-dom';
 import SignupTextInput from './SignupTextInput';
-import { response } from "express";
 
 export default function Signup(props) {
 
@@ -56,11 +55,31 @@ export default function Signup(props) {
 
         const sameUsername = props.users.find(user => user.username === formData.username)
 
+        if(formData.username === "") {
+            setMessage("Please enter a username")
+            return
+        } else if((formData.password === "") || (formData.passwordConfirm === "")) {
+            setMessage("Please enter a password twice")
+            return
+        } else if((formData.firstname === "") || (formData.lastname === "")) {
+            setMessage("Please enter your name")
+            return
+        } else if(formData.email === "") {
+            setMessage("Please enter your email address")
+            return
+        } else if(formData.phoneNumber === "") {
+            setMessage("Please enter your number")
+            return
+        }
+        
         if(formData.password !== formData.passwordConfirm) {
             setMessage("Error, passwords do not match!")
             return
         } else if (sameUsername !== undefined) {
             setMessage("Username already taken, choose another")
+            return
+        } else if ((formData.isTenant === false) && (formData.isLandlord === false)) {
+            setMessage("Please choose a role in the app")
             return
         }
 
@@ -74,7 +93,7 @@ export default function Signup(props) {
         }
 
         const formDataCopy = formData
-        delete formDataCopy['passwordConfirm']
+        formDataCopy['isAdmin'] = false 
 
         const requestOptions = {
             method: 'POST',
@@ -82,9 +101,7 @@ export default function Signup(props) {
             body: JSON.stringify(formDataCopy)
         }
 
-        fetch("http://localhost:5000/user/addUser", requestOptions)
-        .then(res => res.json())
-        .then(data => setMessage(data))
+        fetch('http://localhost:5000/user/addUser', requestOptions)
     }
 
     return (
