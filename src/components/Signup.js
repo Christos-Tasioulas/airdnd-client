@@ -1,8 +1,10 @@
 import React from "react";
 import './Signup.css';
 import { Link } from 'react-router-dom';
+import SignupTextInput from './SignupTextInput';
+import { response } from "express";
 
-export default function Signup() {
+export default function Signup(props) {
 
     const [formData, setFormData] = React.useState({
         username: "",
@@ -14,84 +16,86 @@ export default function Signup() {
         phoneNumber: "",
         isTenant: false,
         isLandlord: false,
+        isApproved: true,
         image: ""
     })
+
+    const [message, setMessage] = React.useState("") 
+
+    const textInputs = [
+        {id:1, type: "text", placeholder: "Username", name: "username", value: formData.username},
+        {id:2, type: "password", placeholder: "Password", name: "password", value: formData.password},
+        {id:3, type: "password", placeholder: "Confirm Password", name: "passwordConfirm", value: formData.passwordConfirm},
+        {id:4, type: "text", placeholder: "First name", name: "firstname", value: formData.firstname},
+        {id:5, type: "text", placeholder: "Last name", name: "lastname", value: formData.lastname},
+        {id:6, type: "email", placeholder: "Email", name: "email", value: formData.email},
+        {id:7, type: "text", placeholder: "Phone Number", name: "phoneNumber", value: formData.phoneNumber}
+    ]
+
+    const textInputElements = textInputs.map(textInput => (
+        <SignupTextInput
+            key={textInput.id}
+            type={textInput.type}
+            placeholder={textInput.placeholder}
+            name={textInput.name}
+            value={textInput.value}
+            onChange={(event) => handleChange(event)}
+        />
+    ))
     
     function handleChange(event) {
         const {name, value, type, checked} = event.target
-        if(type === 'checkbox') {
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: type === "checkbox" ? checked : value
+        }))
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault()
+
+        const sameUsername = props.users.find(user => user.username === formData.username)
+
+        if(formData.password !== formData.passwordConfirm) {
+            setMessage("Error, passwords do not match!")
+            return
+        } else if (sameUsername !== undefined) {
+            setMessage("Username already taken, choose another")
+            return
+        }
+
+        if(formData.isLandlord) {
             setFormData(prevFormData => ({
                 ...prevFormData,
-                [name]: type === "checkbox" ? checked : value
+                isApproved: false
             }))
+
+            setMessage("Waiting for approval to become landlord")
         }
-        
-        console.log(formData)
+
+        const formDataCopy = formData
+        delete formDataCopy['passwordConfirm']
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formDataCopy)
+        }
+
+        fetch("http://localhost:5000/user/addUser", requestOptions)
+        .then(res => res.json())
+        .then(data => setMessage(data))
     }
 
     return (
         <main className="App-signup-form-container">
-            <form className="App-signup-form">
+            <form className="App-signup-form" onSubmit={handleSubmit}>
+                {message !== "" && <h3 className="App-signup-form-message">{message}</h3>}
                 <h1>Let's Get You Started!</h1>
                 <br />
                 <div className="App-signup-form-inputs">
                     <div className="App-signup-form-text-inputs">
-                        <input 
-                            type="text" 
-                            placeholder="Username"
-                            className="App-signup-form-input"
-                            name="username"
-                            onChange={handleChange}
-                            value={formData.username}
-                        />
-                        <input 
-                            type="password" 
-                            placeholder="Password"
-                            className="App-signup-form-input"
-                            name="password"
-                            onChange={handleChange}
-                            value={formData.password}
-                        />
-                        <input 
-                            type="password" 
-                            placeholder="Confirm password"
-                            className="App-signup-form-input"
-                            name="passwordConfirm"
-                            onChange={handleChange}
-                            value={formData.passwordConfirm}
-                        />
-                        <input
-                            type="text" 
-                            placeholder="First name"
-                            className="App-signup-form-input"
-                            name="firstname"
-                            onChange={handleChange}
-                            value={formData.firstname}
-                        />
-                        <input
-                            type="text" 
-                            placeholder="Last name"
-                            className="App-signup-form-input"
-                            name="lastname"
-                            onChange={handleChange}
-                            value={formData.lastname}
-                        />
-                        <input 
-                            type="email" 
-                            placeholder="Email address"
-                            className="App-signup-form-input"
-                            name="email"
-                            onChange={handleChange}
-                            value={formData.email}
-                        />
-                        <input
-                            type="text" 
-                            placeholder="Phone Number"
-                            className="App-signup-form-input"
-                            name="phoneNumber"
-                            onChange={handleChange}
-                            value={formData.phoneNumber}
-                        />         
+                        {textInputElements}
                     </div>
                     <div className="App-signup-form-other-inputs">
                         <div className="App-signup-form-image-container">
@@ -105,7 +109,7 @@ export default function Signup() {
                                     onChange={handleChange}
                                     value={formData.image}
                                 />
-                                <label for="ProfilePicture"><img src="https://i.pinimg.com/originals/46/72/f8/4672f876389036583190d93a71aa6cb2.jpg" alt="prof"/></label>
+                                <label htmlFor="ProfilePicture"><img src="https://i.pinimg.com/originals/46/72/f8/4672f876389036583190d93a71aa6cb2.jpg" alt="prof"/></label>
                             </div>
                         </div>
                         <h3>Choose any of the roles below: </h3>
