@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import './Signup.css';
 import { Link } from 'react-router-dom';
 import SignupTextInput from './SignupTextInput';
 
-export default function Signup(props) {
+export default function Signup() {
 
+    const [users, setUsers] = useState([]);
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [isApproved, setIsApprovred] = useState(true);
     const [formData, setFormData] = React.useState({
         username: "",
         password: "",
@@ -53,8 +56,6 @@ export default function Signup(props) {
     function handleSubmit(event) {
         event.preventDefault()
 
-        const sameUsername = props.users.find(user => user.username === formData.username)
-
         if(formData.username === "") {
             setMessage("Please enter a username")
             return
@@ -71,11 +72,15 @@ export default function Signup(props) {
             setMessage("Please enter your number")
             return
         }
+
+        fetch(`http://localhost:5000/user/getUsersByUsername/${formData.username}`)
+            .then((res) => res.json())
+            .then((data) => setUsers(data.message))
         
         if(formData.password !== formData.passwordConfirm) {
             setMessage("Error, passwords do not match!")
             return
-        } else if (sameUsername !== undefined) {
+        } else if (users.length !== 0) {
             setMessage("Username already taken, choose another")
             return
         } else if ((formData.isTenant === false) && (formData.isLandlord === false)) {
@@ -89,7 +94,7 @@ export default function Signup(props) {
                 isApproved: false
             }))
 
-            setMessage("Waiting for approval to become landlord")
+            setIsApprovred(false)
         }
 
         const formDataCopy = formData
@@ -102,11 +107,12 @@ export default function Signup(props) {
         }
 
         fetch('http://localhost:5000/user/addUser', requestOptions)
+        setIsRegistered(true)
     }
 
     return (
         <main className="App-signup-form-container">
-            <form className="App-signup-form" onSubmit={handleSubmit}>
+            {!isRegistered && <form className="App-signup-form" onSubmit={handleSubmit}>
                 {message !== "" && <h3 className="App-signup-form-message">{message}</h3>}
                 <h1>Let's Get You Started!</h1>
                 <br />
@@ -164,7 +170,13 @@ export default function Signup(props) {
                     Sign up
                 </button>
                 <p>Already have an <Link to='/login'>Account</Link>?</p>
-            </form>
+            </form>}
+            {isRegistered && isApproved && <div className="App-approved">
+                <h4>Sucessfully Registered</h4>
+            </div>}
+            {isRegistered && !isApproved && <div className="App-waiting-for-approval">
+                <h4>Waiting for approval to be landlord</h4>
+            </div>}
         </main>
     )
 }
