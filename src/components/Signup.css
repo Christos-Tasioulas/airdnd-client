@@ -113,9 +113,17 @@
     font-size: large; 
 }
 
+.App-approved {
+    font-size: larger;
+}
+
 .App-approved img {
     width: 200px;
     height: 200px;
+}
+
+.App-approved:hover h4{
+    text-decoration: underline;
 }
 
 .App-waiting-for-approval {
@@ -126,4 +134,8 @@
 .App-waiting-for-approval img{
     width: 200px;
     height: 200px;
+}
+
+.App-waiting-for-approval:hover h4{
+    text-decoration: underline;
 }
