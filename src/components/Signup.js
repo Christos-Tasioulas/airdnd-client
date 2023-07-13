@@ -172,10 +172,14 @@ export default function Signup() {
                 <p>Already have an <Link to='/login'>Account</Link>?</p>
             </form>}
             {isRegistered && isApproved && <div className="App-approved">
-                <h4>Sucessfully Registered</h4>
+                <img src="https://cdn-icons-png.flaticon.com/512/148/148767.png" alt="success"/>
+                <h2>Sucessfully Registered</h2>
+                <h4>Return to <Link to="/" style={{color: "black", textDecoration: 'none'}}>Home Page</Link></h4>
             </div>}
             {isRegistered && !isApproved && <div className="App-waiting-for-approval">
-                <h4>Waiting for approval to be landlord</h4>
+                <img src="https://icones.pro/wp-content/uploads/2021/03/icone-d-horloge-rouge.png" alt="pending"/>
+                <h2>Waiting for approval to become landlord</h2>
+                <h4>Return to <Link to="/" style={{color: "#d04b4d", textDecoration: 'none'}}>Home Page</Link></h4>
             </div>}
         </main>
     )

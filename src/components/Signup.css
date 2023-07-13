@@ -72,14 +72,6 @@
     color: #484848;
 }
 
-.App-signup-form-image-container {
-
-}
-
-.App-signup-form-image {
-
-}
-
 .App-signup-form-image label img{
     
     width: 200px;
@@ -119,4 +111,19 @@
     border: none;   
     cursor: pointer;
     font-size: large; 
+}
+
+.App-approved img {
+    width: 200px;
+    height: 200px;
+}
+
+.App-waiting-for-approval {
+    color: #d04b4d;
+    font-size: larger;
+}
+
+.App-waiting-for-approval img{
+    width: 200px;
+    height: 200px;
 }
