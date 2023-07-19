@@ -14,11 +14,10 @@
 }
 
 .App-navbar-button a {
-   list-style:none;
-   display: inline-block;
-   flex:1;
-   position: relatve;
-
+    list-style:none;
+    display: inline-block;
+    flex:1;
+    position: relatve;
     text-decoration: none;
     color: #484848;
     font-size: 30px;
