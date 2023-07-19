@@ -11,7 +11,7 @@ import Contact from './components/Contact';
 
 function App() {
   
-  const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+  const [userIsLoggedIn, setUserIsLoggedIn] = useState(true);
 
   return (
     <div className="App">

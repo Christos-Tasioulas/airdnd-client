@@ -14,7 +14,7 @@ export default function Navbar(props) {
             newButtons = [
                 { id: 1, path: '/', name: 'Home', isActive: true },
                 { id: 2, path: '/profile', name: 'Profile', isActive: false },
-                { id: 3, path: '/', name: 'Logout', isActive: false },
+                { id: 3, path: '/logout', name: 'Logout', isActive: false },
                 { id: 4, path: '/about', name: 'About', isActive: false },
                 { id: 5, path: '/contact', name: 'Contact', isActive: false }
             ]
