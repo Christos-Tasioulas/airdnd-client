@@ -16,7 +16,7 @@ export default function Footer() {
             {linkElements}
             <p className='App-footer-signoff'>
                 All rights reserved<br />
-                Λακές Θάνος sdi1800090<br />
+                Παπακώστας Ευάγγελος sdi1800152<br />
                 Τασιούλας Ραφαήλ-Χρήστος sdi1800191<br />
             </p>
             <br />
