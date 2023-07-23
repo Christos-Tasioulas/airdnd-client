@@ -9,7 +9,7 @@ export default function AdminHome() {
         fetch('http://localhost:5000/user/getAllUsers')
             .then((res) => res.json())
             .then((data) => setUsers(data.message))
-    })
+    }, [])
 
     const userElements = users.map((user) => 
         (<tr key={user.id} className='App-user-info'>
@@ -18,7 +18,8 @@ export default function AdminHome() {
             <td>{user.email}</td>
             <td>
                 {user.isAdmin && `Admin`} {user.isTenant && `Tenant`} {user.isLandlord && `Landlord`}
-            </td> 
+            </td>
+            <td>{user.isApproved ? "User Approved" : "User not Approved"}</td> 
         </tr>)
     )
 
@@ -27,13 +28,18 @@ export default function AdminHome() {
             <h1>User Info</h1>
             <br />
             <table className='App-users-info'>
-                <tr>
-                    <th>Username</th>
-                    <th>Fullname</th>
-                    <th>Email</th>
-                    <th>Roles</th>
-                </tr>
-                {userElements}
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Fullname</th>
+                        <th>Email</th>
+                        <th>Roles</th>
+                        <th>Approved State</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {userElements}
+                </tbody>  
             </table>
         </div>
     )

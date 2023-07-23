@@ -7,7 +7,7 @@ export default function Signup() {
 
     const [users, setUsers] = useState([]);
     const [isRegistered, setIsRegistered] = useState(false);
-    const [isApproved, setIsApprovred] = useState(true);
+    const [userIsApproved, setUserIsApprovred] = useState(true);
     const [formData, setFormData] = React.useState({
         username: "",
         password: "",
@@ -89,16 +89,17 @@ export default function Signup() {
         }
 
         if(formData.isLandlord) {
+            setUserIsApprovred(false)
+
             setFormData(prevFormData => ({
                 ...prevFormData,
-                isApproved: false
+                isApproved: !prevFormData.isApproved,
             }))
-
-            setIsApprovred(false)
         }
 
         const formDataCopy = formData
         formDataCopy['isAdmin'] = false 
+        formDataCopy['isApproved'] = !formDataCopy['isLandlord']
 
         const requestOptions = {
             method: 'POST',
@@ -171,12 +172,12 @@ export default function Signup() {
                 </button>
                 <p>Already have an <Link to='/login'>Account</Link>?</p>
             </form>}
-            {isRegistered && isApproved && <div className="App-approved">
+            {isRegistered && userIsApproved && <div className="App-approved">
                 <img src="https://cdn-icons-png.flaticon.com/512/148/148767.png" alt="success"/>
                 <h2>Sucessfully Registered</h2>
                 <h4>Return to <Link to="/" style={{color: "black", textDecoration: 'none'}}>Home Page</Link></h4>
             </div>}
-            {isRegistered && !isApproved && <div className="App-waiting-for-approval">
+            {isRegistered && !userIsApproved && <div className="App-waiting-for-approval">
                 <img src="https://icones.pro/wp-content/uploads/2021/03/icone-d-horloge-rouge.png" alt="pending"/>
                 <h2>Waiting for approval to become landlord</h2>
                 <h4>Return to <Link to="/" style={{color: "#d04b4d", textDecoration: 'none'}}>Home Page</Link></h4>
