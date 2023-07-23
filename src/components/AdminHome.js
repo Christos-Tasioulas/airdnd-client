@@ -15,11 +15,10 @@ export default function AdminHome() {
         (<tr key={user.id} className='App-user-info'>
             <td>{user.username}</td>
             <td>{user.firstname} {user.lastname}</td>
-            <td>{user.email}</td> 
-            {user.isAdmin && <td>Admin</td>}
-            {user.isTenant && !user.isLandlord && <td>Tenant</td>} 
-            {!user.isTenant && user.isLandlord && <td>Landlord</td>}
-            {user.isLandlord && user.isTenant && <td>Tenant Landlord</td>}  
+            <td>{user.email}</td>
+            <td>
+                {user.isAdmin && `Admin`} {user.isTenant && `Tenant`} {user.isLandlord && `Landlord`}
+            </td> 
         </tr>)
     )
 
