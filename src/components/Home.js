@@ -1,4 +1,5 @@
 import React from 'react';
+import AdminHome from './AdminHome';
 
 export default function Home(props) {
 
@@ -22,8 +23,7 @@ export default function Home(props) {
 
     return(
         <main className='App-home'>
-            {/* <h2>{userElements}</h2>
-            {userImages} */}
+            {props.isAdmin && <AdminHome />}
         </main>
     )
 }

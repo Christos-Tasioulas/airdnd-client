@@ -1,7 +1,6 @@
 .App-profile-container {
     height: 100vh;
     padding: 20px;
-    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -69,7 +68,7 @@
 .App-profile-edit {
     position: relative;
     left: 42%;
-     display: inline-block;
+    display: inline-block;
 }
 
 .App-profile-edit .App-profile-edit-button {

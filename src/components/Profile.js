@@ -1,5 +1,6 @@
 import React from 'react'
 import './Profile.css'
+import { Link } from 'react-router-dom';
 
 export default function Profile() {
 
@@ -18,14 +19,16 @@ export default function Profile() {
     return (
         <main className="App-profile-container">
             <div className="App-profile">
-                <div className="App-profile-edit">
-                    <div className="App-profile-edit-button">
-                        <div className="App-profile-edit-cog">
-                            <img src="https://icon-library.com/images/white-gear-icon-png/white-gear-icon-png-12.jpg" alt="Edit-profile" className="App-profile-edit-favicon"/>
-                        </div>  
-                        <span>Edit Account</span>
+                <Link to='/editprofile' style={{position: "relative", left: "35%"}}>
+                    <div className="App-profile-edit">
+                        <div className="App-profile-edit-button">
+                            <div className="App-profile-edit-cog">
+                                <img src="https://icon-library.com/images/white-gear-icon-png/white-gear-icon-png-12.jpg" alt="Edit-profile" className="App-profile-edit-favicon"/>
+                            </div>  
+                            <span>Edit Account</span>
+                        </div>
                     </div>
-                </div> 
+                </Link> 
                 <br /><br />
                 <div className="App-profile-user">
                     <div className="App-profile-userInfo">
