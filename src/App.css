@@ -37,6 +37,42 @@
   width: 450px;
 }
 
+.App-approve-user {
+  display: flex;
+  flex-direction: column;
+}
+
+.App-approval-radios {
+  display: flex;
+  flex-direction: row;
+  width: 40%;
+  align-self: center;
+}
+
+.App-approval-radio {
+  margin: auto;
+  width: 50%;
+  font-size: larger;
+  font-weight: 500;
+  color: #484848;
+}
+
+.App-approval-radio input {
+  margin-right: 8px;
+}
+
+.App-approval-submit {
+  width: 20%;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  background-color: #ff585d;
+  border: none;   
+  cursor: pointer;
+  font-size: large;
+  align-self: center;
+}
+
 .App-about p {
   font-size: large;
 }

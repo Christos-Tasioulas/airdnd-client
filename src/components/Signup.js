@@ -53,63 +53,96 @@ export default function Signup() {
         }))
     }
 
-    function handleSubmit(event) {
-        event.preventDefault()
-
-        if(formData.username === "") {
-            setMessage("Please enter a username")
-            return
-        } else if((formData.password === "") || (formData.passwordConfirm === "")) {
-            setMessage("Please enter a password twice")
-            return
-        } else if((formData.firstname === "") || (formData.lastname === "")) {
-            setMessage("Please enter your name")
-            return
-        } else if(formData.email === "") {
-            setMessage("Please enter your email address")
-            return
-        } else if(formData.phoneNumber === "") {
-            setMessage("Please enter your number")
-            return
+    async function handleSubmit(event) {
+        event.preventDefault();
+      
+        if (formData.username === "") {
+            setMessage("Please enter a username");
+            return;
         }
-
-        fetch(`http://localhost:5000/user/getUsersByUsername/${formData.username}`)
-            .then((res) => res.json())
-            .then((data) => setUsers(data.message))
+      
+        if (formData.password === "" || formData.passwordConfirm === "") {
+            setMessage("Please enter a password twice");
+            return;
+        }
+      
+        if (formData.firstname === "" || formData.lastname === "") {
+            setMessage("Please enter your name");
+            return;
+        }
+      
+        if (formData.email === "") {
+            setMessage("Please enter your email address");
+            return;
+        }
+      
+        if (formData.phoneNumber === "") {
+            setMessage("Please enter your number");
+            return;
+        }
+      
+        try {
+            // Check if the username is already taken
+            const response = await fetch(
+            `http://localhost:5000/user/getUsersByUsername/${formData.username}`,
+            {
+                method: "GET",
+            }
+            );
         
-        if(formData.password !== formData.passwordConfirm) {
-            setMessage("Error, passwords do not match!")
-            return
-        } else if (users.length !== 0) {
-            setMessage("Username already taken, choose another")
-            return
-        } else if ((formData.isTenant === false) && (formData.isLandlord === false)) {
-            setMessage("Please choose a role in the app")
-            return
+            if (!response.ok) {
+                // Handle the response status if it's not successful (e.g., 404, 500, etc.)
+                throw new Error("Network response was not ok");
+            }
+        
+            const data = await response.json();
+            setUsers(data.message);
+        
+            if (formData.password !== formData.passwordConfirm) {
+                setMessage("Error, passwords do not match!");
+                return;
+            }
+        
+            if (users.length !== 0) {
+                setMessage("Username already taken, choose another");
+                return;
+            }
+        
+            if (!formData.isTenant && !formData.isLandlord) {
+                setMessage("Please choose a role in the app");
+                return;
+            }
+        
+            // Handle other conditions and submit the form data
+            if (formData.isLandlord) {
+                setUserIsApprovred(false);
+            
+                setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    isApproved: !prevFormData.isApproved,
+                }));
+            }
+        
+            const formDataCopy = { ...formData };
+            formDataCopy.isAdmin = false;
+            formDataCopy.isApproved = !formDataCopy.isLandlord;
+        
+            const requestOptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formDataCopy),
+            };
+        
+            // Call the API to add the user
+            await fetch("http://localhost:5000/user/addUser", requestOptions);
+        
+            setIsRegistered(true);
+        } catch (error) {
+            console.log(error);
+            setMessage("Failed to add user. Please try again later.");
         }
-
-        if(formData.isLandlord) {
-            setUserIsApprovred(false)
-
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                isApproved: !prevFormData.isApproved,
-            }))
-        }
-
-        const formDataCopy = formData
-        formDataCopy['isAdmin'] = false 
-        formDataCopy['isApproved'] = !formDataCopy['isLandlord']
-
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formDataCopy)
-        }
-
-        fetch('http://localhost:5000/user/addUser', requestOptions)
-        setIsRegistered(true)
     }
+      
 
     return (
         <main className="App-signup-form-container">

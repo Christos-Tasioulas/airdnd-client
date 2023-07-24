@@ -10,6 +10,7 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Profile from './components/Profile';
 import EditProfile from './components/EditProfile';
+import UserInfo from './components/UserInfo';
 
 function App() {
   
@@ -29,6 +30,7 @@ function App() {
             <Route path="/contact" element={<Contact />}/>
             <Route path="/profile" element={<Profile />}/>
             <Route path="/editprofile" element={<EditProfile />}/>
+            <Route path="/userinfo/:id" element={<UserInfo />} />
           </Routes>
         </div>
         <Footer />

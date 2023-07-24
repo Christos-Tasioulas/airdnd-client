@@ -30,6 +30,7 @@
 .App-user-info td{
     border: 1px solid #484848;
     padding: 15px;
+    text-decoration: none
 }
 
 .App-users-info tr:nth-child(even) 
@@ -41,9 +42,11 @@
 {
     background-color: #ff585d;
     color: white;
+    cursor: pointer;
 }
 
 .App-user-info:hover {
     background-color: #ff585d;
     color: white;
+    cursor: pointer;
 }
