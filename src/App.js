@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import './App.css';
+
+// All Components
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
@@ -14,14 +16,17 @@ import UserInfo from './components/UserInfo';
 
 function App() {
   
+  // States that determine if a user is connected and if the user is connected if he is the admin
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(true);
   const [isAdmin, setIsAdmin] = useState(true);
 
+  // React functions return html elements
   return (
     <div className="App">
       <BrowserRouter>
-        <Header userIsLoggedIn={userIsLoggedIn}/>
+        <Header userIsLoggedIn={userIsLoggedIn}/> 
         <div className="App-body">
+          {/* All the routes of the client app */}
           <Routes>
             <Route path="/" element={<Home isAdmin={isAdmin}/>}/>
             <Route path="/login" element={<Login />}/>

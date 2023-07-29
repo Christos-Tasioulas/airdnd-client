@@ -7,18 +7,21 @@ export default function AdminHome() {
     const [users, setUsers] = useState([])
     const navigate = useNavigate();
     
+    // Retrieve all users
     useEffect(() => {
         fetch('http://localhost:5000/user/getAllUsers')
             .then((res) => res.json())
             .then((data) => setUsers(data.message))
     }, [])
 
+    // Navigating the admin to each individual user's info page
     async function handleClick(event, user) {
         const id = user.id
 
         navigate(`/userinfo/${id}`)
     }
 
+    // This is every user row in the admin table
     const userElements = users.map((user) => 
         (<tr onClick={event => handleClick(event, user)} key={user.id} className='App-user-info'>
             <td>{user.username}</td>

@@ -3,11 +3,28 @@ import './Signup.css';
 import SignupTextInput from './SignupTextInput';
 import SafetyHazard from './SafetyHazard';
 
+/**
+ * WARNING: This component is very half-baked. The update request exists but needs the user authentication to work properly.
+ * Many functions, elements and variables inside are at template state. They need to change when everything gets to work.
+ */
 export default function EditProfile() {
 
+    // This state is copy-pasted from the signup component
+    // TODO: Change this to user whenever possible
     const [users, setUsers] = useState([]);
+
+    // This state will be needed to save the user changes in a safely manner
     const [hasMadeChanges, setHasMadeChanges] = useState(false);
+
+    // This state is copy-pasted from the signup component. Probably not needed here.
     const [isApproved, setIsApprovred] = useState(true);
+
+    /**
+     * State that contains the data obtained from the form.
+     * Changes whenever a field on the form changes
+     * Notice that the fields are assigned to values as if a user is not registered.
+     * That's because we need the authentication to work properly first to assign the values properly
+     */ 
     const [formData, setFormData] = React.useState({
         username: "",
         password: "",
@@ -22,10 +39,17 @@ export default function EditProfile() {
         image: ""
     })
 
+    // Storing the previous password, needed for Safety Hazard Check
     const prevPassword = formData.password
 
+    // Message state that prints to the user if an error occurred in the update process
     const [message, setMessage] = React.useState("") 
 
+    /**
+     * All the input fields inside the form
+     * In our formData object, the name attribute of the input is the name of the respective field as well
+     * In our formData object, the value attribute of the input is the value of respective the field as well
+     */
     const textInputs = [
         {id:1, type: "text", placeholder: "Change Username", name: "username", value: formData.username},
         {id:2, type: "password", placeholder: "Change Password", name: "password", value: formData.password},
@@ -36,6 +60,8 @@ export default function EditProfile() {
         {id:7, type: "text", placeholder: "Change Phone Number", name: "phoneNumber", value: formData.phoneNumber}
     ]
 
+    // Edit Profile Input html elements
+    // We are reusing the ones we used in the signup component
     const textInputElements = textInputs.map(textInput => (
         <SignupTextInput
             key={textInput.id}
@@ -47,6 +73,7 @@ export default function EditProfile() {
         />
     ))
     
+    // This is where we change the formData members accordingly
     function handleChange(event) {
         const {name, value, type, checked} = event.target
         setFormData(prevFormData => ({
@@ -55,12 +82,17 @@ export default function EditProfile() {
         }))
     }
 
+    // Profile update process begins and ends here (Not ready yet)
     function handleSubmit(event) {
+
+        // We don't want to be redirected to the home page
         event.preventDefault()
 
-        fetch(`http://localhost:5000/user/getUsersByUsername/${formData.username}`)
-            .then((res) => res.json())
-            .then((data) => setUsers(data.message))
+        /* Test Code from Signup component that might be useful for this form as well */
+
+        // fetch(`http://localhost:5000/user/getUsersByUsername/${formData.username}`)
+        //     .then((res) => res.json())
+        //     .then((data) => setUsers(data.message))
         
         // if(formData.password !== formData.passwordConfirm) {
         //     setMessage("Error, passwords do not match!")
@@ -73,14 +105,14 @@ export default function EditProfile() {
         //     return
         // }
 
-        if(formData.isLandlord) {
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                isApproved: false
-            }))
+        // if(formData.isLandlord) {
+        //     setFormData(prevFormData => ({
+        //         ...prevFormData,
+        //         isApproved: false
+        //     }))
 
-            setIsApprovred(false)
-        }
+        //     setIsApprovred(false)
+        // }
 
         // const formDataCopy = formData 
 
@@ -91,12 +123,17 @@ export default function EditProfile() {
         // }
 
         // fetch('http://localhost:5000/user/editUser', requestOptions)
+
+        // The user has made changes to their profile, Safety Hazard triggered.
+        // We probably need to edit this state to change whenever a change actually happens
+        // The submit button can be pressed even if the user has not made changes
         setHasMadeChanges(true)
     }
 
     return (
         <main className="App-signup-form-container">
         {!hasMadeChanges && <form className="App-signup-form" onSubmit={handleSubmit}>
+            {/* Any error will be printed to the user here */}
             {message !== "" && <h3 className="App-signup-form-message">{message}</h3>}
             <h1>Edit your Account!</h1>
             <br />
@@ -105,6 +142,7 @@ export default function EditProfile() {
                     {textInputElements}
                 </div>
                 <div className="App-signup-form-other-inputs">
+                    {/* Profile picture section in the form, not working yet, it is here because of looks */}
                     <div className="App-signup-form-image-container">
                         <h3>Your Profile Picture</h3>
                         <div className="App-signup-form-image">
@@ -121,6 +159,11 @@ export default function EditProfile() {
                     </div>
                     <h3>Choose any of the roles below: </h3>
                     <p>You can choose either one or both</p>
+                    {/**
+                       * Checkboxes to let the user select the desired roles.
+                       * The checkboxes that have the roles already selected by the user,
+                       * is a good idea to be already selected  
+                       */}
                     <div className="App-signup-form-checkboxes">
                         <div className="App-signup-form-roles">
                             <input
@@ -148,6 +191,7 @@ export default function EditProfile() {
                 </div>
             </div>
             <br /><br /><br />
+            {/* In React Submit input can be labeled as button inside forms */}
             <button 
                 className="App-signup-form-submit"
             >

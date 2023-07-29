@@ -35,14 +35,6 @@
     transition: 0.5s;
     cursor: pointer;
     color:#484848
-
-    
-    /**background-color: #484848;
-    border-radius: 10px;
-    width: 125px;
-    height: 37.5px;
-    color: #ffffff;
-    cursor: pointer;**/
 }
 
 .App-navbar-button:hover::after {
@@ -70,23 +62,6 @@
     cursor:default;
 }
 
-/**
-.App-navbar-button-active:hover {
-    background-color: #ff585d;
-    border-radius: 10px;
-    width: 125px;
-    height: 37.5px;
-    color: #ffffff;
-    cursor: pointer;
-}
-
-.App-navbar-button-active:hover a{
-    color: #ffffff;
-    width: 125px;
-    height: 37.5px;
-}
-
-**/
 .App-navbar-button-active::after{
   
     cursor:default;     

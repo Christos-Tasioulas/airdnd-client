@@ -1,5 +1,6 @@
 import React from "react";
 
+// Props contains all the "arguments" that are passed to the component from the parent component
 export default function LoginTextInput(props) {
 
     return(

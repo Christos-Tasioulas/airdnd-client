@@ -24,21 +24,18 @@
     margin: 5px 0px -15px 0px;
 }
 
+/* Hardcore CSS for the edit account button that hovers at the top right */
 .App-profile-edit .App-profile-edit-button {
     display: inline-block;
     height: 60px;
     width: 60px;
     margin: 0 5px;
     overflow:hidden;
-    background: white;
+    background: #ff585d;
     border-radius: 50px;
     cursor: pointer;
     box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
     transition: all 0.3s ease-out;
-}
-
-.App-profile-edit .App-profile-edit-button:hover{
-    width: 200px;
 }
 
 .App-profile-edit .App-profile-edit-button .App-profile-edit-cog {
@@ -52,36 +49,10 @@
 
 } 
 
-/* .App-profile-edit .App-profile-edit-button .App-profile-edit-cog img{
-    font-size: 25px;
-    line-height: 60px;
-} */
-
-/* .App-profile-edit .App-profile-edit-button span{
-    font-size: 20px;
-    font-weight:500;
-    line-height: 60px;
-    margin-left:10px;
-
-} */
-
 .App-profile-edit {
     position: relative;
     left: 42%;
     display: inline-block;
-}
-
-.App-profile-edit .App-profile-edit-button {
-    display: inline-block;
-    height: 60px;
-    width: 60px;
-    margin: 0 5px;
-    overflow:hidden;
-    background: #ff585d;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
-    transition: all 0.3s ease-out;
 }
 
 .App-profile-edit .App-profile-edit-button:hover{
@@ -103,6 +74,7 @@
     cursor: pointer;
 }
 
+/* More CSS */
 .App-profile-user {
     height: 90%;
     width: 100%;

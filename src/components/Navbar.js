@@ -4,9 +4,14 @@ import NavbarButton from './NavbarButton';
 import './Navbar.css';
 
 export default function Navbar(props) {
+
+    // Returning current location in the page
     const location = useLocation()
+
+    // Navbar button state that allows us to change the active button depending on current location
     const [navbarButtons, setNavbarButtons] = useState([]);
 
+    // Changing active button depending on location and user connectivity changes
     useEffect(() => {
 
         let newButtons;
@@ -28,6 +33,7 @@ export default function Navbar(props) {
             ]
         }
 
+        // If the button has the same path as the current one it is set as active
         newButtons = newButtons.map(button => {
             return {
                 ...button,
@@ -39,6 +45,7 @@ export default function Navbar(props) {
 
     }, [props.userIsLoggedIn, location]);
 
+    // Each button is its own component
     const navbarButtonElements = navbarButtons.map(button => (
         <NavbarButton
             key={button.id}
