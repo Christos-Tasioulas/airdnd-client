@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import './App.css';
 
@@ -17,8 +17,20 @@ import UserInfo from './components/UserInfo';
 function App() {
   
   // States that determine if a user is connected and if the user is connected if he is the admin
-  const [userIsLoggedIn, setUserIsLoggedIn] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [userIsLoggedIn, setUserIsLoggedIn] = useState();
+  const [isAdmin, setIsAdmin] = useState();
+  const [user, setUser] = useState()
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+    console.log(loggedInUser)
+    if (loggedInUser) {
+      const foundUser = JSON.parse(loggedInUser);
+      setUser(foundUser);
+      setUserIsLoggedIn(true);
+      setIsAdmin(foundUser.isAdmin)
+    }
+  }, []);
 
   // React functions return html elements
   return (
