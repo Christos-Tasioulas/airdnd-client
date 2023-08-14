@@ -17,8 +17,8 @@ import UserInfo from './components/UserInfo';
 function App() {
   
   // States that determine if a user is connected and if the user is connected if he is the admin
-  const [userIsLoggedIn, setUserIsLoggedIn] = useState();
-  const [isAdmin, setIsAdmin] = useState();
+  const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [user, setUser] = useState()
 
   useEffect(() => {
