@@ -130,7 +130,7 @@ export default function Signup() {
             }
         
             // If the list of users found above is not empty then the username given is taken
-            if (users.length !== 0) {
+            if (data.message.length !== 0) {
                 setMessage("Username already taken, choose another");
                 return;
             }
@@ -247,7 +247,7 @@ export default function Signup() {
             </form>}
             {isRegistered && userIsApproved && <div className="App-approved">
                 {/* Letting the user know they are successfully registered and approved, giving them a link tor retrun to the home page */}
-                <img src="https://cdn-icons-png.flaticon.com/512/148/148767.png" alt="success"/>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Eo_circle_light-green_checkmark.svg/2048px-Eo_circle_light-green_checkmark.svg.png" alt="success"/>
                 <h2>Sucessfully Registered</h2>
                 <h4>Return to <Link to="/" style={{color: "black", textDecoration: 'none'}}>Home Page</Link></h4>
             </div>}

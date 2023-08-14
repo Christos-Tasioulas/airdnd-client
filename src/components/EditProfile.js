@@ -11,7 +11,7 @@ export default function EditProfile() {
 
     // This state is copy-pasted from the signup component
     // TODO: Change this to user whenever possible
-    const [users, setUsers] = useState([]);
+    const [user, setUser] = useState([]);
 
     // This state will be needed to save the user changes in a safely manner
     const [hasMadeChanges, setHasMadeChanges] = useState(false);

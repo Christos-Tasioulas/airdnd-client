@@ -39,7 +39,6 @@
 
 .App-navbar-button:hover::after {
     width: 100%;
-    
 }
 
 .App-navbar-button:hover a{
@@ -63,10 +62,9 @@
 }
 
 .App-navbar-button-active::after{
-  
     cursor:default;     
 }
-.App-navbar-button-active:hover::after{
 
+.App-navbar-button-active:hover::after{
     cursor:default;
 }

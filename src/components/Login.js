@@ -57,10 +57,10 @@ export default function Login() {
         
             // Retrieving the users with the same username as given
             const response = await fetch(
-            `http://localhost:5000/user/getUsersByUsername/${formData.username}`,
-            {
-                method: "GET",
-            }
+                `http://localhost:5000/user/getUsersByUsername/${formData.username}`,
+                {
+                    method: "GET",
+                }
             );
         
             if (!response.ok) {
@@ -94,24 +94,22 @@ export default function Login() {
                 })
             }
 
-            // Call the API to add the user
             await fetch("http://localhost:5000/user/generateToken", requestOptions)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Network response was not ok");
                     }
+                    console.log(response);
                     return response.json(); // Parse the response JSON
                 })
                 .then(data => {
                     // Get token from response data
                     const token = data.token;
-            
-                    // Set JWT token to local storage
-                    localStorage.setItem("token", token);
-            
+                    console.log(data.token);
+
                     // Set token to Axios common header
                     setAuthToken(token);
-            
+
                     // Request token validation from the server
                     return fetch("http://localhost:5000/user/validateToken", {
                         method: "GET",
@@ -124,13 +122,21 @@ export default function Login() {
                     if (!validationResponse.ok) {
                         throw new Error("Token validation failed");
                     }
-                    // Redirect user to home page
-                    window.location.href = '/';
+                    
+                    // Token validation succeeded, now you can retrieve data from the validation response
+                    return validationResponse.json();
+                })
+                .then(validationData => {
+                    // Use the validationData as needed
+                    sessionStorage.setItem("user", JSON.stringify(validationData.message));
+
+                    window.location.href = "/"
                 })
                 .catch(error => {
                     console.error(error);
                     // Handle the error here, e.g., show an error message to the user
                 });
+
 
         } catch (error) {
             console.log(error);
