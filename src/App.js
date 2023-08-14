@@ -22,7 +22,7 @@ function App() {
   const [user, setUser] = useState()
 
   useEffect(() => {
-    const loggedInUser = localStorage.getItem("user");
+    const loggedInUser = sessionStorage.getItem("user");
     console.log(loggedInUser)
     if (loggedInUser) {
       const foundUser = JSON.parse(loggedInUser);
