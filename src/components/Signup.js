@@ -107,11 +107,8 @@ export default function Signup() {
         try {
             /* Check if the username is already taken */
 
-            // Retrieving the users with the same username as given
-            console.log(formData.username)
-
             fetch(
-                `http://localhost:5000/user/getUsersByUsername/${formData.username}`,
+                `http://localhost:5000/user/isUsernameTaken/${formData.username}`,
                 {
                     method: "GET",
                 }
@@ -121,13 +118,22 @@ export default function Signup() {
                     // Handle the response status if it's not successful (e.g., 404, 500, etc.)
                     throw new Error("Network response was not ok");
                 }
+
+                return response.json(); // Parse the response JSON
             })
-            .then(data => {
-                setMessage(data.message)
+            .then(data => {        
+                if (data.message !== "") {
+                    setMessage(data.message)
+                }
             })
             .catch(error => {
                 console.log(error);
             })
+
+            if (message !== "") {
+                return;
+            }
+            
         
             // Checking if the passwords match
             if (formData.password !== formData.passwordConfirm) {
