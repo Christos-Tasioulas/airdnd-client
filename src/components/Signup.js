@@ -5,15 +5,15 @@ import SignupTextInput from './SignupTextInput';
 
 export default function Signup() {
 
-    // State used to retrieve the users with the same username as the one signing up
-    const [users, setUsers] = useState([]);
-
     // State used to determine if the user is registered or not
     const [isRegistered, setIsRegistered] = useState(false);
 
     // State used to determine if the user is approved or not
     // Only the landlord users need to be approved by the admin
     const [userIsApproved, setUserIsApprovred] = useState(true);
+
+    // State that contains the generated JSON Web Token
+    const [authToken, setAuthToken] = React.useState("");
 
     /**
      * State that contains the data obtained from the form.
@@ -108,30 +108,30 @@ export default function Signup() {
             /* Check if the username is already taken */
 
             // Retrieving the users with the same username as given
-            const response = await fetch(
+            console.log(formData.username)
+
+            fetch(
                 `http://localhost:5000/user/getUsersByUsername/${formData.username}`,
                 {
                     method: "GET",
                 }
-            );
-        
-            if (!response.ok) {
-                // Handle the response status if it's not successful (e.g., 404, 500, etc.)
-                throw new Error("Network response was not ok");
-            }
-        
-            const data = await response.json();
-            setUsers(data.message);
+            )
+            .then(response => {
+                if (!response.ok) {
+                    // Handle the response status if it's not successful (e.g., 404, 500, etc.)
+                    throw new Error("Network response was not ok");
+                }
+            })
+            .then(data => {
+                setMessage(data.message)
+            })
+            .catch(error => {
+                console.log(error);
+            })
         
             // Checking if the passwords match
             if (formData.password !== formData.passwordConfirm) {
                 setMessage("Error, passwords do not match!");
-                return;
-            }
-        
-            // If the list of users found above is not empty then the username given is taken
-            if (data.message.length !== 0) {
-                setMessage("Username already taken, choose another");
                 return;
             }
         
@@ -160,6 +160,52 @@ export default function Signup() {
             // Bugfix: this is how we set the isApproved field in the user
             // User will not be approved initially if they want to be landlord
             formDataCopy.isApproved = !formDataCopy.isLandlord;
+
+            const registerOptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: formDataCopy.id,
+                    username: formDataCopy.username,
+                    password: formDataCopy.password,
+                    isAdmin: formDataCopy.isAdmin,
+                    isLandlord: formDataCopy.isLandlord,
+                    isTenant: formDataCopy.isTenant
+                })
+            }
+
+            // Generating and validating a JSON Web Token for the user
+            await fetch("http://localhost:5000/user/generateToken", registerOptions)
+            .then(response => {
+                if (!response.ok) {
+                throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                const token = data.token;
+                setAuthToken(token); // Update the authToken value
+
+                // Request token validation from the server
+                return fetch("http://localhost:5000/user/validateToken", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+            })
+            .then(validationResponse => {
+                if (!validationResponse.ok) {
+                    throw new Error("Token validation failed");
+                }
+
+                // Token validation succeeded, now you can save the token in the session data
+                sessionStorage.setItem("token", authToken);
+            })
+            .catch(error => {
+                console.error(error);
+                // Handle the error here, e.g., show an error message to the user
+            });
         
             // The request is a Post request with the copy of the form data object as JSON body
             const requestOptions = {

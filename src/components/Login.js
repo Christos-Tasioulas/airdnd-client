@@ -15,8 +15,9 @@ export default function Login() {
     })
 
     const [message, setMessage] = React.useState("")
-    const [users, setUsers] = React.useState([])
-    const [authToken, setAuthToken] = React.useState("")
+
+    // State that contains the generated JSON Web Token
+    const [authToken, setAuthToken] = React.useState("");
 
     /**
      * All the input fields inside the form
@@ -69,7 +70,6 @@ export default function Login() {
             }
         
             const data = await response.json();
-            setUsers(data.message);
         
             // Use the state variable directly here
             if (data.message.length === 0) {
@@ -98,49 +98,38 @@ export default function Login() {
             }
 
             await fetch("http://localhost:5000/user/generateToken", requestOptions)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
+            .then(response => {
+                if (!response.ok) {
+                throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                const token = data.token;
+                setAuthToken(token); // Update the authToken value
+
+                // Request token validation from the server
+                return fetch("http://localhost:5000/user/validateToken", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
                     }
-                    console.log(response);
-                    return response.json(); // Parse the response JSON
-                })
-                .then(data => {
-                    // Get token from response data
-                    const token = data.token;
-                    console.log(data.token);
-
-                    // Set token to Axios common header
-                    setAuthToken(token);
-                    sessionStorage.setItem("token", JSON.stringify(token));
-
-                    // Request token validation from the server
-                    return fetch("http://localhost:5000/user/validateToken", {
-                        method: "GET",
-                        headers: {
-                            "Authorization": `Bearer ${token}`
-                        }
-                    });
-                })
-                .then(validationResponse => {
-                    if (!validationResponse.ok) {
-                        throw new Error("Token validation failed");
-                    }
-                    
-                    // Token validation succeeded, now you can retrieve data from the validation response
-                    return validationResponse.json();
-                })
-                .then(validationData => {
-                    // Use the validationData as needed
-                    sessionStorage.setItem("user", JSON.stringify(validationData.message));
-
-                    window.location.href = "/"
-                })
-                .catch(error => {
-                    console.error(error);
-                    // Handle the error here, e.g., show an error message to the user
                 });
+            })
+            .then(validationResponse => {
+                if (!validationResponse.ok) {
+                    throw new Error("Token validation failed");
+                }
 
+                // Token validation succeeded, now you can save the token in the session data
+                sessionStorage.setItem("token", authToken);
+
+                window.location.href = "/"
+            })
+            .catch(error => {
+                console.error(error);
+                // Handle the error here, e.g., show an error message to the user
+            });
 
         } catch (error) {
             console.log(error);
