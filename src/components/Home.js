@@ -28,7 +28,7 @@ export default function Home(props) {
 
     return(
         <main className='App-home'>
-            {props.isAdmin && <AdminHome />}
+            {props.isAdmin && <AdminHome token={props.token}/>}
         </main>
     )
 }

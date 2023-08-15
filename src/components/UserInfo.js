@@ -1,20 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 export default function UserInfo() {
 
     // Retrieving the id of the user from the url parameter
     const { id } = useParams()
+    const location = useLocation();
+    const token = location.state?.token
 
     // State variable with the current user
     const [user, setUser] = useState({})
 
     // Getting the current user from the server app updating the state
     useEffect(() => {
-        fetch(`http://localhost:5000/user/getUserById/${id}`)
-            .then((response) => response.json())
-            .then((data) => setUser(data.message))
-    }, [id])
+        fetch('http://localhost:5000/user/validateToken', {
+            method: 'GET',
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(validationData => {
+
+            // Token validation succeeded, now decode the token to check if the user is an admin
+            return fetch("http://localhost:5000/user/decodeToken", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then(decodeResponse => {
+                if (!decodeResponse.ok) {
+                    throw new Error("Token decoding failed");
+                }
+                return decodeResponse.json();
+            })
+            .then(decodeData => {
+                if(decodeData.isAdmin) {
+                    fetch(`http://localhost:5000/user/getUserById/${id}`)
+                        .then((response) => response.json())
+                        .then((data) => setUser(data.message))
+                }
+                
+            })
+            .catch(error => {
+                console.error(error);
+            })
+
+        })
+        .catch(error => {
+            console.error(error);
+        })
+        
+    }, [id, token])
 
     /**
      * State that contains the data obtained from the form.
@@ -75,16 +118,57 @@ export default function UserInfo() {
             ...prevState,
             isApproved: formData.isApproved
         }))
-        
-        // Updating the approval state of the user in the database 
-        // Calling the server using a request with the put method with a custom body {id, isApproved}
-        const requestOptions = {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({id:user.id, isApproved:formData.isApproved})
-        }
 
-        fetch('http://localhost:5000/user/approveUser', requestOptions)
+
+        fetch('http://localhost:5000/user/validateToken', {
+            method: 'GET',
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(validationData => {
+
+            // Token validation succeeded, now decode the token to check if the user is an admin
+            return fetch("http://localhost:5000/user/decodeToken", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then(decodeResponse => {
+                if (!decodeResponse.ok) {
+                    throw new Error("Token decoding failed");
+                }
+                return decodeResponse.json();
+            })
+            .then(decodeData => {
+                if(decodeData.isAdmin) {
+                    // Updating the approval state of the user in the database 
+                    // Calling the server using a request with the put method with a custom body {id, isApproved}
+                    const requestOptions = {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({id:user.id, isApproved:formData.isApproved})
+                    }
+
+                    fetch('http://localhost:5000/user/approveUser', requestOptions)
+                }
+                
+            })
+            .catch(error => {
+                console.error(error);
+            })
+
+        })
+        .catch(error => {
+            console.error(error);
+        })
     }
 
     return (

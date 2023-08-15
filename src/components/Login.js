@@ -3,7 +3,7 @@ import LoginTextInput from './LoginTextInput';
 import './Login.css'
 import { Link } from 'react-router-dom';
 
-export default function Login() {
+export default function Login(props) {
 
     /**
      * State that contains the data obtained from the form.
@@ -15,9 +15,6 @@ export default function Login() {
     })
 
     const [message, setMessage] = React.useState("")
-
-    // State that contains the generated JSON Web Token
-    const [authToken, setAuthToken] = React.useState("");
 
     /**
      * All the input fields inside the form
@@ -52,38 +49,46 @@ export default function Login() {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        
+    
         try {
-            /* Check if the username exists */
-        
-            // Retrieving the users with the same username as given
-            const response = await fetch(
-                `http://localhost:5000/user/getUsersByUsername/${formData.username}`,
+            // Check if the username exists
+            const usernameTakenResponse = await fetch(
+                `http://localhost:5000/user/isUsernameTaken/${formData.username}`,
                 {
                     method: "GET",
                 }
             );
-        
-            if (!response.ok) {
-                // Handle the response status if it's not successful (e.g., 404, 500, etc.)
+    
+            if (!usernameTakenResponse.ok) {
                 throw new Error("Network response was not ok");
             }
-        
-            const data = await response.json();
-        
-            // Use the state variable directly here
-            if (data.message.length === 0) {
+    
+            const usernameTakenData = await usernameTakenResponse.json();
+    
+            if (usernameTakenData.message === "") {
                 setMessage(`User with username ${formData.username} does not exist`);
                 return;
             }
-        
-            const user = data.message[0];
-        
+    
+            const userResponse = await fetch(
+                `http://localhost:5000/user/getUserByUsername/${formData.username}`,
+                {
+                    method: "GET",
+                }
+            );
+    
+            if (!userResponse.ok) {
+                throw new Error("Network response was not ok");
+            }
+    
+            const userData = await userResponse.json();
+            const user = userData.message;
+    
             if (formData.password !== user.password) {
                 setMessage("Incorrect password");
                 return;
             }
-
+    
             const requestOptions = {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -95,48 +100,35 @@ export default function Login() {
                     isLandlord: user.isLandlord,
                     isTenant: user.isTenant
                 })
-            }
-
-            await fetch("http://localhost:5000/user/generateToken", requestOptions)
-            .then(response => {
-                if (!response.ok) {
+            };
+    
+            const generateTokenResponse = await fetch("http://localhost:5000/user/generateToken", requestOptions);
+    
+            if (!generateTokenResponse.ok) {
                 throw new Error("Network response was not ok");
+            }
+    
+            const generateTokenData = await generateTokenResponse.json();
+            const token = generateTokenData.token;
+    
+            const validationResponse = await fetch("http://localhost:5000/user/validateToken", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
                 }
-                return response.json();
-            })
-            .then(data => {
-                const token = data.token;
-                setAuthToken(token); // Update the authToken value
-
-                // Request token validation from the server
-                return fetch("http://localhost:5000/user/validateToken", {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
-            })
-            .then(validationResponse => {
-                if (!validationResponse.ok) {
-                    throw new Error("Token validation failed");
-                }
-
-                // Token validation succeeded, now you can save the token in the session data
-                sessionStorage.setItem("token", authToken);
-
-                window.location.href = "/"
-            })
-            .catch(error => {
-                console.error(error);
-                // Handle the error here, e.g., show an error message to the user
             });
-
+    
+            if (!validationResponse.ok) {
+                throw new Error("Token validation failed");
+            }
+    
+            sessionStorage.setItem("token", token);
+            window.location.href = "/";
         } catch (error) {
-            console.log(error);
+            console.error(error);
             setMessage("Failed to login. Please try again later.");
         }
-    }
-      
+    }     
 
     return (
         <main className="App-login-form-container">

@@ -1,10 +1,72 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './Profile.css'
 import { Link } from 'react-router-dom';
 
 export default function Profile(props) {
-    
-    const currentUser = props.user 
+
+    const [currentUser, setCurrentUser] = useState({})
+
+    useEffect(() => {
+        if (!props.token) {
+            return; // No token, no need to proceed
+        }
+
+        // Validating and decoding the JSON Web Token
+        fetch("http://localhost:5000/user/validateToken", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${props.token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(validationData => {
+
+            // Token validation succeeded, now decode the token to check if the user is an admin
+            return fetch("http://localhost:5000/user/decodeToken", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${props.token}`
+                }
+            })
+            .then(decodeResponse => {
+                if (!decodeResponse.ok) {
+                    throw new Error("Token decoding failed");
+                }
+                return decodeResponse.json();
+            })
+            .then(decodeData => {
+                // Retrieving the userInfo
+                return fetch(`http://localhost:5000/user/getUserById/${decodeData.id}`, {
+                    method: "GET"
+                })
+                .then(userResponse => {
+                    if (!userResponse.ok) {
+                        throw new Error("Failed to retrieve user");
+                    }
+                    return userResponse.json();
+                })
+                .then(userData => {
+                    // Setting current user
+                    setCurrentUser(userData.message)
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+            })
+            .catch(error => {
+                console.error(error);
+            })
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }, [props.token]) 
 
     // All the favicons shown in the contact section of the user profile
     const contacts = [

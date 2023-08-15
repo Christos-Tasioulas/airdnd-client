@@ -3,7 +3,7 @@ import './Signup.css';
 import { Link } from 'react-router-dom';
 import SignupTextInput from './SignupTextInput';
 
-export default function Signup() {
+export default function Signup(props) {
 
     // State used to determine if the user is registered or not
     const [isRegistered, setIsRegistered] = useState(false);
@@ -124,106 +124,103 @@ export default function Signup() {
             .then(data => {        
                 if (data.message !== "") {
                     setMessage(data.message)
+                    return;
                 }
+
+                // Checking if the passwords match
+                if (formData.password !== formData.passwordConfirm) {
+                    setMessage("Error, passwords do not match!");
+                    return;
+                }
+            
+                // We need to make sure that the registree has selected at least one of the roles
+                if (!formData.isTenant && !formData.isLandlord) {
+                    setMessage("Please choose a role in the app");
+                    return;
+                }
+            
+                // Handle other conditions and submit the form data
+                // Changing the isApproved state to false if the user wants to be a landlord
+                if (formData.isLandlord) {
+                    setUserIsApprovred(false);
+                
+                    setFormData((prevFormData) => ({
+                        ...prevFormData,
+                        isApproved: !prevFormData.isApproved,
+                    }));
+                }
+            
+                // Copying the form data to pass them as the request body
+                const formDataCopy = { ...formData };
+                // New user is not admin
+                formDataCopy.isAdmin = false;
+
+                // Bugfix: this is how we set the isApproved field in the user
+                // User will not be approved initially if they want to be landlord
+                formDataCopy.isApproved = !formDataCopy.isLandlord;
+
+                const registerOptions = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        id: formDataCopy.id,
+                        username: formDataCopy.username,
+                        password: formDataCopy.password,
+                        isAdmin: formDataCopy.isAdmin,
+                        isLandlord: formDataCopy.isLandlord,
+                        isTenant: formDataCopy.isTenant
+                    })
+                }
+
+                // Generating and validating a JSON Web Token for the user
+                fetch("http://localhost:5000/user/generateToken", registerOptions)
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const token = data.token;
+                    setAuthToken(token); // Update the authToken value
+
+                    // Request token validation from the server
+                    return fetch("http://localhost:5000/user/validateToken", {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    });
+                })
+                .then(validationResponse => {
+                    if (!validationResponse.ok) {
+                        throw new Error("Token validation failed");
+                    }
+
+                    // Token validation succeeded, now you can save the token in the session data
+                    sessionStorage.setItem("token", authToken);
+                })
+                .catch(error => {
+                    console.error(error);
+                    // Handle the error here, e.g., show an error message to the user
+                });
+            
+                // The request is a Post request with the copy of the form data object as JSON body
+                const requestOptions = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formDataCopy),
+                };
+            
+                // Call the API to add the user
+                fetch("http://localhost:5000/user/addUser", requestOptions);
+            
+                setIsRegistered(true);
+                props.onRegistrationComplete()
             })
             .catch(error => {
                 console.log(error);
             })
-
-            if (message !== "") {
-                return;
-            }
-            
-        
-            // Checking if the passwords match
-            if (formData.password !== formData.passwordConfirm) {
-                setMessage("Error, passwords do not match!");
-                return;
-            }
-        
-            // We need to make sure that the registree has selected at least one of the roles
-            if (!formData.isTenant && !formData.isLandlord) {
-                setMessage("Please choose a role in the app");
-                return;
-            }
-        
-            // Handle other conditions and submit the form data
-            // Changing the isApproved state to false if the user wants to be a landlord
-            if (formData.isLandlord) {
-                setUserIsApprovred(false);
-            
-                setFormData((prevFormData) => ({
-                    ...prevFormData,
-                    isApproved: !prevFormData.isApproved,
-                }));
-            }
-        
-            // Copying the form data to pass them as the request body
-            const formDataCopy = { ...formData };
-            // New user is not admin
-            formDataCopy.isAdmin = false;
-
-            // Bugfix: this is how we set the isApproved field in the user
-            // User will not be approved initially if they want to be landlord
-            formDataCopy.isApproved = !formDataCopy.isLandlord;
-
-            const registerOptions = {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    id: formDataCopy.id,
-                    username: formDataCopy.username,
-                    password: formDataCopy.password,
-                    isAdmin: formDataCopy.isAdmin,
-                    isLandlord: formDataCopy.isLandlord,
-                    isTenant: formDataCopy.isTenant
-                })
-            }
-
-            // Generating and validating a JSON Web Token for the user
-            await fetch("http://localhost:5000/user/generateToken", registerOptions)
-            .then(response => {
-                if (!response.ok) {
-                throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then(data => {
-                const token = data.token;
-                setAuthToken(token); // Update the authToken value
-
-                // Request token validation from the server
-                return fetch("http://localhost:5000/user/validateToken", {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
-            })
-            .then(validationResponse => {
-                if (!validationResponse.ok) {
-                    throw new Error("Token validation failed");
-                }
-
-                // Token validation succeeded, now you can save the token in the session data
-                sessionStorage.setItem("token", authToken);
-            })
-            .catch(error => {
-                console.error(error);
-                // Handle the error here, e.g., show an error message to the user
-            });
-        
-            // The request is a Post request with the copy of the form data object as JSON body
-            const requestOptions = {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formDataCopy),
-            };
-        
-            // Call the API to add the user
-            await fetch("http://localhost:5000/user/addUser", requestOptions);
-        
-            setIsRegistered(true);
         } catch (error) {
             console.log(error);
             setMessage("Failed to add user. Please try again later.");

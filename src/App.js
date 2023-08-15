@@ -22,6 +22,10 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [jsonWebToken, setJsonWebToken] = useState()
 
+  const handleRegistrationComplete = () => {
+    setUserIsLoggedIn(true);
+  };
+
   // Checking connection status, looking for a JSON Web Token in the session storage
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -60,6 +64,10 @@ function App() {
         .then(decodeData => {
           // Passing the information if the user is an admin or not
           setIsAdmin(decodeData.isAdmin);
+        })
+        .catch(error => {
+          console.error(error);
+          // Handle the error here, e.g., show an error message to the user
         });
 
       })
@@ -79,9 +87,9 @@ function App() {
         <div className="App-body">
           {/* All the routes of the client app */}
           <Routes>
-            <Route path="/" element={<Home isAdmin={isAdmin}/>}/>
-            <Route path="/login" element={<Login />}/>
-            <Route path="/signup" element={<Signup />}/>
+            <Route path="/" element={<Home isAdmin={isAdmin} token={jsonWebToken}/>}/>
+            <Route path="/login" element={<Login onRegistrationComplete={handleRegistrationComplete}/>}/>
+            <Route path="/signup" element={<Signup onRegistrationComplete={handleRegistrationComplete}/>}/>
             <Route path="/about" element={<About />}/>
             <Route path="/contact" element={<Contact />}/>
             <Route path="/profile" element={<Profile token={jsonWebToken}/>}/>
