@@ -146,6 +146,10 @@
     height: 47%;
 }
 
+.App-profile-landlord h2 {
+    color: #ff585d;
+}
+
 .App-profile-tenant {
     height: 47%;
 }
