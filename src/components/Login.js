@@ -90,7 +90,10 @@ export default function Login() {
                 body: JSON.stringify({
                     id: user.id,
                     username: user.username,
-                    password: user.password
+                    password: user.password,
+                    isAdmin: user.isAdmin,
+                    isLandlord: user.isLandlord,
+                    isTenant: user.isTenant
                 })
             }
 
