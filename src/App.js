@@ -11,6 +11,7 @@ import Signup from './components/Signup';
 import About from './components/About';
 import Contact from './components/Contact';
 import Profile from './components/Profile';
+import Logout from './components/Logout';
 import EditProfile from './components/EditProfile';
 import UserInfo from './components/UserInfo';
 
@@ -45,8 +46,9 @@ function App() {
             <Route path="/signup" element={<Signup />}/>
             <Route path="/about" element={<About />}/>
             <Route path="/contact" element={<Contact />}/>
-            <Route path="/profile" element={<Profile />}/>
-            <Route path="/editprofile" element={<EditProfile />}/>
+            <Route path="/profile" element={<Profile user={user}/>}/>
+            <Route path="/logout" element={<Logout />}/>
+            <Route path="/editprofile" element={<EditProfile user={user}/>}/>
             <Route path="/userinfo/:id" element={<UserInfo />} />
           </Routes>
         </div>

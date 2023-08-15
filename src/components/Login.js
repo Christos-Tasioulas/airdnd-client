@@ -109,6 +109,7 @@ export default function Login() {
 
                     // Set token to Axios common header
                     setAuthToken(token);
+                    sessionStorage.setItem("token", JSON.stringify(token));
 
                     // Request token validation from the server
                     return fetch("http://localhost:5000/user/validateToken", {

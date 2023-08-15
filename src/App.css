@@ -73,6 +73,27 @@
   align-self: center;
 }
 
+.App-logout-container {
+  height: 80vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.App-logout-button {
+  width: 20%;
+  margin-top: 2.5%;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  background-color: #ff585d;
+  border: none;   
+  cursor: pointer;
+  font-size: large; 
+}
+
 .App-about p {
   font-size: large;
 }
