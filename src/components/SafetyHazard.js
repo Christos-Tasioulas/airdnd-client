@@ -48,7 +48,9 @@ export default function SafetyHazard(props) {
         }))
     }
 
-    function handleSubmit(event) {
+    const [user, setUser] = React.useState(props.user)
+
+    async function handleSubmit(event) {
 
         // We don't want to be redirected to the home page
         event.preventDefault()
@@ -59,8 +61,51 @@ export default function SafetyHazard(props) {
             return
         }
 
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: user.id,
+                username: user.username,
+                password: user.password,
+                isAdmin: user.isAdmin,
+                isLandlord: user.isLandlord,
+                isTenant: user.isTenant
+            })
+        };
+
+        // Updating the JWT token according to the new data
+        const generateTokenResponse = await fetch("http://localhost:5000/user/generateToken", requestOptions);
+
+        if (!generateTokenResponse.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const generateTokenData = await generateTokenResponse.json();
+        const token = generateTokenData.token;
+
+        const validationResponse = await fetch("http://localhost:5000/user/validateToken", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!validationResponse.ok) {
+            throw new Error("Token validation failed");
+        }
+
+        sessionStorage.setItem("token", token);
+
         // code updating the user in the database
-        
+
+        const userOptions = {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user),
+        }
+        fetch("http://localhost:5000/user/updateUser", userOptions)
+
 
         // Navigating the user back to their profile page
         navigate('/profile');

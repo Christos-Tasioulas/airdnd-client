@@ -28,17 +28,11 @@ export default function EditProfile(props) {
         lastname: "",
         email: "",
         phoneNumber: "",
-        isTenant: "",
-        isLandlord: "",
-        isApproved: "",
+        isTenant: false,
+        isLandlord: false,
+        isApproved: true,
         image: ""
     })
-
-    // // Copy of form data but it will not be changed by Handle Change
-    // const [userData, setUserData] = React.useState({})
-
-    // This state is copy-pasted from the signup component. Probably not needed here.
-    const [isApproved, setIsApprovred] = useState();
 
     // Storing the previous password, needed for Safety Hazard Check
     const [prevPassword, setPrevPassword] = useState();
@@ -91,10 +85,6 @@ export default function EditProfile(props) {
                 .then(userData => {
                     // Setting current user
                     setUser(userData.message)
-                     
-                    setIsApprovred(formData.isApproved)
-
-                    setPrevPassword(formData.password)
                 })
                 .catch(error => {
                     console.error(error);
@@ -158,6 +148,8 @@ export default function EditProfile(props) {
 
         // We don't want to be redirected to the home page
         event.preventDefault()
+
+        setPrevPassword(user.password)
 
         if (formData.username !== "" && formData.username !== user.username) {
             setHasMadeChanges(true)
@@ -226,6 +218,14 @@ export default function EditProfile(props) {
                 ...prevUser,
                 isTenant: formData.isTenant,
             }))
+
+            if(formData.isLandlord === false) {
+                setUser(prevUser => ({
+                    ...prevUser,
+                    isLandlord: false,
+                    isApproved: true
+                }))
+            }
         }
 
         if(formData.isLandlord === true && formData.isLandlord !== user.isLandlord) {
@@ -235,6 +235,36 @@ export default function EditProfile(props) {
                 isLandlord: formData.isLandlord,
                 isApproved: false
             }))
+            // If someone wants to add a role to his current one, he has to click his current role checkbox + the new roles' one
+            if(formData.isTenant === false) {
+                setUser(prevUser => ({
+                    ...prevUser,
+                    isTenant: false,
+                }))
+            }
+        }
+
+        if(user.isLandlord && user.isTenant) {
+            if(!formData.isLandlord && !formData.isTenant) {
+                return
+            }
+            else{
+                if(!formData.isLandlord) {
+                    setHasMadeChanges(true)
+                    setUser(prevUser => ({
+                        ...prevUser,
+                        isLandlord: false,
+                        isApproved: true
+                    }))
+                }
+                if(!formData.isTenant) {
+                    setHasMadeChanges(true)
+                    setUser(prevUser => ({
+                        ...prevUser,
+                        isTenant: false,
+                    }))
+                }
+            }
         }
 
         // console.log(user)
