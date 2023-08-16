@@ -76,7 +76,9 @@ export default function AdminHome(props) {
     )
 
     return (
-        <div className='App-admin-home'>
+        // <div className='App-admin-home'>
+        // <div className="div-scroll">
+        <div className='div-scroll'>
             <h1>User Info</h1>
             <br />
             <table className='App-users-info'>

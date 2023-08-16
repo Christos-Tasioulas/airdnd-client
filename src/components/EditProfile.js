@@ -1,30 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './Signup.css';
 import SignupTextInput from './SignupTextInput';
 import SafetyHazard from './SafetyHazard';
+import { Link } from 'react-router-dom'
 
 /**
  * WARNING: This component is very half-baked. The update request exists but needs the user authentication to work properly.
  * Many functions, elements and variables inside are at template state. They need to change when everything gets to work.
  */
-export default function EditProfile() {
+export default function EditProfile(props) {
 
     // This state is copy-pasted from the signup component
     // TODO: Change this to user whenever possible
-    const [user, setUser] = useState([]);
-
-    // This state will be needed to save the user changes in a safely manner
-    const [hasMadeChanges, setHasMadeChanges] = useState(false);
-
-    // This state is copy-pasted from the signup component. Probably not needed here.
-    const [isApproved, setIsApprovred] = useState(true);
+    const [user, setUser] = useState({});
 
     /**
      * State that contains the data obtained from the form.
      * Changes whenever a field on the form changes
      * Notice that the fields are assigned to values as if a user is not registered.
      * That's because we need the authentication to work properly first to assign the values properly
-     */ 
+     */
     const [formData, setFormData] = React.useState({
         username: "",
         password: "",
@@ -33,17 +28,109 @@ export default function EditProfile() {
         lastname: "",
         email: "",
         phoneNumber: "",
-        isTenant: false,
-        isLandlord: false,
-        isApproved: true,
+        isTenant: "",
+        isLandlord: "",
+        isApproved: "",
         image: ""
     })
 
+    // Saving the initial state of formData
+    const defaultFormData = formData
+
+    // Copy of form data but it will not be changed by Handle Change
+    const [userData, setUserData] = React.useState({})
+
+    // This state is copy-pasted from the signup component. Probably not needed here.
+    const [isApproved, setIsApprovred] = useState();
+
     // Storing the previous password, needed for Safety Hazard Check
-    const prevPassword = formData.password
+    const [prevPassword, setPrevPassword] = useState();
+
+    useEffect(() => {
+
+        if(!props.token) {
+            return;
+        }
+
+        // Validating and decoding the JSON Web Token
+        fetch("http://localhost:5000/user/validateToken", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${props.token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(validationData => {
+
+            // Token validation succeeded, now decode the token to check if the user is an admin
+            return fetch("http://localhost:5000/user/decodeToken", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${props.token}`
+                }
+            })
+            .then(decodeResponse => {
+                if (!decodeResponse.ok) {
+                    throw new Error("Token decoding failed");
+                }
+                return decodeResponse.json();
+            })
+            .then(decodeData => {
+                // Retrieving the userInfo
+                return fetch(`http://localhost:5000/user/getUserById/${decodeData.id}`, {
+                    method: "GET"
+                })
+                .then(userResponse => {
+                    if (!userResponse.ok) {
+                        throw new Error("Failed to retrieve user");
+                    }
+                    return userResponse.json();
+                })
+                .then(userData => {
+                    // Setting current user
+                    setUser(userData.message)
+                     
+                    setUserData({
+                        username: user.username,
+                        password: user.password,
+                        firstname: user.firstname,
+                        lastname: user.lastname,
+                        email: user.email,
+                        phoneNumber: user.phoneNumber,
+                        isTenant: user.isTenant,
+                        isLandlord: user.isLandlord,
+                        isApproved: user.isApproved,
+                        image: user.image
+                    })
+
+                    setIsApprovred(formData.isApproved)
+
+                    setPrevPassword(formData.password)
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+            })
+            .catch(error => {
+                console.error(error);
+            })
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }, [props.token])
+
+    // This state will be needed to save the user changes in a safely manner
+    const [hasMadeChanges, setHasMadeChanges] = useState(false);
 
     // Message state that prints to the user if an error occurred in the update process
-    const [message, setMessage] = React.useState("") 
+    const [message, setMessage] = React.useState("")
 
     /**
      * All the input fields inside the form
@@ -88,46 +175,18 @@ export default function EditProfile() {
         // We don't want to be redirected to the home page
         event.preventDefault()
 
-        /* Test Code from Signup component that might be useful for this form as well */
+        if (formData.username !== "" && formData.username !== userData.username) {
+            setHasMadeChanges(true)
+        }
 
-        // fetch(`http://localhost:5000/user/getUsersByUsername/${formData.username}`)
-        //     .then((res) => res.json())
-        //     .then((data) => setUsers(data.message))
-        
-        // if(formData.password !== formData.passwordConfirm) {
-        //     setMessage("Error, passwords do not match!")
-        //     return
-        // } else if (users.length !== 0) {
-        //     setMessage("Username already taken, choose another")
-        //     return
-        // } else if ((formData.isTenant === false) && (formData.isLandlord === false)) {
-        //     setMessage("Please choose a role in the app")
-        //     return
-        // }
+        if (formData.password !== "" && formData.password !== userData.password)  {
+            setHasMadeChanges(true)
+        }
 
-        // if(formData.isLandlord) {
-        //     setFormData(prevFormData => ({
-        //         ...prevFormData,
-        //         isApproved: false
-        //     }))
-
-        //     setIsApprovred(false)
-        // }
-
-        // const formDataCopy = formData 
-
-        // const requestOptions = {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(formDataCopy)
-        // }
-
-        // fetch('http://localhost:5000/user/editUser', requestOptions)
-
+        // formData.passwordConfirm !== "" && formData.passwordConfirm !== userData.password)
         // The user has made changes to their profile, Safety Hazard triggered.
         // We probably need to edit this state to change whenever a change actually happens
         // The submit button can be pressed even if the user has not made changes
-        setHasMadeChanges(true)
     }
 
     return (
@@ -197,6 +256,10 @@ export default function EditProfile() {
             >
                 Save Changes
             </button>
+            <br />
+            <Link to="/profile">
+                Go Back
+            </Link>
         </form>}
         {hasMadeChanges && <SafetyHazard isApproved={isApproved} prevPassword={prevPassword}/>}
     </main>
