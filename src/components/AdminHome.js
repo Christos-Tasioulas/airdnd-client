@@ -76,25 +76,26 @@ export default function AdminHome(props) {
     )
 
     return (
-        // <div className='App-admin-home'>
-        // <div className="div-scroll">
-        <div className='div-scroll'>
+        // 'div-scroll' former -^
+        <div className='App-admin-home'>
             <h1>User Info</h1>
             <br />
-            <table className='App-users-info'>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Fullname</th>
-                        <th>Email</th>
-                        <th>Roles</th>
-                        <th>Approved State</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {userElements}
-                </tbody>  
-            </table>
+            <div className='scroll-container'>
+                <table className='scroll'>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Fullname</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th>Approved State</th>
+                        </tr>
+                    </thead>
+                    <tbody className='scroll-body'>
+                        {userElements}
+                    </tbody>  
+                </table>
+            </div>
         </div>
     )
 }

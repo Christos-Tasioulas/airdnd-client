@@ -60,6 +60,7 @@ export default function SafetyHazard(props) {
         }
 
         // code updating the user in the database
+        
 
         // Navigating the user back to their profile page
         navigate('/profile');

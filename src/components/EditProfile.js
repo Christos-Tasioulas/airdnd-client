@@ -13,7 +13,7 @@ export default function EditProfile(props) {
     // This state is copy-pasted from the signup component
     // TODO: Change this to user whenever possible
     const [user, setUser] = useState({});
-
+      
     /**
      * State that contains the data obtained from the form.
      * Changes whenever a field on the form changes
@@ -34,11 +34,8 @@ export default function EditProfile(props) {
         image: ""
     })
 
-    // Saving the initial state of formData
-    const defaultFormData = formData
-
-    // Copy of form data but it will not be changed by Handle Change
-    const [userData, setUserData] = React.useState({})
+    // // Copy of form data but it will not be changed by Handle Change
+    // const [userData, setUserData] = React.useState({})
 
     // This state is copy-pasted from the signup component. Probably not needed here.
     const [isApproved, setIsApprovred] = useState();
@@ -95,19 +92,6 @@ export default function EditProfile(props) {
                     // Setting current user
                     setUser(userData.message)
                      
-                    setUserData({
-                        username: user.username,
-                        password: user.password,
-                        firstname: user.firstname,
-                        lastname: user.lastname,
-                        email: user.email,
-                        phoneNumber: user.phoneNumber,
-                        isTenant: user.isTenant,
-                        isLandlord: user.isLandlord,
-                        isApproved: user.isApproved,
-                        image: user.image
-                    })
-
                     setIsApprovred(formData.isApproved)
 
                     setPrevPassword(formData.password)
@@ -175,15 +159,85 @@ export default function EditProfile(props) {
         // We don't want to be redirected to the home page
         event.preventDefault()
 
-        if (formData.username !== "" && formData.username !== userData.username) {
+        if (formData.username !== "" && formData.username !== user.username) {
             setHasMadeChanges(true)
+            setUser(prevUser => ({
+                ...prevUser,
+                username: formData.username,
+            }))
         }
 
-        if (formData.password !== "" && formData.password !== userData.password)  {
-            setHasMadeChanges(true)
+        if (formData.password !==  formData.passwordConfirm) {
+            setMessage("Please confirm your new password")
+            return;
         }
 
-        // formData.passwordConfirm !== "" && formData.passwordConfirm !== userData.password)
+        if (formData.password !== "" && formData.password !== user.password)  {
+            setHasMadeChanges(true)
+            setUser(prevUser => ({
+                ...prevUser,
+                password: formData.password,
+            }))
+        }
+
+        if(formData.firstname !== "" && formData.firstname !== user.firstname) {
+            setHasMadeChanges(true)
+            setUser(prevUser => ({
+                ...prevUser,
+                firstname: formData.firstname,
+            }))
+        }
+
+        if(formData.lastname !== "" && formData.lastname !== user.lastname) {
+            setHasMadeChanges(true)
+            setUser(prevUser => ({
+                ...prevUser,
+                lastname: formData.lastname,
+            }))
+        }
+
+        if(formData.email !== "" && formData.email !== user.email) {
+            setHasMadeChanges(true)
+            setUser(prevUser => ({
+                ...prevUser,
+                email: formData.email,
+            }))
+        }
+
+        if(formData.phoneNumber !== "" && formData.phoneNumber !== user.phoneNumber) {
+            setHasMadeChanges(true)
+            setUser(prevUser => ({
+                ...prevUser,
+                phoneNumber: formData.phoneNumber,
+            }))
+        }
+
+        if(formData.image !== user.image) {
+            setHasMadeChanges(true)
+            setUser(prevUser => ({
+                ...prevUser,
+                image: formData.image,
+            }))
+        }
+
+        if(formData.isTenant === true && formData.isTenant !== user.isTenant) {
+            setHasMadeChanges(true)
+            setUser(prevUser => ({
+                ...prevUser,
+                isTenant: formData.isTenant,
+            }))
+        }
+
+        if(formData.isLandlord === true && formData.isLandlord !== user.isLandlord) {
+            setHasMadeChanges(true)
+            setUser(prevUser => ({
+                ...prevUser,
+                isLandlord: formData.isLandlord,
+                isApproved: false
+            }))
+        }
+
+        // console.log(user)
         // The user has made changes to their profile, Safety Hazard triggered.
         // We probably need to edit this state to change whenever a change actually happens
         // The submit button can be pressed even if the user has not made changes
@@ -261,7 +315,7 @@ export default function EditProfile(props) {
                 Go Back
             </Link>
         </form>}
-        {hasMadeChanges && <SafetyHazard isApproved={isApproved} prevPassword={prevPassword}/>}
+        {hasMadeChanges && <SafetyHazard user={user} token={props.token} prevPassword={prevPassword}/>}
     </main>
     )
 }

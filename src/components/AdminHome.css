@@ -1,5 +1,4 @@
-/* .App-admin-home { */
-.div-scroll {
+.App-admin-home {
     background-color: white;
     width: 90%;
     padding: 50px;
@@ -11,33 +10,38 @@
     margin-top: -30px;
     margin-bottom: 100px;
     height: 70%;
-    /*  */
-    overflow-y: scroll;
-    /* overflow-y: auto; */
-    overflow-x: hidden;
 }
 
-.App-users-info {
+.scroll-container {
+    max-height: 1000px;
+    /* overflow-y: scroll; */
+    /* overflow-x: hidden; */
+    /* can also just do ^ */
+    overflow-y: auto;
+    width: 90%;
+} 
+
+.scroll {
     width: 95%;
     font-size: larger;
     border-collapse: collapse;
     margin: auto;
     height: 80%;
-    /* overflow-y: scroll; */
-    /* overflow-y: auto; */
-    /* overflow-x: hidden; */
 }
 
- 
-.App-users-info tbody {
-    display: flexbox; /* not needed */
-    /* height: 100px; */
-    /* overflow-y: scroll; */
-    /* overflow-y: auto; */
-    /* overflow-x: hidden; */
+.scroll-body {
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.App-users-info tr th{
+.scroll th, td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #ddd;
+    white-space: nowrap; /* Prevent line breaks */
+}
+
+.scroll th{
     border: 1px solid #484848;
     background-color: #484848;
     color: white;
@@ -50,12 +54,12 @@
     text-decoration: none
 }
 
-.App-users-info tr:nth-child(even) 
+.scroll tr:nth-child(even) 
 {
     background-color: whitesmoke;
 }
 
-.App-users-info tr:nth-child(even):hover 
+.scroll tr:nth-child(even):hover 
 {
     background-color: #ff585d;
     color: white;
