@@ -1,5 +1,5 @@
 import React from "react";
-import LoginTextInput from './LoginTextInput';
+import TextInput from './TextInput';
 import './Login.css'
 import { Link } from 'react-router-dom';
 
@@ -22,16 +22,17 @@ export default function Login(props) {
      * In our formData object, the value attribute of the input is the value of respective the field as well
      */
     const textInputs = [
-        {id:1, type: "text", placeholder: "Username", name: "username", value: formData.username},
-        {id:2, type: "password", placeholder: "Password", name: "password", value: formData.password}
+        {id:1, type: "text", placeholder: "Username", className: "App-login-form-input", name: "username", value: formData.username},
+        {id:2, type: "password", placeholder: "Password", className: "App-login-form-input", name: "password", value: formData.password}
     ]
 
     // Login Input html elements
     const textInputElements = textInputs.map(textInput => (
-        <LoginTextInput
+        <TextInput
             key={textInput.id}
             type={textInput.type}
             placeholder={textInput.placeholder}
+            className={textInput.className}
             name={textInput.name}
             value={textInput.value}
             onChange={(event) => handleChange(event)}

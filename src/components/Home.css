@@ -1,0 +1,121 @@
+.App-home {
+    height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.App-home-image {
+    height: 450px;
+    width: 450px;
+}
+
+.App-home-form {
+    background-color: white;
+    box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    width: 90%;
+    margin-top: -40px;
+    margin-bottom: 100px;
+}
+
+.App-home-form-details {
+    display: flex;
+    flex-direction: row;
+    height: 75%;
+}
+
+.App-home-form-location {
+    width: calc(100%/3);
+}
+
+.App-home-form-date {
+    width: calc(100%/3);
+}
+
+.App-home-form-text {
+    width: calc(100%/3);
+} 
+
+.App-home-form-submit {
+    height: 25%;
+}
+
+.App-home-form-location-inputs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 40px;
+    width: 100%;
+    top:0;
+    left:0;
+    margin-top: -40px;
+}
+
+.App-home-form-location-input {
+    width: 80%;
+    margin: 10px;
+    height: 40px;
+    display: block;
+    border: none;
+    padding: 5px 10px;
+    font-size: large;
+    border-bottom: 1px solid #ff585d;
+    outline: none;
+    margin-top: 30px;
+}
+
+.App-home-form-date-inputs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 40px;
+    width: 100%;
+    top:0;
+    left:0;
+    margin-top: -40px;   
+}
+
+.App-home-form-date-input {
+    width: 80%;
+    margin: 10px;
+    height: 40px;
+    display: block;
+    border: none;
+    padding: 5px 10px;
+    font-size: large;
+    border-bottom: 1px solid #ff585d;
+    outline: none;
+    margin-top: 30px;
+}
+
+.App-home-form-text-inputs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 40px;
+    width: 100%;
+    top:0;
+    left:0;
+    margin-top: -40px;
+}
+
+.App-home-form-text-input {
+    width: 80%;
+    margin: 10px;
+    height: 40px;
+    display: block;
+    border: none;
+    padding: 5px 10px;
+    font-size: large;
+    border-bottom: 1px solid #ff585d;
+    outline: none;
+    margin-top: 30px;
+}

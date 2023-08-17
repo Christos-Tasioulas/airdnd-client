@@ -23,20 +23,6 @@
   height: 90vh;
 }
 
-.App-home {
-  height: 100vh;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.App-home-image {
-  height: 450px;
-  width: 450px;
-}
-
 .App-approve-user {
   display: flex;
   flex-direction: column;

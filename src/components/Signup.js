@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './Signup.css';
 import { Link } from 'react-router-dom';
-import SignupTextInput from './SignupTextInput';
+import TextInput from './TextInput';
 
 export default function Signup(props) {
 
@@ -42,21 +42,22 @@ export default function Signup(props) {
      * In our formData object, the value attribute of the input is the value of respective the field as well
      */
     const textInputs = [
-        {id:1, type: "text", placeholder: "Username", name: "username", value: formData.username},
-        {id:2, type: "password", placeholder: "Password", name: "password", value: formData.password},
-        {id:3, type: "password", placeholder: "Confirm Password", name: "passwordConfirm", value: formData.passwordConfirm},
-        {id:4, type: "text", placeholder: "First name", name: "firstname", value: formData.firstname},
-        {id:5, type: "text", placeholder: "Last name", name: "lastname", value: formData.lastname},
-        {id:6, type: "email", placeholder: "Email", name: "email", value: formData.email},
-        {id:7, type: "text", placeholder: "Phone Number", name: "phoneNumber", value: formData.phoneNumber}
+        {id:1, type: "text", placeholder: "Username", className:"App-signup-form-input", name: "username", value: formData.username},
+        {id:2, type: "password", placeholder: "Password", className:"App-signup-form-input", name: "password", value: formData.password},
+        {id:3, type: "password", placeholder: "Confirm Password", className:"App-signup-form-input", name: "passwordConfirm", value: formData.passwordConfirm},
+        {id:4, type: "text", placeholder: "First name", className:"App-signup-form-input", name: "firstname", value: formData.firstname},
+        {id:5, type: "text", placeholder: "Last name", className:"App-signup-form-input", name: "lastname", value: formData.lastname},
+        {id:6, type: "email", placeholder: "Email", className:"App-signup-form-input", name: "email", value: formData.email},
+        {id:7, type: "text", placeholder: "Phone Number", className:"App-signup-form-input", name: "phoneNumber", value: formData.phoneNumber}
     ]
 
     // Signup Input html elements
     const textInputElements = textInputs.map(textInput => (
-        <SignupTextInput
+        <TextInput
             key={textInput.id}
             type={textInput.type}
             placeholder={textInput.placeholder}
+            className={textInput.className}
             name={textInput.name}
             value={textInput.value}
             onChange={(event) => handleChange(event)}
@@ -70,6 +71,8 @@ export default function Signup(props) {
             ...prevFormData,
             [name]: type === "checkbox" ? checked : value
         }))
+
+        console.log(formData.image)
     }
 
     // Registration process begins and ends here
@@ -251,8 +254,9 @@ export default function Signup(props) {
                                     name="image"
                                     onChange={handleChange}
                                     value={formData.image}
+                                    accept="image/png, image/jpeg, image/jpg"
                                 />
-                                <label htmlFor="ProfilePicture"><img src="https://i.pinimg.com/originals/46/72/f8/4672f876389036583190d93a71aa6cb2.jpg" alt="prof"/></label>
+                                <label htmlFor="ProfilePicture"><img src={formData.image !== "" ? formData.image : "https://i.pinimg.com/originals/46/72/f8/4672f876389036583190d93a71aa6cb2.jpg"} alt="prof"/></label>
                             </div>
                         </div>
                         <h3>Choose any of the roles below: </h3>
