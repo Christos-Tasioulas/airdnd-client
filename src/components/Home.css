@@ -19,8 +19,7 @@
     flex-direction: column;
     height: 22%;
     width: 100%;
-    margin-top: -600px;
-    margin-bottom: 100px;
+    /* margin-top: -700px; */
 }
 
 .App-home-form-details {
@@ -151,3 +150,14 @@
     font-size: large; 
     margin-top: 35px;
 }
+
+.App-home-search-results {
+    height: 80%;
+}
+
+.App-home-template-result {
+    height: 30%;
+    width: 90%;
+    padding: auto;
+    margin-top: auto;
+} 

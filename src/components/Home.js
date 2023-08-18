@@ -14,6 +14,7 @@ export default function Home(props) {
     const [isAnonymous, setIsAnonymous] = useState(true)
 
     const [hasSearched, setHasSearched] = useState(false)
+    const [hasSearchedOnce, setHasSearchedOnce] = useState(false)
     const [searchResults, setSearchResults] = useState([])
 
     useEffect(() => {
@@ -164,10 +165,21 @@ export default function Home(props) {
     }
 
     function handleSubmit(event) {
+        
         event.preventDefault();
 
         // Update the hasSearched state for each condition
         setHasSearched(
+            formData.city !== "" ||
+            formData.country !== "" ||
+            formData.neighborhood !== "" ||
+            formData.checkInDate !== null ||
+            formData.checkOutDate !== null ||
+            formData.numPeople !== ""
+        );
+
+        // Update the hasSearched state for each condition
+        setHasSearchedOnce(
             formData.city !== "" ||
             formData.country !== "" ||
             formData.neighborhood !== "" ||
@@ -195,9 +207,7 @@ export default function Home(props) {
                 }
             }
 
-            console.log(searchParams.toString())
-
-            const url = `http://localhost:5000/searchListings?${searchParams.toString()}`;
+            const url = `http://localhost:5000/listing/searchListings?${searchParams.toString()}`;
 
             const searchOptions = {
                 method: 'GET',
@@ -218,11 +228,21 @@ export default function Home(props) {
                     console.error("Error:", error);
                 });
         }
+
+        setHasSearched(false)
     }, [hasSearched]);
 
     useEffect(() => {
         console.log(searchResults)
     }, [searchResults])
+
+
+    const resultElements = searchResults.map((searchResult) => (
+        <div key={searchResult.id} className='App-home-template-result'>
+            <h6>{searchResult.name}</h6>
+            <h6>{searchResult.description}</h6>
+        </div> 
+    ))
     
     return(
         <main className='App-home'>
@@ -254,6 +274,10 @@ export default function Home(props) {
                     </div>           
                 </div>
             </form>}
+            <br />
+            <div className='App-home-search-results'>
+                {hasSearchedOnce && resultElements}
+            </div>  
         </main>
     )
 }
