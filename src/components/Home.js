@@ -163,17 +163,64 @@ export default function Home(props) {
     }
 
     function handleSubmit(event) {
-        const {name, value, type, selected} = event.target
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            [name]: type === "date" ? selected : value
-        }))
+        // // We don't want to be redirected to the home page
+        // event.preventDefault()
+
+        // if (formData.city !== "" && formData.city !== user.city) {
+        //     setHasMadeChanges(true)  // na to orisoume an xreiazetai
+        //     setUser(prevUser => ({   // na orisoume ton user-fromSubmission
+        //         ...prevUser,
+        //         city: formData.city,
+        //     }))
+        // }
+
+        // if (formData.country !== "" && formData.country !== user.country) {
+        //     setHasMadeChanges(true)
+        //     setUser(prevUser => ({
+        //         ...prevUser,
+        //         country: formData.country,
+        //     }))
+        // }
+
+        // if (formData.neighborhood !== "" && formData.neighborhood !== user.neighborhood) {
+        //     setHasMadeChanges(true)
+        //     setUser(prevUser => ({
+        //         ...prevUser,
+        //         neighborhood: formData.neighborhood,
+        //     }))
+        // }
+
+        // if (formData.checkInDate !== "" && formData.checkInDate !== user.checkInDate) {
+        //     setHasMadeChanges(true)
+        //     setUser(prevUser => ({
+        //         ...prevUser,
+        //         checkInDate: formData.checkInDate,
+        //     }))
+        // }
+
+        // if (formData.checkOutDate !== "" && formData.checkOutDate !== user.checkOutDate) {
+        //     setHasMadeChanges(true)
+        //     setUser(prevUser => ({
+        //         ...prevUser,
+        //         checkOutDate: formData.checkOutDate,
+        //     }))
+        // }
+
+        // if (formData.numPeople !== "" && formData.numPeople !== user.numPeople) {
+        //     setHasMadeChanges(true)
+        //     setUser(prevUser => ({
+        //         ...prevUser,
+        //         numPeople: formData.numPeople,
+        //     }))
+        // }
+
+
     }
     
     return(
         <main className='App-home'>
             {isAdmin && <AdminHome token={props.token}/>}
-            {!isAdmin && (isTenant || isAnonymous) && <form on onSubmit={this.handleSubmit} className='App-home-form'>
+            {!isAdmin && (isTenant || isAnonymous) && <form onSubmit={this.handleSubmit} className='App-home-form'>
                 <div className='App-home-form-details'>
                     <div className='App-home-form-location'>
                         <h3>Location</h3>
