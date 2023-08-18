@@ -161,11 +161,19 @@ export default function Home(props) {
             [name]: type === "date" ? selected : value
         }))
     }
+
+    function handleSubmit(event) {
+        const {name, value, type, selected} = event.target
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: type === "date" ? selected : value
+        }))
+    }
     
     return(
         <main className='App-home'>
             {isAdmin && <AdminHome token={props.token}/>}
-            {!isAdmin && (isTenant || isAnonymous) && <form className='App-home-form'>
+            {!isAdmin && (isTenant || isAnonymous) && <form on onSubmit={this.handleSubmit} className='App-home-form'>
                 <div className='App-home-form-details'>
                     <div className='App-home-form-location'>
                         <h3>Location</h3>
@@ -185,6 +193,7 @@ export default function Home(props) {
                             <div className='App-home-form-text-inputs'>
                                 {textElements}
                             </div>
+                            <button type="submit">Submit</button>
                         </div>
                         <div className='App-home-form-submit'></div>
                     </div>           

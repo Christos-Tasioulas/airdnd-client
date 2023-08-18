@@ -111,9 +111,9 @@
     padding: 0px !important;
 }
 
-.react-datepicker-popper div div{
+/* .react-datepicker-popper div div{ */
     /* color: #484848 !important; */
-}
+/* } */
 
 .App-home-form-text-inputs {
     display: flex;
