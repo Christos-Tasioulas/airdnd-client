@@ -17,16 +17,16 @@
     box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
     display: flex;
     flex-direction: column;
-    height: 70%;
-    width: 90%;
-    margin-top: -40px;
+    height: 22%;
+    width: 100%;
+    margin-top: -600px;
     margin-bottom: 100px;
 }
 
 .App-home-form-details {
     display: flex;
     flex-direction: row;
-    height: 75%;
+    height: 100%;
 }
 
 .App-home-form-location {
@@ -37,12 +37,19 @@
     width: calc(100%/3);
 }
 
-.App-home-form-text {
+.App-home-form-other {
     width: calc(100%/3);
+    display: flex;
+    flex-direction: column;
+} 
+
+.App-home-form-text {
+    height: 50%;
+    width: 100%;
 } 
 
 .App-home-form-submit {
-    height: 25%;
+    height: 50%;
 }
 
 .App-home-form-location-inputs {
@@ -60,14 +67,14 @@
 .App-home-form-location-input {
     width: 80%;
     margin: 10px;
-    height: 40px;
+    height: 10px;
     display: block;
     border: none;
-    padding: 5px 10px;
-    font-size: large;
+    padding: 5px 5px;
+    font-size: medium;
     border-bottom: 1px solid #ff585d;
     outline: none;
-    margin-top: 30px;
+    /* margin-top: 10px; */
 }
 
 .App-home-form-date-inputs {
@@ -85,14 +92,27 @@
 .App-home-form-date-input {
     width: 80%;
     margin: 10px;
-    height: 40px;
+    height: 10px;
     display: block;
     border: none;
     padding: 5px 10px;
-    font-size: large;
+    font-size: medium;
     border-bottom: 1px solid #ff585d;
     outline: none;
-    margin-top: 30px;
+    /* margin-top: 30px; */
+}
+
+.react-datepicker-wrapper {
+    width: 80%;
+}
+
+.react-datepicker-popper div{
+    background: #f7b6b8 !important;
+    padding: 0px !important;
+}
+
+.react-datepicker-popper div div{
+    /* color: #484848 !important; */
 }
 
 .App-home-form-text-inputs {
@@ -110,12 +130,12 @@
 .App-home-form-text-input {
     width: 80%;
     margin: 10px;
-    height: 40px;
+    height: 10px;
     display: block;
     border: none;
     padding: 5px 10px;
-    font-size: large;
+    font-size: medium;
     border-bottom: 1px solid #ff585d;
     outline: none;
-    margin-top: 30px;
+    /* margin-top: 30px; */
 }

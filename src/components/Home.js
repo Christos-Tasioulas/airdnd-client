@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import AdminHome from './AdminHome';
+import "react-datepicker/dist/react-datepicker.css";
 import './Home.css';
 import TextInput from './TextInput';
+import DatePicker from "react-datepicker";
 
 export default function Home(props) {
 
@@ -64,12 +66,18 @@ export default function Home(props) {
 
     }, [props.token]) 
 
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = currentDate.getDate().toString().padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+
     const [formData, setFormData] = useState({
         neighborhood: "",
         city: "",
         country: "",
-        checkInDate: "",
-        checkOutDate: "",
+        checkInDate: currentDate,
+        checkOutDate: currentDate,
         numPeople: "",
     })
 
@@ -81,9 +89,9 @@ export default function Home(props) {
     ]
 
     const dateInputs = [
-        { id:4, type: "date", placeholder: "Check In", className:"App-home-form-date-input", name: "checkIn", value: formData.checkInDate},
-        { id:5, type: "date", placeholder: "Check Out", className: "App-home-form-date-input", name: "checkOut", value: formData.checkOutDate},
-    ]
+        { id: 4, placeholder: "Check In", name: "checkInDate", className: "App-home-form-date-input", selected: formData.checkInDate, minDate: new Date()},
+        { id: 5, placeholder: "Check Out", name: "checkOutDate", className: "App-home-form-date-input", selected: formData.checkOutDate, minDate: formData.checkInDate },
+      ];
 
     const textInputs = [
         { id:6, type: "text", placeholder: "Number Of Guests", className: "App-home-form-text-input", name: "numPeople", value: formData.numPeople},
@@ -101,18 +109,38 @@ export default function Home(props) {
         />
     ));
     
-    const dateElements = dateInputs.map(dateInput => (
-        <TextInput 
+    const MyContainer = ({ className, children }) => {
+        return (
+          <div style={{ padding: "16px", background: "#216ba5", color: "#fff" }}>
+            <div className={className}>
+              <div style={{ position: "relative" }}>{children}</div>
+            </div>
+          </div>
+        );
+    };
+
+    const dateElements = dateInputs.map((dateInput) => (
+        <DatePicker
             key={dateInput.id}
-            type={dateInput.type}
-            placeholder={dateInput.placeholder}
+            placeholderText={dateInput.placeholder}
             className={dateInput.className}
+            selected={dateInput.selected}
             name={dateInput.name}
-            value={dateInput.value}
-            onChange={(event) => handleChange(event)}
+            dateFormat="dd/MM/yyyy"
+            minDate={dateInput.minDate}
+            calendarContainer={MyContainer}
+            onChange={(date) => handleDateChange(dateInput.name, date)} // Use a separate handler for date changes
         />
     ));
-    
+
+    // Handler for date changes
+    function handleDateChange(name, date) {
+        setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: date, // Update the selected date
+        }));
+    }
+        
     const textElements = textInputs.map(textInput => (
         <TextInput 
             key={textInput.id}
@@ -127,14 +155,12 @@ export default function Home(props) {
 
     // This is where we change the formData members accordingly
     function handleChange(event) {
-        const {name, value, type, checked} = event.target
+        const {name, value, type, selected} = event.target
         setFormData(prevFormData => ({
             ...prevFormData,
-            [name]: type === "checkbox" ? checked : value
+            [name]: type === "date" ? selected : value
         }))
     }
-
-    console.log(formData)
     
     return(
         <main className='App-home'>
@@ -142,25 +168,27 @@ export default function Home(props) {
             {!isAdmin && (isTenant || isAnonymous) && <form className='App-home-form'>
                 <div className='App-home-form-details'>
                     <div className='App-home-form-location'>
-                        <h2>Location</h2>
+                        <h3>Location</h3>
                         <div className='App-home-form-location-inputs'>
                             {locationElements}
                         </div> 
                     </div>
                     <div className='App-home-form-date'>
-                        <h2>Check In/Out Dates</h2>
+                        <h3>Check In/Out Dates</h3>
                         <div className='App-home-form-date-inputs'>
                             {dateElements}
                         </div>
                     </div>
-                    <div className='App-home-form-text'>
-                        <h2>Number Of Guests</h2>
-                        <div className='App-home-form-text-inputs'>
-                            {textElements}
+                    <div className='App-home-form-other'>
+                        <div className='App-home-form-text'>
+                            <h3>Number Of Guests</h3>
+                            <div className='App-home-form-text-inputs'>
+                                {textElements}
+                            </div>
                         </div>
-                    </div>
+                        <div className='App-home-form-submit'></div>
+                    </div>           
                 </div>
-                <div className='App-home-form-submit'></div>
             </form>}
         </main>
     )
