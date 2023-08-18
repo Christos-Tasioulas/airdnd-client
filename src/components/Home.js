@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import './Home.css';
 import TextInput from './TextInput';
 import DatePicker from "react-datepicker";
+import dayjs from "dayjs";
 
 export default function Home(props) {
 
@@ -11,6 +12,9 @@ export default function Home(props) {
     const [isLandlord, setIsLandlord] = useState(false)
     const [isTenant, setIsTenant] = useState(false)
     const [isAnonymous, setIsAnonymous] = useState(true)
+
+    const [hasSearched, setHasSearched] = useState(false)
+    const [searchResults, setSearchResults] = useState([])
 
     useEffect(() => {
 
@@ -54,8 +58,8 @@ export default function Home(props) {
                 setIsAnonymous(false)
             })
             .catch(error => {
-            console.error(error);
-            // Handle the error here, e.g., show an error message to the user
+                console.error(error);
+                // Handle the error here, e.g., show an error message to the user
             });
 
         })
@@ -64,13 +68,9 @@ export default function Home(props) {
             // Handle the error here, e.g., show an error message to the user
         });
 
-    }, [props.token]) 
+    }, [props.token])
 
     const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-    const day = currentDate.getDate().toString().padStart(2, '0');
-    const formattedDate = `${year}-${month}-${day}`;
 
     const [formData, setFormData] = useState({
         neighborhood: "",
@@ -151,7 +151,8 @@ export default function Home(props) {
             value={textInput.value}
             onChange={(event) => handleChange(event)}
         />
-    ));    
+    )); 
+        
 
     // This is where we change the formData members accordingly
     function handleChange(event) {
@@ -162,65 +163,68 @@ export default function Home(props) {
         }))
     }
 
+    // ...
+
     function handleSubmit(event) {
-        // // We don't want to be redirected to the home page
-        // event.preventDefault()
+        event.preventDefault();
 
-        // if (formData.city !== "" && formData.city !== user.city) {
-        //     setHasMadeChanges(true)  // na to orisoume an xreiazetai
-        //     setUser(prevUser => ({   // na orisoume ton user-fromSubmission
-        //         ...prevUser,
-        //         city: formData.city,
-        //     }))
-        // }
-
-        // if (formData.country !== "" && formData.country !== user.country) {
-        //     setHasMadeChanges(true)
-        //     setUser(prevUser => ({
-        //         ...prevUser,
-        //         country: formData.country,
-        //     }))
-        // }
-
-        // if (formData.neighborhood !== "" && formData.neighborhood !== user.neighborhood) {
-        //     setHasMadeChanges(true)
-        //     setUser(prevUser => ({
-        //         ...prevUser,
-        //         neighborhood: formData.neighborhood,
-        //     }))
-        // }
-
-        // if (formData.checkInDate !== "" && formData.checkInDate !== user.checkInDate) {
-        //     setHasMadeChanges(true)
-        //     setUser(prevUser => ({
-        //         ...prevUser,
-        //         checkInDate: formData.checkInDate,
-        //     }))
-        // }
-
-        // if (formData.checkOutDate !== "" && formData.checkOutDate !== user.checkOutDate) {
-        //     setHasMadeChanges(true)
-        //     setUser(prevUser => ({
-        //         ...prevUser,
-        //         checkOutDate: formData.checkOutDate,
-        //     }))
-        // }
-
-        // if (formData.numPeople !== "" && formData.numPeople !== user.numPeople) {
-        //     setHasMadeChanges(true)
-        //     setUser(prevUser => ({
-        //         ...prevUser,
-        //         numPeople: formData.numPeople,
-        //     }))
-        // }
-
-
+        // Update the hasSearched state for each condition
+        setHasSearched(
+            formData.city !== "" ||
+            formData.country !== "" ||
+            formData.neighborhood !== "" ||
+            formData.checkInDate !== null ||
+            formData.checkOutDate !== null ||
+            formData.numPeople !== ""
+        );
     }
+
+    // Use the useEffect hook to trigger the search when hasSearched changes
+    useEffect(() => {
+        if (hasSearched) {
+            // Construct the URL and perform the search
+            const formDataCopy = { ...formData };
+            const countryParam = encodeURIComponent(formDataCopy.country);
+            const cityParam = encodeURIComponent(formDataCopy.city);
+            const neighborhoodParam = encodeURIComponent(formDataCopy.neighborhood);
+            const checkInDateParam = encodeURIComponent(
+                dayjs(formDataCopy.checkInDate).format("YYYY/MM/DD")
+            );
+            const checkOutDateParam = encodeURIComponent(
+                dayjs(formDataCopy.checkOutDate).format("YYYY/MM/DD")
+            );
+            const numPeopleParam = encodeURIComponent(formDataCopy.numPeople);
+
+            const url = `http://localhost:5000/listing/searchListings/${countryParam}/${cityParam}/${neighborhoodParam}/${checkInDateParam}/${checkOutDateParam}/${numPeopleParam}`;
+
+            const searchOptions = {
+                method: 'GET',
+            };
+
+            fetch(url, searchOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Search failed");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    setSearchResults(data.results);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        }
+    }, [hasSearched]);
+
+    useEffect(() => {
+        console.log(searchResults)
+    }, [searchResults])
     
     return(
         <main className='App-home'>
             {isAdmin && <AdminHome token={props.token}/>}
-            {!isAdmin && (isTenant || isAnonymous) && <form onSubmit={this.handleSubmit} className='App-home-form'>
+            {!isAdmin && (isTenant || isAnonymous) && <form onSubmit={handleSubmit} className='App-home-form'>
                 <div className='App-home-form-details'>
                     <div className='App-home-form-location'>
                         <h3>Location</h3>
@@ -239,10 +243,11 @@ export default function Home(props) {
                             <h3>Number Of Guests</h3>
                             <div className='App-home-form-text-inputs'>
                                 {textElements}
-                            </div>
-                            <button type="submit">Submit</button>
+                            </div> 
                         </div>
-                        <div className='App-home-form-submit'></div>
+                        <div className='App-home-form-submit-container'>
+                            <button className='App-home-form-submit-button'>Search</button>
+                        </div>
                     </div>           
                 </div>
             </form>}

@@ -48,7 +48,7 @@
     width: 100%;
 } 
 
-.App-home-form-submit {
+.App-home-form-submit-container {
     height: 50%;
 }
 
@@ -138,4 +138,16 @@
     border-bottom: 1px solid #ff585d;
     outline: none;
     /* margin-top: 30px; */
+}
+
+.App-home-form-submit-button {
+    width: 40%;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    background-color: #ff585d;
+    border: none;   
+    cursor: pointer;
+    font-size: large; 
+    margin-top: 35px;
 }
