@@ -163,8 +163,6 @@ export default function Home(props) {
         }))
     }
 
-    // ...
-
     function handleSubmit(event) {
         event.preventDefault();
 
@@ -184,23 +182,28 @@ export default function Home(props) {
         if (hasSearched) {
             // Construct the URL and perform the search
             const formDataCopy = { ...formData };
-            const countryParam = encodeURIComponent(formDataCopy.country);
-            const cityParam = encodeURIComponent(formDataCopy.city);
-            const neighborhoodParam = encodeURIComponent(formDataCopy.neighborhood);
-            const checkInDateParam = encodeURIComponent(
-                dayjs(formDataCopy.checkInDate).format("YYYY/MM/DD")
-            );
-            const checkOutDateParam = encodeURIComponent(
-                dayjs(formDataCopy.checkOutDate).format("YYYY/MM/DD")
-            );
-            const numPeopleParam = encodeURIComponent(formDataCopy.numPeople);
 
-            const url = `http://localhost:5000/listing/searchListings/${countryParam}/${cityParam}/${neighborhoodParam}/${checkInDateParam}/${checkOutDateParam}/${numPeopleParam}`;
+            const searchParams = new URLSearchParams();
+
+            formDataCopy.checkInDate = dayjs(formDataCopy.checkInDate).format("YYYY/MM/DD")
+            formDataCopy.checkOutDate = dayjs(formDataCopy.checkOutDate).format("YYYY/MM/DD")
+
+            for (const key in formDataCopy) {
+                if (formDataCopy.hasOwnProperty(key) && (formDataCopy[key] !== "" || formDataCopy[key] !== null)) {
+                    console.log(formDataCopy[key])
+                    searchParams.append(key, formDataCopy[key]);
+                }
+            }
+
+            console.log(searchParams.toString())
+
+            const url = `http://localhost:5000/searchListings?${searchParams.toString()}`;
 
             const searchOptions = {
                 method: 'GET',
             };
 
+            // Search works only if all fields are filled
             fetch(url, searchOptions)
                 .then(response => {
                     if (!response.ok) {
