@@ -10,6 +10,7 @@ export default function UserInfo() {
 
     // State variable with the current user
     const [user, setUser] = useState({})
+    const [isAdmin, setIsAdmin] = useState(false)
 
     // Getting the current user from the server app updating the state
     useEffect(() => {
@@ -41,6 +42,7 @@ export default function UserInfo() {
                 return decodeResponse.json();
             })
             .then(decodeData => {
+                setIsAdmin(decodeData.isAdmin)
                 if(decodeData.isAdmin) {
                     fetch(`http://localhost:5000/user/getUserById/${id}`)
                         .then((response) => response.json())
@@ -199,7 +201,7 @@ export default function UserInfo() {
                         {user.isTenant && <div className='App-profile-tenant'>
                             <h3>Tenant Info</h3>
                         </div>}
-                        {user.isLandlord && <form className='App-approve-user' onSubmit={handleSubmit}>
+                        {isAdmin && user.isLandlord && <form className='App-approve-user' onSubmit={handleSubmit}>
                             {/* User Approval form using radio buttons because we can only choose one of them */}
                             <h3>Approved to be landlord?</h3>
                             <div className='App-approval-radios'>
