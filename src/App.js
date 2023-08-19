@@ -13,6 +13,7 @@ import Contact from './components/Contact';
 import Profile from './components/Profile';
 import Logout from './components/Logout';
 import EditProfile from './components/EditProfile';
+import PlaceInfo from './components/PlaceInfo';
 import UserInfo from './components/UserInfo';
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
             <Route path="/profile" element={<Profile token={jsonWebToken}/>}/>
             <Route path="/logout" element={<Logout />}/>
             <Route path="/editprofile" element={<EditProfile token={jsonWebToken}/>}/>
+            <Route path="/placeinfo/:id" element={<PlaceInfo token={jsonWebToken}/>}/>
             <Route path="/userinfo/:id" element={<UserInfo />} />
           </Routes>
         </div>

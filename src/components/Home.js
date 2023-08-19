@@ -5,6 +5,7 @@ import './Home.css';
 import TextInput from './TextInput';
 import DatePicker from "react-datepicker";
 import dayjs from "dayjs";
+import LandlordHome from "./LandlordHome";
 
 export default function Home(props) {
 
@@ -189,6 +190,7 @@ export default function Home(props) {
         );
     }
 
+    // Bugfix so that the search button works at the first search submission
     // Use the useEffect hook to trigger the search when hasSearched changes
     useEffect(() => {
         if (hasSearched) {
@@ -229,6 +231,7 @@ export default function Home(props) {
                 });
         }
 
+        // Bugfix so that search works continuously
         setHasSearched(false)
     }, [hasSearched]);
 
@@ -247,37 +250,39 @@ export default function Home(props) {
     return(
         <main className='App-home'>
             {isAdmin && <AdminHome token={props.token}/>}
-            {!isAdmin && (isTenant || isAnonymous) && <form onSubmit={handleSubmit} className='App-home-form'>
-                <div className='App-home-form-details'>
-                    <div className='App-home-form-location'>
-                        <h3>Location</h3>
-                        <div className='App-home-form-location-inputs'>
-                            {locationElements}
-                        </div> 
-                    </div>
-                    <div className='App-home-form-date'>
-                        <h3>Check In/Out Dates</h3>
-                        <div className='App-home-form-date-inputs'>
-                            {dateElements}
-                        </div>
-                    </div>
-                    <div className='App-home-form-other'>
-                        <div className='App-home-form-text'>
-                            <h3>Number Of Guests</h3>
-                            <div className='App-home-form-text-inputs'>
-                                {textElements}
+            {!isAdmin && (isTenant || isAnonymous) && <div className='App-tenant-home'>
+                <form onSubmit={handleSubmit} className='App-home-form'>
+                    <div className='App-home-form-details'>
+                        <div className='App-home-form-location'>
+                            <h3>Location</h3>
+                            <div className='App-home-form-location-inputs'>
+                                {locationElements}
                             </div> 
                         </div>
-                        <div className='App-home-form-submit-container'>
-                            <button className='App-home-form-submit-button'>Search</button>
+                        <div className='App-home-form-date'>
+                            <h3>Check In/Out Dates</h3>
+                            <div className='App-home-form-date-inputs'>
+                                {dateElements}
+                            </div>
                         </div>
-                    </div>           
-                </div>
-            </form>}
-            <br />
-            <div className='App-home-search-results'>
-                {hasSearchedOnce && resultElements}
-            </div>  
+                        <div className='App-home-form-other'>
+                            <div className='App-home-form-text'>
+                                <h3>Number Of Guests</h3>
+                                <div className='App-home-form-text-inputs'>
+                                    {textElements}
+                                </div> 
+                            </div>
+                            <div className='App-home-form-submit-container'>
+                                <button className='App-home-form-submit-button'>Search</button>
+                            </div>
+                        </div>           
+                    </div>
+                </form>
+                <div className='App-home-search-results'>
+                    {hasSearchedOnce && resultElements}
+                </div>  
+            </div>}
+            {!isAdmin && !isTenant && isLandlord && <LandlordHome token={props.token}/>}
         </main>
     )
 }
