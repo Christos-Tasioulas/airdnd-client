@@ -74,13 +74,13 @@ export default function PlaceInfo() {
                     </div>
                 </Link>
                 <br/><br/>
-                <div className='App-place-info'>
+                <div className='App-place-info-container'>
                     <div className='App-place-visuals'>
                         <div className='App-place-photos'></div>
                         <div className='App-place-map'></div>
                     </div>
                     <div className='App-place-text-info'>
-                        
+
                     </div>
                 </div>
             </div>
