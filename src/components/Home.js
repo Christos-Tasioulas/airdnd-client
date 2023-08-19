@@ -235,11 +235,6 @@ export default function Home(props) {
         setHasSearched(false)
     }, [hasSearched]);
 
-    useEffect(() => {
-        console.log(searchResults)
-    }, [searchResults])
-
-
     const resultElements = searchResults.map((searchResult) => (
         <div key={searchResult.id} className='App-home-template-result'>
             <h6>{searchResult.name}</h6>

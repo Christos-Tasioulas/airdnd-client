@@ -16,8 +16,9 @@ export default function PlaceInfo() {
     const [isTheLandlord, setIsTheLandlord] = useState(false)
     const [isTenant, setIsTenant] = useState(true)
     const [theLandlord, setTheLandlord] = useState({})
+    const [isVerified, setIsVerified] = useState(false)
 
-    // Getting the current user from the server app updating the state
+    // Getting the current place from the server app updating the state
     useEffect(() => {
         fetch('http://localhost:5000/user/validateToken', {
             method: 'GET',
@@ -59,14 +60,8 @@ export default function PlaceInfo() {
                         .then((data) => setLandlordPlaces(data.message))
                 }
 
-                fetch(`http://localhost:5000/listing/getListingById/${id}`)
-                        .then((response) => response.json())
-                        .then((data) => setPlace(data.message))
-                        .then(() => {
-                            fetch(`http://localhost:5000/user/getUserById/${place.userId}`)
-                            .then((response) => response.json())
-                            .then((data) => setTheLandlord(data.message))
-                        })
+                setIsVerified(true)
+                
             })
             .catch(error => {
                 console.error(error);
@@ -78,6 +73,32 @@ export default function PlaceInfo() {
         
     }, [id, token])
 
+
+    // Another Bugfix that returns the landlords data for the verified users
+    useEffect(() => {
+        if(isVerified) {
+            fetch(`http://localhost:5000/listing/getListingById/${id}`)
+            .then((response) => response.json())
+            .then((data) => {
+                setPlace(data.message);
+    
+                // Now that the place state is updated, fetch the landlord's details
+                fetch(`http://localhost:5000/user/getUserById/${data.message.userId}`)
+                    .then((response) => response.json())
+                    .then((data) => setTheLandlord(data.message))
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        }
+        
+    }, [id, isVerified]);
+
+
+    // Bugfix that controls whether the user is the landlord
     useEffect(() => {
 
         for (const placeItem of landlordPlaces) {
@@ -88,6 +109,7 @@ export default function PlaceInfo() {
         }
 
     }, [id, landlordPlaces]);
+    
 
     return (
         <main className='App-place-container'>
@@ -105,8 +127,11 @@ export default function PlaceInfo() {
                 <br/><br/>
                 <div className='App-place-info-container'>
                     <div className='App-place-visuals'>
-                        <div className='App-place-photos'></div>
+                        <div className='App-place-photos'>
+                            <span>{place.photos}</span>
+                        </div>
                         <div className='App-place-map'></div>
+                            <span>{place.map}</span>
                     </div>
                     <div className='App-place-text-info'>
                         <h2>{place.name}</h2>
@@ -118,30 +143,40 @@ export default function PlaceInfo() {
                         </div>
                         <br></br>
                         <h3>{place.spaceType}</h3>{isTenant && !isTheLandlord && <h3>Host: {theLandlord.firstname} {theLandlord.lastname}</h3>}
-                        <h3>Host: {theLandlord.firstname} {theLandlord.lastname}</h3>
-                        <span>{place.address} • </span>
-                        <span>{place.photos} • </span>
-                        <span>{place.houseRules} • </span>
-                        <span>{place.minimumLengthStay} • </span>
-                        <span>{place.checkIn} • </span>
-                        <span>{place.checkOut} • </span>
-                        <span>{place.maxGuests} • </span>
-                        <span>{place.bedsNumber} •</span>
-                        <span>{place.bathroomsNumber} • </span>
-                        <span>{place.bedroomsNumber} • </span>
-                        <span>{place.squareMeters} • </span>
-                        <span>{place.amenities} • </span>
-                        <span>{place.spaceType} • </span>
-                        <span>{place.minPrice} • </span>
-                        <span>{place.dailyPrice} • </span>
-                        <span>{place.map} • </span>
-                        <span>{place.transit} • </span>
-                        <span>{place.reviewCount} • </span>
-                        <span>{place.reviewAvg} • </span>
-                        <span>{place.hasLivingRoom} • </span>
-                        <span>{place.description} • </span>
-                        <span>{place.isBooked}</span>
+                        <div>
+                            <span>{place.maxGuests} Guests • </span>
+                            <span>{place.bedroomsNumber} Bedrooms • </span>
+                            <span>{place.bedsNumber} Beds • </span>
+                            <span>{place.bathroomsNumber} Bathrooms</span>
+                        </div>
+                            {place.hasLivingRoom ? <span>Has Living Room • </span> : <span>Does Not Have A Living Room • </span>}  
+                            <span>{place.squareMeters} sq.m.</span>
+                        <div>
+                            
+                        </div>
+                        <div>
+                            <span>{place.description}</span>
+                        </div>
 
+                        {/* Template for all fields */}
+                        <span>{place.address}</span>
+                        <div>
+                            <span>{place.minimumLengthStay} • </span>
+                            <span>{place.checkIn} • </span>
+                            <span>{place.checkOut}</span>
+                        </div>
+
+                        {place.amenities !== "" ? <span>{place.amenities} • </span> : <span>No Amenities • </span>}
+
+                        {place.houseRules !== "" ? <span>{place.houseRules}</span> : <span>No House Rules</span>}
+
+                        <div>
+                            <span>{place.minPrice}$ • </span>
+                            <span>{place.dailyPrice}$</span>
+                        </div>
+
+                        <span>{place.transit} • </span>
+                        {place.isBooked ? <span>Is Booked</span> : <span>Is Not Booked</span>}
                     </div>
                 </div>
             </div>
