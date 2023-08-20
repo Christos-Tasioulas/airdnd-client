@@ -126,57 +126,79 @@ export default function PlaceInfo() {
                 </Link>}
                 <br/><br/>
                 <div className='App-place-info-container'>
-                    <div className='App-place-visuals'>
-                        <div className='App-place-photos'>
-                            <span>{place.photos}</span>
-                        </div>
-                        <div className='App-place-map'></div>
-                            <span>{place.map}</span>
+                    <h2>{place.name}</h2>
+                    <div className='App-place-stats'>
+                        <img src="https://static.vecteezy.com/system/resources/previews/001/189/080/original/star-png.png" alt="star" className="App-star"/>
+                        <span>{place.reviewAvg} • </span>
+                        <span><u>{place.reviewCount} <b>Reviews</b></u> • </span>
+                        <span><u>{place.neighborhood} {place.city}, {place.country}</u> • </span>
+                        {isTheLandlord && place.isBooked ? <span>Booked</span> : <span>Not Booked</span>}
                     </div>
-                    <div className='App-place-text-info'>
-                        <h2>{place.name}</h2>
-                        <div>
-                            <img src="https://static.vecteezy.com/system/resources/previews/001/189/080/original/star-png.png" alt="star" className="App-star"/>
-                            <span>{place.reviewAvg} • </span>
-                            <span><u>{place.reviewCount} <b>Reviews</b></u> • </span>
-                            <span><u>{place.neighborhood} {place.city}, {place.country}</u></span>
+                    <div className='App-place-photos'>
+                        <span>{place.photos}</span>
+                    </div>
+                    <div className='App-place-first-mini-container'>
+                        <div className='App-place-basic-info'>
+                            <div className='App-place-type-and-host'>
+                                <h3>{place.spaceType}</h3>{isTenant && !isTheLandlord && <h3>Host: {theLandlord.firstname} {theLandlord.lastname}</h3>}
+                            </div>
+                            <div className='App-place-guests-and-rooms'>
+                                <span>{place.maxGuests} Guests • </span>
+                                <span>{place.bedroomsNumber} Bedrooms • </span>
+                                <span>{place.bedsNumber} Beds • </span>
+                                <span>{place.bathroomsNumber} Bathrooms</span>
+                            </div>
                         </div>
-                        <br></br>
-                        <h3>{place.spaceType}</h3>{isTenant && !isTheLandlord && <h3>Host: {theLandlord.firstname} {theLandlord.lastname}</h3>}
-                        <div>
-                            <span>{place.maxGuests} Guests • </span>
-                            <span>{place.bedroomsNumber} Bedrooms • </span>
-                            <span>{place.bedsNumber} Beds • </span>
-                            <span>{place.bathroomsNumber} Bathrooms</span>
+                        <div className='App-place-reservation'>
+                            <div className='App-place-price'>
+                                <div className='App-place-daily-price'>
+                                    <h2>{place.dailyPrice}$/night</h2>
+                                </div>
+                                <div className='App-place-min-price'>
+                                    <h4>Minimum price: {place.minPrice}$</h4>
+                                </div>
+                            </div>
                         </div>
-                            {place.hasLivingRoom ? <span>Has Living Room • </span> : <span>Does Not Have A Living Room • </span>}  
+                    </div>
+                    
+                    <div className='App-place-description'>
+                        <h3>Description</h3>
+                        <span>{place.description}</span>
+                    </div>
+                    <div className='App-place-second-mini-container'>
+                        <div className='App-place-additional-space-info'>
+                            {place.hasLivingRoom ? <span>Has Living Room</span> : <span>Does Not Have A Living Room</span>}
+                            <br/>  
                             <span>{place.squareMeters} sq.m.</span>
-                        <div>
-                            
                         </div>
-                        <div>
-                            <span>{place.description}</span>
+                        <div className='App-place-time-info'>
+                            <div className='App-place-days-available'>
+                                <h4>Days Available: {place.minimumLengthStay}</h4>
+                            </div>
+                            <div className='App-place-check-in-check-out'>
+                                <div className='App-place-check-in'>
+                                    <h4>Available from:</h4>
+                                    <span>{place.checkIn}</span>
+                                </div>
+                                <div className='App-place-check-out'>
+                                    <h4>Available until:</h4>
+                                    <span>{place.checkOut}</span>
+                                </div>
+                            </div>
                         </div>
-
-                        {/* Template for all fields */}
-                        <span>{place.address}</span>
-                        <div>
-                            <span>{place.minimumLengthStay} • </span>
-                            <span>{place.checkIn} • </span>
-                            <span>{place.checkOut}</span>
+                    </div>
+                    <div className='App-place-third-mini-container'>
+                        <div className='App-place-amenities'>
+                            {place.amenities !== "" ? <span>{place.amenities} • </span> : <span>No Amenities</span>}
                         </div>
-
-                        {place.amenities !== "" ? <span>{place.amenities} • </span> : <span>No Amenities • </span>}
-
-                        {place.houseRules !== "" ? <span>{place.houseRules}</span> : <span>No House Rules</span>}
-
-                        <div>
-                            <span>{place.minPrice}$ • </span>
-                            <span>{place.dailyPrice}$</span>
+                        <div className='App-place-rules'>
+                            {place.houseRules !== "" ? <span>{place.houseRules}</span> : <span>No House Rules</span>}
                         </div>
-
-                        <span>{place.transit} • </span>
-                        {place.isBooked ? <span>Is Booked</span> : <span>Is Not Booked</span>}
+                    </div>
+                    <div className='App-place-location'>
+                        <h5 className='App-place-address'>{place.address}</h5>
+                        <h6 className='App-place-transit'>{place.transit}</h6>
+                        <span>{place.map}</span>
                     </div>
                 </div>
             </div>

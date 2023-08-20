@@ -167,4 +167,31 @@
     width: 90%;
     padding: auto;
     margin-top: auto;
-} 
+}
+
+.App-landlord-home {
+    background-color: white;
+    width: 80%;
+    padding: 50px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
+    margin-top: 50px;
+    /* margin-bottom: 100px; */
+    margin-left: 7.52%; 
+    height: 80%;
+}
+
+.App-place-info td{
+    border: 1px solid #484848;
+    padding: 15px;
+    text-decoration: none
+}
+
+.App-place-info:hover{
+    background-color: #ff585d;
+    color: white;
+    cursor: pointer;
+}

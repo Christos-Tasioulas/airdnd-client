@@ -20,33 +20,7 @@
 }
 
 .App-body {
-  height: 90vh;
-}
-
-.App-landlord-home {
-  background-color: white;
-  width: 90%;
-  padding: 50px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
-  margin-top: 15px;
-  margin-bottom: 100px;
-  height: 70%;
-}
-
-.App-place-info td{
-  border: 1px solid #484848;
-  padding: 15px;
-  text-decoration: none
-}
-
-.App-place-info:hover{
-  background-color: #ff585d;
-  color: white;
-  cursor: pointer;
+  /* height: 90vh; */
 }
 
 .App-approve-user {
@@ -106,8 +80,16 @@
   font-size: large; 
 }
 
+.App-about {
+  height: 100vh;
+}
+
 .App-about p {
   font-size: large;
+}
+
+.App-contact {
+  height: 100vh;
 }
 
 .App-contact h4 {

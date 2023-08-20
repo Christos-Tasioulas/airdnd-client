@@ -1,5 +1,5 @@
 .App-profile-container {
-    height: 100vh;
+    height: 100%;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -16,8 +16,8 @@
     flex-direction: column;
     align-items: center;
     box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
-    margin-top: -30px;
-    margin-bottom: 100px;
+    margin: 30px;
+    height: 100%;
 }
 
  .App-profile-edit-cog img {
