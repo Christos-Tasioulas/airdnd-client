@@ -1,0 +1,17 @@
+.App-edit-place-container {
+    height: 100vh;
+    padding: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.App-edit-place-container .App-signup-form {
+    height: 48em;
+}
+
+.App-edit-place-container .App-signup-form-inputs {
+    height: 40em;
+}

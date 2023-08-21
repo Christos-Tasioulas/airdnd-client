@@ -17,6 +17,8 @@ export default function PlaceInfo() {
     const [isTenant, setIsTenant] = useState(true)
     const [theLandlord, setTheLandlord] = useState({})
     const [isVerified, setIsVerified] = useState(false)
+    const [transitElements, setTransitElements] = useState(null)
+    const [placeId, setPlaceId] = useState(null)
 
     // Getting the current place from the server app updating the state
     useEffect(() => {
@@ -73,7 +75,6 @@ export default function PlaceInfo() {
         
     }, [id, token])
 
-
     // Another Bugfix that returns the landlords data for the verified users
     useEffect(() => {
         if(isVerified) {
@@ -81,6 +82,10 @@ export default function PlaceInfo() {
             .then((response) => response.json())
             .then((data) => {
                 setPlace(data.message);
+
+                setTransitElements(data.message.transit.map((transit, index) => (
+                    <span key={index}>{transit} </span>
+                )))
     
                 // Now that the place state is updated, fetch the landlord's details
                 fetch(`http://localhost:5000/user/getUserById/${data.message.userId}`)
@@ -109,12 +114,20 @@ export default function PlaceInfo() {
         }
 
     }, [id, landlordPlaces]);
+
+    // Small Bugfix
+    useEffect(() => {
+        if(place)
+        {
+            setPlaceId(place.id);
+        }
+    }, [place])
     
 
     return (
         <main className='App-place-container'>
             <div className='App-place'>
-                {isTheLandlord && <Link to='/' style={{position: "relative", left: "35%"}}>
+                {isTheLandlord && <Link to='/editplace' state={{ id: placeId }}  style={{position: "relative", left: "35%"}}>
                     <div className="App-profile-edit">
                         <div className="App-profile-edit-button">
                             <div className="App-profile-edit-cog">
@@ -154,8 +167,8 @@ export default function PlaceInfo() {
                                 <div className='App-place-daily-price'>
                                     <h2>{place.dailyPrice}$/night</h2>
                                 </div>
-                                <div className='App-place-min-price'>
-                                    <h4>Minimum price: {place.minPrice}$</h4>
+                                <div className='App-place-additional-price'>
+                                    <h4>Additional per person: {place.additionalPrice}$/person</h4>
                                 </div>
                             </div>
                         </div>
@@ -173,7 +186,7 @@ export default function PlaceInfo() {
                         </div>
                         <div className='App-place-time-info'>
                             <div className='App-place-days-available'>
-                                <h4>Days Available: {place.minimumLengthStay}</h4>
+                                <h4>Max Stay Per Booking: {place.minimumLengthStay} days</h4>
                             </div>
                             <div className='App-place-check-in-check-out'>
                                 <div className='App-place-check-in'>
@@ -189,15 +202,15 @@ export default function PlaceInfo() {
                     </div>
                     <div className='App-place-third-mini-container'>
                         <div className='App-place-amenities'>
-                            {place.amenities !== "" ? <span>{place.amenities} • </span> : <span>No Amenities</span>}
+                            {place.amenities !== [] ? <span>{place.amenities}</span> : <span>No Amenities</span>}
                         </div>
                         <div className='App-place-rules'>
-                            {place.houseRules !== "" ? <span>{place.houseRules}</span> : <span>No House Rules</span>}
+                            {place.houseRules !== [] ? <span>{place.houseRules}</span> : <span>No House Rules</span>}
                         </div>
                     </div>
                     <div className='App-place-location'>
                         <h5 className='App-place-address'>{place.address}</h5>
-                        <h6 className='App-place-transit'>{place.transit}</h6>
+                        <h6 className='App-place-transit'>{transitElements}</h6>
                         <span>{place.map}</span>
                     </div>
                 </div>

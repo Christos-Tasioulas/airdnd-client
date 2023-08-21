@@ -71,8 +71,6 @@ export default function Signup(props) {
             ...prevFormData,
             [name]: type === "checkbox" ? checked : value
         }))
-
-        console.log(formData.image)
     }
 
     // Registration process begins and ends here
