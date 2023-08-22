@@ -1,5 +1,5 @@
 .App-edit-place-container {
-    height: 100vh;
+    height: 125vh;
     padding: 20px;
     padding: 20px;
     display: flex;
@@ -8,10 +8,89 @@
     align-items: center;
 }
 
-.App-edit-place-container .App-signup-form {
-    height: 48em;
+.App-edit-place-form {
+    background-color: white;
+    width: 60%;
+    padding: 50px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
+    /* height: 50em; */
 }
 
-.App-edit-place-container .App-signup-form-inputs {
-    height: 40em;
+.App-edit-place-text-inputs {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    float: left;
+    box-sizing: border-box;
+    padding: 40px;
+    width: 50%;
+    height: 41em;
+    top:0;
+    left:0;
+}
+
+.App-edit-place-photos {
+    height: 45%;
+}
+
+.App-edit-place-date-inputs {
+    display: flex;
+    flex-direction: row;
+    height: 40%;
+}
+
+.date-picker-container {
+    position: relative;
+}
+
+.react-datepicker-popper {
+    position: absolute;
+    top: 100%; /* Position the popper below the input */
+    left: 0;
+}
+
+.App-edit-place-check-in-check-out {
+    /* margin: 5px; */
+    margin-right: 5px;
+    width: 80%;
+    height: 10px;
+    display: block;
+    border: none;
+    padding: 5px 10px;
+    font-size: medium;
+    border-bottom: 1px solid #ff585d;
+    outline: none;
+}
+
+.App-edit-place-checkbox {
+    margin: auto;
+    /* width: 30%; */
+    font-size: larger;
+    font-weight: 500;
+    color: #484848;
+}
+
+.App-signup-form-checkboxes {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+}
+
+.App-signup-form-checkbox {
+    margin-right: 8px;
+}
+
+.App-edit-place-list-inputs {
+    display: flex;
+    flex-direction: row;
+    height: 30vh;
+    width: 100%;
+}
+
+.App-edit-place-submit {
+    height: 5vh;
 }

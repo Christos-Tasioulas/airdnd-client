@@ -59,7 +59,7 @@ export default function LandlordHome(props) {
     async function handleClick(event, place) {
         const id = place.id
 
-        navigate(`/placeinfo/${id}`, { state: { token: props.token } })
+        navigate(`/editplace/${id}`)
     }
     
     // This is every user row in the landlord table

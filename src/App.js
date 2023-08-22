@@ -54,7 +54,7 @@ function App() {
             <Route path="/logout" element={<Logout />}/>
             <Route path="/editprofile" element={<EditProfile token={jsonWebToken}/>}/>
             <Route path="/placeinfo/:id" element={<PlaceInfo token={jsonWebToken}/>}/>
-            <Route path="/editplace" element={<EditPlace token={jsonWebToken}/>}/>
+            <Route path="/editplace/:id" element={<EditPlace token={jsonWebToken}/>}/>
             <Route path="/userinfo/:id" element={<UserInfo />} />
           </Routes>
         </div>
