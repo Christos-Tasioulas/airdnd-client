@@ -25,10 +25,10 @@ export default function EditPlace(props) {
     const [formData, setFormData] = useState({
         name: "",
         address: "",
-        photos: [],
-        newPhoto: "",
-        houseRules: [],
-        newHouseRule: "",
+        // photos: [],
+        // newPhoto: "",
+        // houseRules: [],
+        // newHouseRule: "",
         minimumLengthStay: "",
         checkIn: currentDate,
         checkOut: currentDate,
@@ -37,13 +37,13 @@ export default function EditPlace(props) {
         bedroomsNumber: "",
         bathroomsNumber: "",
         squareMeters: "",
-        amenities: [],
-        newAmenity: "",
+        // amenities: [],
+        // newAmenity: "",
         spaceType: "",
         dailyPrice: "",
         additionalPrice: "",
-        transit: [],
-        newTransit: "",
+        // transit: [],
+        // newTransit: "",
         hasLivingRoom: "",
         description: ""
     })
@@ -52,20 +52,22 @@ export default function EditPlace(props) {
     const [place, setPlace] = useState({})
     const [landlordPlaces, setLandlordPlaces] = useState([])
     const [isTheLandlord, setIsTheLandlord] = useState(false)
-    const [theLandlord, setTheLandlord] = useState({})
     const [isVerified, setIsVerified] = useState(false)
     
-    const [amenitiesElements, setAmenitiesElements] = useState(null)
     const [amenitiesItems, setAmenitiesItems] = useState([])
-    
-    const [houseRulesElements, setHouseRulesElements] = useState(null)
+    const [newAmenitiesItem , setNewAmenitiesItem] = useState("")
+    const [amenitiesElements, setAmenitiesElements] = useState(null)
     const [houseRulesItems, setHouseRulesItems] = useState([])
-
-    const [photoElements, setPhotoElements] = useState(null)
+    const [newHouseRulesItem , setNewHouseRulesItem] = useState("")
+    const [houseRulesElements, setHouseRulesElements] = useState(null)
     const [photoItems, setPhotoItems] = useState([])
-
-    const [transitElements, setTransitElements] = useState(null)
+    const [newPhotoItem , setNewPhotoItem] = useState("")
+    const [photoElements, setPhotoElements] = useState(null)
     const [transitItems, setTransitItems] = useState([])
+    const [newTransitItem , setNewTransitItem] = useState("")
+    const [transitElements, setTransitElements] = useState(null)
+
+    // const [newItemValue, setNewItemValue] = useState("");
 
     useEffect(() => {
 
@@ -124,50 +126,22 @@ export default function EditPlace(props) {
 
     // Another Bugfix that returns the landlords data for the verified users
     useEffect(() => {
-        if(isVerified) {
+        if(isVerified && isTheLandlord) {
             fetch(`http://localhost:5000/listing/getListingById/${id}`)
             .then((response) => response.json())
             .then((data) => {
                 setPlace(data.message);
-
-                setAmenitiesItems(data.message.amenities)
-
-                setAmenitiesElements(data.message.amenities.map((amenity, index) => (
-                    <ListItem key={index} item={amenity} onRemove={() => handleRemoveItem(formData, "amenities", index)} />
-                )))
-
-                setHouseRulesItems(data.message.houseRules)
-                
-                setHouseRulesElements(data.message.houseRules.map((houseRule, index) => (
-                    <ListItem key={index} item={houseRule} onRemove={() => handleRemoveItem(formData, "houseRules", index)} />
-                )))
-    
-                setPhotoItems(data.message.photos)
-
-                setPhotoElements(data.message.photos.map((photo, index) => (
-                    <ListItem key={index} item={photo} onRemove={() => handleRemoveItem(formData, "photos", index)}/>
-                )))
-                
-                setTransitItems(data.message.transit)
-
-                setTransitElements(data.message.transit.map((transit, index) => (
-                    <ListItem key={index} item={transit} onRemove={() => handleRemoveItem(formData, "transit", index)}/>
-                )))
-    
-                // Now that the place state is updated, fetch the landlord's details
-                fetch(`http://localhost:5000/user/getUserById/${data.message.userId}`)
-                    .then((response) => response.json())
-                    .then((data) => setTheLandlord(data.message))
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                // setAmenitiesItems(data.message.amenities)
+                // setHouseRulesItems(data.message.houseRules)
+                // setPhotoItems(data.message.photos)
+                // setTransitItems(data.message.transit)
             })
             .catch((error) => {
                 console.log(error);
             });
         }
         
-    }, [id, isVerified]);
+    }, [id, isVerified, isTheLandlord]);
 
 
     // Bugfix that controls whether the user is the landlord
@@ -196,41 +170,52 @@ export default function EditPlace(props) {
                 transit: place.transit,
                 hasLivingRoom: place.hasLivingRoom
             }))
+
+            setAmenitiesItems(place.amenities)
+            setHouseRulesItems(place.houseRules)
+            setPhotoItems(place.photos)
+            setTransitItems(place.transit)
         }
     }, [place])
 
-    // useEffect(() => {
-    //     if(place) {
-
-    //         setFormData(prevFormData => ({
-    //             ...prevFormData,
-    //             amenities: amenitiesItems,
-    //             photos: photoItems,
-    //             houseRules: houseRulesItems,
-    //             transit: transitItems,
-    //         }))
-    //     }
-    // }, [photoItems, houseRulesItems, amenitiesItems, transitItems])
-
-    function handleAdd(formData, name, value) {
+    function handleAdd(name, value) {
         if (value.trim() !== '') {
-            const newName = 'new' + name.charAt(0).toUpperCase() + name.slice(1);
-            const formDataCopy = {
-                ...formData,
-                [name]: [...formData[name], value],
-                [newName]: '' 
+            if (name === 'amenities') {
+                setAmenitiesItems([...amenitiesItems, newAmenitiesItem])
+                setNewAmenitiesItem('')
             }
-
-            setFormData(formDataCopy)
+            else if (name === 'houseRules') {
+                setHouseRulesItems([...houseRulesItems, newHouseRulesItem])
+                setNewHouseRulesItem('')
+            }
+            else if (name === 'transit') {
+                setTransitItems([...transitItems, newTransitItem])
+                setNewTransitItem('')
+            }
+            else if (name === 'photos') {
+                setPhotoItems([...photoItems, newPhotoItem])
+                setNewPhotoItem('')
+            }
         }
     };
 
-    function handleRemoveItem(formData, name, index) {
-        const formDataCopy = {
-            ...formData,
-            [name]: formData[name].filter((_, i) => i !== index)
+    function handleRemoveItem(name, index) {
+        if (name === 'amenities') {
+            const updatedItems = amenitiesItems.filter((_, i) => i !== index);
+            setAmenitiesItems(updatedItems)
         }
-        setFormData(formDataCopy);
+        else if (name === 'houseRules') {
+            const updatedItems = houseRulesItems.filter((_, i) => i !== index);
+            setHouseRulesItems(updatedItems)
+        }
+        else if (name === 'transit') {
+            const updatedItems = transitItems.filter((_, i) => i !== index);
+            setTransitItems(updatedItems)
+        }
+        else if (name === 'photos') {
+            const updatedItems = transitItems.filter((_, i) => i !== index);
+            setPhotoItems(updatedItems)
+        }
     };
 
     const textInputs = [
@@ -253,9 +238,9 @@ export default function EditPlace(props) {
     ];
     
     const listInputs = [
-        {id:14, type: 'text', placeholder: 'Add Amenity', className: 'App-edit-profile-list-input', name: 'newAmenity', value: formData.newAmenity, title: 'Amenities', elements: amenitiesElements},
-        {id:15, type: 'text', placeholder: 'Add House Rule', className: 'App-edit-profile-list-input', name: 'newHouseRules', value: formData.newHouseRule, title: "House Rules", elements: houseRulesElements},
-        {id:16, type: 'text', placeholder: 'Add Transit', className: 'App-edit-profile-list-input', name: 'newTransit', value: formData.newTransit, title: 'Transit', elements: transitElements}
+        {id:14, type: 'text', placeholder: 'Add Amenity', className: 'App-edit-profile-list-input', name: 'amenities', value: newAmenitiesItem, title: 'Amenities', items: amenitiesItems, handleNewItemValue: setAmenitiesItems, elements: amenitiesElements},
+        {id:15, type: 'text', placeholder: 'Add House Rule', className: 'App-edit-profile-list-input', name: 'houseRules', value: formData.newHouseRulesItem, title: "House Rules", items: houseRulesItems, handleNewItemValue: setNewHouseRulesItem, elements: houseRulesElements},
+        {id:16, type: 'text', placeholder: 'Add Transit', className: 'App-edit-profile-list-input', name: 'transit', value: formData.newTransitItem, title: 'Transit', items: transitItems, handleNewItemValue: setNewTransitItem, elements: transitElements}
     ]
 
     // {id:13, type: 'text', placeholder: 'Change ', className: '', name: 'hasLivingRoom',value:}
@@ -315,6 +300,32 @@ export default function EditPlace(props) {
         console.log(formData)
     }
 
+    useEffect(() => {
+
+        if (amenitiesItems) {
+            
+            const updatedAmenitiesElements = amenitiesItems.map((item, index) => (
+                <ListItem key={index} item={item} onRemove={() => handleRemoveItem("amenities", index)} />
+            ))
+            setAmenitiesElements(updatedAmenitiesElements)
+        }
+            
+        if (houseRulesItems) {
+            const updatedHouseRulesElements = houseRulesItems.map((item, index) => (
+                <ListItem key={index} item={item} onRemove={() => handleRemoveItem("houseRules", index)} />
+            ))
+            setHouseRulesElements(updatedHouseRulesElements)
+        }
+                    
+        if (transitItems) {
+            const updatedTransitElements = transitItems.map((item, index) => (
+                <ListItem key={index} item={item} onRemove={() => handleRemoveItem("transit", index)} />
+            ))
+            setTransitElements(updatedTransitElements)
+        }
+            
+    }, [amenitiesItems, transitItems, houseRulesItems])
+
     const listInputElements = listInputs.map(listInput => (
         <div key={listInput.id} className={listInput.className}>
             <h2>{listInput.title}</h2>
@@ -324,11 +335,13 @@ export default function EditPlace(props) {
                     placeholder={listInput.placeholder}
                     name={listInput.name}
                     value={listInput.value}
-                    onChange={(event) => handleChange(event)}
+                    onChange={(event) => listInput.handleNewItemValue(event.target.value)}
                 />
             </div>
-            <button onClick={() => handleAdd(formData, listInput.name, listInput.value)}>Add</button>
-            <ul>{listInput.elements}</ul>
+            <button onClick={(event) => handleAdd(event.target.name, event.target.value)}>Add</button>
+            <ul>
+                {listInput.elements}
+            </ul>
         </div>
     ))
 
