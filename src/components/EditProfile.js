@@ -144,7 +144,7 @@ export default function EditProfile(props) {
         }))
     }
 
-    // Profile update process begins and ends here (Not ready yet)
+    // Profile update process begins and ends here
     function handleSubmit(event) {
 
         // We don't want to be redirected to the home page

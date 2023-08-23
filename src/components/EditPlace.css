@@ -1,5 +1,5 @@
 .App-edit-place-container {
-    height: 125vh;
+    height: 145vh;
     padding: 20px;
     padding: 20px;
     display: flex;
@@ -92,26 +92,117 @@
     /* display: flex; */
     /* flex-direction: row; */
     border: none;
-    border-bottom: 1px solid #ff585d;
+    /* border-bottom: 1px solid #ff585d; */
 }
 
 .App-edit-place-list-inputs {
     display: flex;
     flex-direction: row;
-    margin-left: 28%;
+    /* margin-left: 28%; */
     height: 30vh;
     width: 100%;
 }
 
-.App-edit-place-submit {
+
+.App-edit-place-list-input {
+    width: calc(100%/3);
+    margin: 5px;
+    
+}
+
+.App-edit-place-list-input ul {
+    padding-left: 0;
+}
+
+.App-edit-place-list-input li {
+    /* list-style-type: circle; */
+    list-style-type: none;
+    margin: 1px;
+}
+
+.App-edit-place-list-input-value {
+    display: flex;
+    flex-direction: row;
+}
+
+.App-edit-place-list-input span {
+    width: 50%;
+}
+
+.App-edit-place-list-input-remove {
+    width: 50%;
+}
+
+.App-edit-place-list-input-remove button {
+    width: 60%;
+    padding: 4px;
+    border-radius: 5px;
+    color: white;
+    background-color: #ff585d;
+    border: none;   
+    cursor: pointer;
+    font-size: small; 
+}
+
+.App-edit-place-list-input-add {
+    width: 30%;
+    padding: 4px;
+    border-radius: 5px;
+    color: white;
+    background-color: #484848;
+    border: none;   
+    cursor: pointer;
+    font-size: small; 
+}
+
+.App-edit-place-buttons {
     height: 5vh;
-    /* padding: 10px; */
+    width: 100%;
+    display: flex;
+    flex-direction: row;
 }
 
-.App-edit-profile-list-input {
-    margin-right: 15px;
+.App-edit-place-buttons-save {
+    width: 50%;
 }
 
-/* .App-edit-profile-list-inputs li {
-    margin-right: 200px;
-} */
+.App-edit-place-buttons-save button{
+    width: 50%;
+    height: 80%;
+    padding: 8px;
+    border-radius: 5px;
+    color: white;
+    background-color: #484848;
+    border: none;   
+    cursor: pointer;
+    font-size: medium; 
+}
+
+.App-edit-place-buttons-delete {
+    width: 50%;
+}
+
+.App-edit-place-buttons-delete button{
+    width: 50%;
+    height: 80%;
+    padding: 4px;
+    border-radius: 5px;
+    color: white;
+    background-color: #ff585d;
+    border: none;   
+    cursor: pointer;
+    font-size: medium; 
+}
+
+.App-edit-place-description {
+    width: 100%;
+    margin: 10px;
+    margin-bottom: 50px;
+    /* height: 100%; */
+    /* height: 6vh; */
+}
+
+.App-edit-place-description-text {
+    width: 80%;
+    padding: 40px;
+}

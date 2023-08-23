@@ -76,7 +76,7 @@ export default function Signup(props) {
     // Registration process begins and ends here
     async function handleSubmit(event) {
 
-        // We don't want to be redirected to the home page
+        // We don't want to be redirected to the home page AND re-rendering
         event.preventDefault();
         
         // Checking if any of the form fields is empty and showing the according message sorted by priority

@@ -4,31 +4,30 @@ import { useParams, useLocation, Link } from 'react-router-dom';
 import TextInput from './TextInput';
 // import ListForm from '../../../trash/trash-app/src/ListForm';
 import DatePicker from "react-datepicker";
+import dayjs from "dayjs";
 
 import './Signup.css' // We are reusing some css from the signup component
 import './Profile.css' // We are reusing some css from the profile component
 import './EditPlace.css' // Must be imported last so that overrides are accepted correctly
+import { response } from 'express';
 
-const ListItem = React.memo(({ item, onRemove }) => (
-    <li>
-        {item}
-        <button onClick={onRemove}>Remove</button>
+const ListItem = React.memo(({ key, item, onRemove }) => (
+    <li className='App-edit-place-list-input-value'>
+        <span>{item}</span>
+        <div className='App-edit-place-list-input-remove'>
+            <button onClick={onRemove}>Remove</button>
+        </div>
     </li>
 ));
 
 export default function EditPlace(props) {
-    
-    // const location = useLocation();
+
     const { id } = useParams()
     
     const currentDate = new Date();
     const [formData, setFormData] = useState({
         name: "",
         address: "",
-        // photos: [],
-        // newPhoto: "",
-        // houseRules: [],
-        // newHouseRule: "",
         minimumLengthStay: "",
         checkIn: currentDate,
         checkOut: currentDate,
@@ -37,14 +36,10 @@ export default function EditPlace(props) {
         bedroomsNumber: "",
         bathroomsNumber: "",
         squareMeters: "",
-        // amenities: [],
-        // newAmenity: "",
         spaceType: "",
         dailyPrice: "",
         additionalPrice: "",
-        // transit: [],
-        // newTransit: "",
-        hasLivingRoom: "",
+        hasLivingRoom: false,
         description: ""
     })
 
@@ -66,6 +61,8 @@ export default function EditPlace(props) {
     const [transitItems, setTransitItems] = useState([])
     const [newTransitItem , setNewTransitItem] = useState("")
     const [transitElements, setTransitElements] = useState(null)
+
+    const [hasMadeChanges, setHasMadeChanges] = useState(false)
 
     // const [newItemValue, setNewItemValue] = useState("");
 
@@ -178,7 +175,12 @@ export default function EditPlace(props) {
         }
     }, [place])
 
-    function handleAdd(name, value) {
+    function handleAdd(event, name, value) {
+        event.preventDefault(); // prevents re-rendering
+
+        // const { name, value } = event.target
+        console.log(value)
+
         if (value.trim() !== '') {
             if (name === 'amenities') {
                 setAmenitiesItems([...amenitiesItems, newAmenitiesItem])
@@ -199,7 +201,10 @@ export default function EditPlace(props) {
         }
     };
 
-    function handleRemoveItem(name, index) {
+    function handleRemoveItem(event, name, index) {
+
+        event.preventDefault(); // prevents re-rendering
+
         if (name === 'amenities') {
             const updatedItems = amenitiesItems.filter((_, i) => i !== index);
             setAmenitiesItems(updatedItems)
@@ -213,7 +218,7 @@ export default function EditPlace(props) {
             setTransitItems(updatedItems)
         }
         else if (name === 'photos') {
-            const updatedItems = transitItems.filter((_, i) => i !== index);
+            const updatedItems = photoItems.filter((_, i) => i !== index);
             setPhotoItems(updatedItems)
         }
     };
@@ -221,11 +226,11 @@ export default function EditPlace(props) {
     const textInputs = [
         {id:1, type: 'text', placeholder: 'Change Name', className: 'App-signup-form-input', name: 'name', value: formData.name},
         {id:2, type: 'text', placeholder: 'Change Address', className: 'App-signup-form-input', name: 'address', value: formData.address},
-        {id:3, type: 'text', placeholder: 'Change Minimum Length Of Stay', className:'App-signup-form-input', name:'minimumLengthStay', value: formData.minmmLengthStay},
-        {id:4, type: 'text', placeholder: 'Change Max Guests', className: 'App-signup-form-input', name: 'maxGuests', value: formData.maxGuests},
-        {id:5, type: 'text', placeholder: 'Change Number Of Beds', className: 'App-signup-form-input', name: 'bedsNumber', value: formData.bedsNumbe},
-        {id:6, type: 'text', placeholder: 'Change Number Of Bedrooms', className: 'App-signup-form-input', name: 'bedroomsNumber', value: formData.bedroomNmber},
-        {id:7, type: 'text', placeholder: 'Change Number Of Bathrooms', className: 'App-signup-form-input', name: 'bathroomsNumber', value: formData.btroomsNumber},
+        {id:3, type: 'text', placeholder: 'Change Minimum Length Of Stay', className:'App-signup-form-input', name:'minimumLengthStay', value: formData.minimumLengthStay},
+        {id:4, type: 'text', placeholder: 'Change Max Guests', className: 'App-signup-form-input', name: 'maxGuests', value: formData.maxGuests },
+        {id:5, type: 'text', placeholder: 'Change Number Of Beds', className: 'App-signup-form-input', name: 'bedsNumber', value: formData.bedsNumber },
+        {id:6, type: 'text', placeholder: 'Change Number Of Bedrooms', className: 'App-signup-form-input', name: 'bedroomsNumber', value: formData.bedroomsNumber },
+        {id:7, type: 'text', placeholder: 'Change Number Of Bathrooms', className: 'App-signup-form-input', name: 'bathroomsNumber', value: formData.bathroomsNumber },
         {id:8, type: 'text', placeholder: 'Change Area Of Space (in sq.m.)', className: 'App-signup-form-input', name: 'squareMeters', value: formData.squareMeters},
         {id:9, type: 'text', placeholder: 'Change Type Of Space', className: 'App-signup-form-input', name: 'spaceType', value: formData.spaceType},
         {id:10, type: 'text', placeholder: 'Change The Daily Price', className: 'App-signup-form-input', name: 'dailyPrice', value: formData.dailyPrice},
@@ -238,9 +243,9 @@ export default function EditPlace(props) {
     ];
     
     const listInputs = [
-        {id:14, type: 'text', placeholder: 'Add Amenity', className: 'App-edit-profile-list-input', name: 'amenities', value: newAmenitiesItem, title: 'Amenities', items: amenitiesItems, handleNewItemValue: setAmenitiesItems, elements: amenitiesElements},
-        {id:15, type: 'text', placeholder: 'Add House Rule', className: 'App-edit-profile-list-input', name: 'houseRules', value: formData.newHouseRulesItem, title: "House Rules", items: houseRulesItems, handleNewItemValue: setNewHouseRulesItem, elements: houseRulesElements},
-        {id:16, type: 'text', placeholder: 'Add Transit', className: 'App-edit-profile-list-input', name: 'transit', value: formData.newTransitItem, title: 'Transit', items: transitItems, handleNewItemValue: setNewTransitItem, elements: transitElements}
+        {id:14, type: 'text', placeholder: 'Add Amenity', className: 'App-edit-place-list-input', name: 'amenities', value: newAmenitiesItem, title: 'Amenities', items: amenitiesItems,  elements: amenitiesElements},
+        {id:15, type: 'text', placeholder: 'Add House Rule', className: 'App-edit-place-list-input', name: 'houseRules', value: newHouseRulesItem, title: "House Rules", items: houseRulesItems,  elements: houseRulesElements},
+        {id:16, type: 'text', placeholder: 'Add Transit', className: 'App-edit-place-list-input', name: 'transit', value: newTransitItem, title: 'Transit', items: transitItems,  elements: transitElements}
     ]
 
     // {id:13, type: 'text', placeholder: 'Change ', className: '', name: 'hasLivingRoom',value:}
@@ -296,8 +301,6 @@ export default function EditPlace(props) {
             ...prevFormData,
             [name]: date, // Update the selected date
         }));
-
-        console.log(formData)
     }
 
     useEffect(() => {
@@ -305,21 +308,21 @@ export default function EditPlace(props) {
         if (amenitiesItems) {
             
             const updatedAmenitiesElements = amenitiesItems.map((item, index) => (
-                <ListItem key={index} item={item} onRemove={() => handleRemoveItem("amenities", index)} />
+                <ListItem key={index} item={item} onRemove={(event) => handleRemoveItem(event, "amenities", index)} />
             ))
             setAmenitiesElements(updatedAmenitiesElements)
         }
             
         if (houseRulesItems) {
             const updatedHouseRulesElements = houseRulesItems.map((item, index) => (
-                <ListItem key={index} item={item} onRemove={() => handleRemoveItem("houseRules", index)} />
+                <ListItem key={index} item={item} onRemove={(event) => handleRemoveItem(event, "houseRules", index)} />
             ))
             setHouseRulesElements(updatedHouseRulesElements)
         }
                     
         if (transitItems) {
             const updatedTransitElements = transitItems.map((item, index) => (
-                <ListItem key={index} item={item} onRemove={() => handleRemoveItem("transit", index)} />
+                <ListItem key={index} item={item} onRemove={(event) => handleRemoveItem(event, "transit", index)} />
             ))
             setTransitElements(updatedTransitElements)
         }
@@ -335,15 +338,26 @@ export default function EditPlace(props) {
                     placeholder={listInput.placeholder}
                     name={listInput.name}
                     value={listInput.value}
-                    onChange={(event) => listInput.handleNewItemValue(event.target.value)}
+                    onChange={(event) => handleListInputChange(listInput.name, event.target.value)}
                 />
             </div>
-            <button onClick={(event) => handleAdd(event.target.name, event.target.value)}>Add</button>
+            <button className='App-edit-place-list-input-add' onClick={(event) => handleAdd(event, listInput.name, listInput.value)}>Add</button>
             <ul>
                 {listInput.elements}
             </ul>
         </div>
     ))
+    
+    // Create a handler for the list input change
+    function handleListInputChange(name, value) {
+        if (name === 'amenities') {
+            setNewAmenitiesItem(value);
+        } else if (name === 'houseRules') {
+            setNewHouseRulesItem(value);
+        } else if (name === 'transit') {
+            setNewTransitItem(value);
+        }
+    }
 
     function handleChange(event) {
         const {name, value, type, checked} = event.target
@@ -352,6 +366,230 @@ export default function EditPlace(props) {
             [name]: type === "checkbox" ? checked : value
         }))
     }
+
+    async function handleSave(event) {
+        event.preventDefault()
+
+        // let hasMadeChanges = false
+
+        const updateData = {
+            ...formData,
+            amenities: amenitiesItems,
+            houseRules: houseRulesItems,
+            transit: transitItems,
+            photos: photoItems
+        }
+        
+        if(updateData.name !== "" && updateData.name !== place.name)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                name: updateData.name
+            }))
+        }
+
+        if(updateData.address !== "" && updateData.address !== place.address)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                address: updateData.address
+            }))
+        }
+
+        if(updateData.minimumLengthStay !== "" && updateData.minimumLengthStay !== place.minimumLengthStay)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                minimumLengthStay: updateData.minimumLengthStay
+            }))
+        }
+
+        if(updateData.maxGuests !== "" && updateData.maxGuests !== place.maxGuests)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                maxGuests: updateData.maxGuests
+            }))
+        }
+
+        if(updateData.bedsNumber !== "" && updateData.bedsNumber !== place.bedsNumber)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                bedsNumber: updateData.bedsNumber
+            }))
+        }
+
+        if(updateData.bedroomsNumber !== "" && updateData.bedroomsNumber !== place.bedroomsNumber)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                bedroomsNumber: updateData.bedroomsNumber
+            }))
+        }
+
+        if(updateData.bathroomsNumber !== "" && updateData.bathroomsNumber !== place.bathroomsNumber)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                bathroomsNumber: updateData.bathroomsNumber
+            }))
+        }
+
+        if(updateData.squareMeters !== "" && updateData.squareMeters !== place.squareMeters)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                squareMeters: updateData.squareMeters
+            }))
+        }
+
+        if(updateData.spaceType !== "" && updateData.spaceType !== place.spaceType)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                spaceType: updateData.spaceType
+            }))
+        }
+
+        if(updateData.dailyPrice !== "" && updateData.dailyPrice !== place.dailyPrice)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                dailyPrice: updateData.dailyPrice
+            }))
+        }
+        
+        if(updateData.additionalPrice !== "" && updateData.additionalPrice !== place.additionalPrice)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                additionalPrice: updateData.additionalPrice
+            }))
+        }
+
+        if(updateData.amenities !== place.amenities)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                amenities: updateData.amenities
+            }))
+        }
+
+        if(updateData.houseRules !== place.houseRules)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                houseRules: updateData.houseRules
+            }))
+        }
+
+        if(updateData.transit !== place.transit)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                transit: updateData.transit
+            }))
+        }
+
+        if(updateData.photos !== place.photos)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                photos: updateData.photos
+            }))
+        }
+        
+        if(updateData.description !== "" && updateData.description !== place.description)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                description: updateData.description
+            }))
+        }
+
+        if(updateData.checkIn !== currentDate|| updateData.checkOut !== currentDate)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                checkIn: updateData.checkIn,
+                checkOut: updateData.checkOut
+            }))
+        }
+        
+        console.log(updateData)
+    }
+
+    useEffect(() => {
+
+
+        if(hasMadeChanges){
+
+            const placeCopy = {...place}
+            
+            placeCopy.minimumLengthStay = parseInt(place.minimumLengthStay)
+            placeCopy.bedsNumber = parseInt(place.bedsNumber)
+            placeCopy.bedroomsNumber = parseInt(place.bedroomsNumber)
+            placeCopy.bathroomsNumber = parseFloat(place.bathroomsNumber)
+            placeCopy.squareMeters = parseFloat(place.squareMeters)
+            placeCopy.dailyPrice = parseInt(place.dailyPrice)
+            placeCopy.additionalPrice = parseInt(place.additionalPrice)
+            placeCopy.checkIn = dayjs(place.checkIn).format("YYYY/MM/DD")
+            placeCopy.checkOut = dayjs(place.checkOut).format("YYYY/MM/DD")
+
+            fetch("http://localhost:5000/user/validateToken", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${props.token}`
+                }
+            }).then((response) => {
+
+                if (!response.ok) {
+                    throw new Error("Token validation failed");
+                }
+
+                return response.json()
+
+            }).then((data) => {
+                const placeOptions = {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(placeCopy),
+                }
+    
+                console.log(placeCopy)
+                fetch("http://localhost:5000/listing/updateListing", placeOptions)
+                // .then((updateResponse) => {
+                //     if (!updateResponse.ok) {
+                //         throw new Error("Failed to update place");
+                //     }
+    
+                //     return updateResponse.json()
+                // })
+                // .catch((error) => {
+                //     console.error(error)
+                // })
+            });
+        }
+
+    }, [hasMadeChanges])
 
     return (
         <main className='App-edit-place-container'>
@@ -386,13 +624,27 @@ export default function EditPlace(props) {
                 <div className='App-edit-place-list-inputs'>
                     {listInputElements}
                 </div>
-                <div className='App-edit-place-submit'>
-                    <button type='submit'>
-                        Save
-                    </button>
-                    <button>
-                        Delete
-                    </button>
+                <div className='App-edit-place-description'>
+                    <textarea
+                        placeholder='Change description'
+                        className='App-edit-place-description-text'
+                        name='description'
+                        value={formData.description}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className='App-edit-place-buttons'>
+                    <div className='App-edit-place-buttons-save'>
+                        <button onClick={handleSave}>
+                            Save
+                        </button>
+                    </div>
+                    <div className='App-edit-place-buttons-delete'>
+                        {/* <button onClick={handleDelete}> */}
+                        <button>
+                            Delete
+                        </button>
+                    </div>
                 </div>
             </form>
         </main>
