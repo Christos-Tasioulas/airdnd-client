@@ -377,7 +377,9 @@ export default function EditPlace(props) {
                                 onChange={handleChange}
                                 checked={formData.hasLivingRoom}
                             />
-                            <label htmlFor="hasLivingRoom">Does It Have A Living Room?</label>
+                            <div className='App-edit-place-checkbox-text'>
+                                <label htmlFor="hasLivingRoom">Does It Have A Living Room?</label>
+                            </div>
                         </div>
                     </div>
                 </div>

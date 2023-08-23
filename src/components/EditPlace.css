@@ -35,6 +35,8 @@
 
 .App-edit-place-photos {
     height: 45%;
+    width: 100%;
+    margin-top: 40px;
 }
 
 .App-edit-place-date-inputs {
@@ -45,6 +47,7 @@
 
 .date-picker-container {
     position: relative;
+    margin-top: 10px;
 }
 
 .react-datepicker-popper {
@@ -59,10 +62,11 @@
     width: 80%;
     height: 10px;
     display: block;
-    border: none;
+    /* border: none; */
     padding: 5px 10px;
     font-size: medium;
-    border-bottom: 1px solid #ff585d;
+    /* border-bottom: 1px solid #ff585d; */
+    border: 1px solid #ff585d;
     outline: none;
 }
 
@@ -84,13 +88,30 @@
     margin-right: 8px;
 }
 
+.App-edit-place-checkbox-text {
+    /* display: flex; */
+    /* flex-direction: row; */
+    border: none;
+    border-bottom: 1px solid #ff585d;
+}
+
 .App-edit-place-list-inputs {
     display: flex;
     flex-direction: row;
+    margin-left: 28%;
     height: 30vh;
     width: 100%;
 }
 
 .App-edit-place-submit {
     height: 5vh;
+    /* padding: 10px; */
 }
+
+.App-edit-profile-list-input {
+    margin-right: 15px;
+}
+
+/* .App-edit-profile-list-inputs li {
+    margin-right: 200px;
+} */
