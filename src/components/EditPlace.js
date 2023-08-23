@@ -9,7 +9,6 @@ import dayjs from "dayjs";
 import './Signup.css' // We are reusing some css from the signup component
 import './Profile.css' // We are reusing some css from the profile component
 import './EditPlace.css' // Must be imported last so that overrides are accepted correctly
-import { response } from 'express';
 
 const ListItem = React.memo(({ key, item, onRemove }) => (
     <li className='App-edit-place-list-input-value'>
