@@ -4,7 +4,7 @@ import L from 'leaflet';  // Import Leaflet for custom icon
 
 import '../App.css';
 
-export default  function Map()
+export default  function Map(props)
 {
     const customIcon = new L.Icon({
         iconUrl: 'https://i.pinimg.com/originals/0f/61/ba/0f61ba72e0e12ba59d30a50295964871.png',
@@ -13,12 +13,12 @@ export default  function Map()
     });
 
     return (
-        <MapContainer center={[40.505, -100.09]} zoom={13} >
+        <MapContainer center={props.center} zoom={13} >
             <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={[40.505, -100.09]} icon={customIcon}>
+            <Marker position={props.position} icon={customIcon}>
             </Marker>
         </MapContainer>
     )

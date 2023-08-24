@@ -119,6 +119,8 @@ export default function AddPlace(props) {
         }))
     }
 
+    const center = [37.96820335923963, 23.766779277779243]
+
     return(
         <main className="App-add-place-container">
             <form className="App-edit-place-form">
@@ -127,7 +129,7 @@ export default function AddPlace(props) {
                         {locationInputElements}
                     </div>
                     <div className="App-add-place-map">
-                        <Map />
+                        <Map center={center} position={center}/>
                     </div>
                     <button className="App-add-place-next">Next</button>
                 </div>}
