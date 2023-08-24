@@ -48,7 +48,7 @@
 }
 
 .App-login-form-input {
-    width: 100%;
+    width: 90%;
     margin: 10px;
     height: 40px;
     display: block;
@@ -68,4 +68,8 @@
     border: none;   
     cursor: pointer;
     font-size: large; 
+}
+
+.App-login-form-submit:hover {
+    background-color: #ee696d;
 }

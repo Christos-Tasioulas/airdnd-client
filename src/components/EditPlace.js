@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation, Link } from 'react-router-dom';
+import Assurance from './Assurance';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import TextInput from './TextInput';
 // import ListForm from '../../../trash/trash-app/src/ListForm';
@@ -22,6 +23,7 @@ const ListItem = React.memo(({ key, item, onRemove }) => (
 export default function EditPlace(props) {
 
     const { id } = useParams()
+    const navigate = useNavigate();
     
     const currentDate = new Date();
     const [formData, setFormData] = useState({
@@ -62,6 +64,7 @@ export default function EditPlace(props) {
     const [transitElements, setTransitElements] = useState(null)
 
     const [hasMadeChanges, setHasMadeChanges] = useState(false)
+    const [wantsToDelete, setWantsToDelete] = useState(false)
 
     // const [newItemValue, setNewItemValue] = useState("");
 
@@ -367,6 +370,7 @@ export default function EditPlace(props) {
     }
 
     async function handleSave(event) {
+
         event.preventDefault()
 
         // let hasMadeChanges = false
@@ -378,6 +382,8 @@ export default function EditPlace(props) {
             transit: transitItems,
             photos: photoItems
         }
+
+        console.log(updateData)
         
         if(updateData.name !== "" && updateData.name !== place.name)
         {
@@ -513,6 +519,15 @@ export default function EditPlace(props) {
                 photos: updateData.photos
             }))
         }
+
+        if(updateData.hasLivingRoom !== place.hasLivingRoom)
+        {
+            setHasMadeChanges(true)
+            setPlace(prevPlace => ({
+                ...prevPlace,
+                hasLivingRoom: updateData.hasLivingRoom
+            }))
+        }
         
         if(updateData.description !== "" && updateData.description !== place.description)
         {
@@ -523,7 +538,7 @@ export default function EditPlace(props) {
             }))
         }
 
-        if(updateData.checkIn !== currentDate|| updateData.checkOut !== currentDate)
+        if(updateData.checkIn !== currentDate || updateData.checkOut !== currentDate)
         {
             setHasMadeChanges(true)
             setPlace(prevPlace => ({
@@ -537,7 +552,6 @@ export default function EditPlace(props) {
     }
 
     useEffect(() => {
-
 
         if(hasMadeChanges){
 
@@ -575,24 +589,62 @@ export default function EditPlace(props) {
     
                 console.log(placeCopy)
                 fetch("http://localhost:5000/listing/updateListing", placeOptions)
-                // .then((updateResponse) => {
-                //     if (!updateResponse.ok) {
-                //         throw new Error("Failed to update place");
-                //     }
-    
-                //     return updateResponse.json()
-                // })
-                // .catch((error) => {
-                //     console.error(error)
-                // })
+                
+                navigate("/")
             });
         }
 
     }, [hasMadeChanges])
 
+    function handleDelete(event)
+    {
+        event.preventDefault()
+
+        setWantsToDelete(true)
+
+        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    }
+
+    function handleNo(event)
+    {
+        event.preventDefault()
+
+        setWantsToDelete(false)
+    }
+
+    function handleYes(event)
+    {
+        event.preventDefault()
+
+        fetch("http://localhost:5000/user/validateToken", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${props.token}`
+            }
+        }).then((response) => {
+
+            if (!response.ok) {
+                throw new Error("Token validation failed");
+            }
+
+            return response.json()
+
+        }).then((data) => {
+            const placeOptions = {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+            }
+
+            fetch(`http://localhost:5000/listing/deleteListing/${id}`, placeOptions)
+            
+            navigate("/")
+        });
+
+    }
+
     return (
         <main className='App-edit-place-container'>
-            <form className="App-edit-place-form">
+            {!wantsToDelete && <form className="App-edit-place-form">
                 <h1>Edit your Place!</h1>
                 <div className="App-signup-form-inputs">
                     <div className="App-edit-place-text-inputs">
@@ -639,13 +691,14 @@ export default function EditPlace(props) {
                         </button>
                     </div>
                     <div className='App-edit-place-buttons-delete'>
-                        {/* <button onClick={handleDelete}> */}
-                        <button>
+                        {/* <button > */}
+                        <button onClick={handleDelete}>
                             Delete
                         </button>
                     </div>
                 </div>
-            </form>
+            </form>}
+            { wantsToDelete && <Assurance title="Are you sure you want to delete the place?" onYes={handleYes} onNo={handleNo}/>}
         </main>
     )
 }

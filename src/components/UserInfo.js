@@ -217,13 +217,9 @@ export default function UserInfo() {
                             <br /><br />
                             {/* In React Submit input can be labeled as button inside forms */}
                             <button 
-                                // static style of the submit button
-                                className='App-approval-submit'
                                 // dynamic styling of the submit button 
-                                style={{
-                                    backgroundColor: formData.isEmpty ? "#484848" : "#ff585d",
-                                    cursor: formData.isEmpty && "default"
-                                }}
+                                className={formData.isEmpty ? 'App-approval-not-submit' : 'App-approval-submit'}
+                                
                                 // You can have both static and dynamic styling, they can complement and contradict each other
                                 // Can be helpful sometimes 
                             >Save Changes</button>

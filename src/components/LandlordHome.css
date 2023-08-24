@@ -43,3 +43,19 @@
     color: white;
     cursor: pointer;
 }
+
+.Add-place-button {
+    margin-top: 20px;
+    /* width: 10%; */
+    padding: 8px;
+    border-radius: 5px;
+    color: white;
+    background-color: #484848;
+    border: none;   
+    font-size: large;
+    align-self: center;
+}
+
+.Add-place-button:hover {
+    background-color: #5a5a5a;
+}

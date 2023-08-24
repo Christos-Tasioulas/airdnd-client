@@ -1,0 +1,40 @@
+.App-add-place-container {
+    height: 100vh;
+    padding: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.App-add-location {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-self: center;
+}
+
+.App-add-place-inputs {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    width: 80%;
+}
+
+.App-add-place-map {
+    margin-right: 30px;
+}
+
+.App-add-place-next {
+    width: 20%;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    background-color: #484848;
+    border: none;   
+    cursor: pointer;
+    font-size: large;
+    align-self: center;
+    margin-top: 30px;
+}

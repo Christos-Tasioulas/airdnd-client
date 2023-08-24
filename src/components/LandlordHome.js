@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './AdminHome.css';
+import './LandlordHome.css';
 
 export default function LandlordHome(props) {
     
@@ -73,7 +74,6 @@ export default function LandlordHome(props) {
         </tr>)
     )
 
-
     return (
         <div className='App-landlord-home'>
             <h1>Places To Rent Info</h1>
@@ -94,6 +94,11 @@ export default function LandlordHome(props) {
                     </tbody>  
                 </table>
             </div>
+            <Link to="/addplace">
+                <button className='Add-place-button'>
+                    Add Place
+                </button>
+            </Link>
         </div>
     )
 }
