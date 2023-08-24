@@ -119,7 +119,7 @@ export default function AddPlace(props) {
         }))
     }
 
-    const center = [37.96820335923963, 23.766779277779243]
+    const position = [37.96820335923963, 23.766779277779243]
 
     return(
         <main className="App-add-place-container">
@@ -129,7 +129,7 @@ export default function AddPlace(props) {
                         {locationInputElements}
                     </div>
                     <div className="App-add-place-map">
-                        <Map center={center} position={center}/>
+                        <Map position={position}/>
                     </div>
                     <button className="App-add-place-next">Next</button>
                 </div>}
