@@ -4,9 +4,10 @@ import TextInput from "./TextInput";
 import Map from './Map'
 
 export default function AddPlace(props) {
-
+    
     const [isLandlord, setIsLandlord] = useState(false)
     const [landlordId, setLandlordId] = useState(0)
+    const [position, setPosition] = useState([37.96820335923963, 23.766779277779243])
 
     useEffect(() => {
 
@@ -76,8 +77,7 @@ export default function AddPlace(props) {
         amenities: [],
         spaceType: "",
         additionalPrice: "",
-        dailyPrice: "",
-        map: "", 
+        dailyPrice: "", 
         country: "",
         city: "",
         neighborhood: "",
@@ -117,9 +117,36 @@ export default function AddPlace(props) {
             ...prevFormData,
             [name]: type === "checkbox" ? checked : value
         }))
+        if(name === "address")
+        {
+            setLocationQuery(value)
+        }
     }
 
-    const position = [37.96820335923963, 23.766779277779243]
+
+    const [locationQuery, setLocationQuery] = useState("");
+
+    useEffect(() => {
+
+        // Construct the API URL
+        const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationQuery)}`;
+    
+        // Make the API request
+        fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                const firstResult = data[0];
+                const latitude = parseFloat(firstResult.lat);
+                const longitude = parseFloat(firstResult.lon);
+                setPosition([latitude, longitude])
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+
+    }, [locationQuery])
 
     return(
         <main className="App-add-place-container">
@@ -137,3 +164,5 @@ export default function AddPlace(props) {
         </main>
     )
 }
+
+// [37.9733483, 23.7266016] Tholou 15 Plaka
