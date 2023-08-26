@@ -10,7 +10,7 @@ export default function AdminHome(props) {
     // Retrieve all users
     useEffect(() => {
 
-        fetch('http://localhost:5000/user/validateToken', {
+        fetch('https://127.0.0.1:5000/user/validateToken', {
             method: 'GET',
             headers: {
                 "Authorization": `Bearer ${props.token}`
@@ -25,7 +25,7 @@ export default function AdminHome(props) {
         .then(validationData => {
 
             // Token validation succeeded, now decode the token to check if the user is an admin
-            return fetch("http://localhost:5000/user/decodeToken", {
+            return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${props.token}`
@@ -39,7 +39,7 @@ export default function AdminHome(props) {
             })
             .then(decodeData => {
                 if(decodeData.isAdmin) {
-                    fetch('http://localhost:5000/user/getAllUsers')
+                    fetch('https://127.0.0.1:5000/user/getAllUsers')
                     .then((res) => res.json())
                     .then((data) => setUsers(data.message))
                 }

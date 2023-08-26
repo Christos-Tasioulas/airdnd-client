@@ -109,7 +109,7 @@ export default function Signup(props) {
             /* Check if the username is already taken */
 
             fetch(
-                `http://localhost:5000/user/isUsernameTaken/${formData.username}`,
+                `https://127.0.0.1:5000/user/isUsernameTaken/${formData.username}`,
                 {
                     method: "GET",
                 }
@@ -174,7 +174,7 @@ export default function Signup(props) {
                 }
 
                 // Generating and validating a JSON Web Token for the user
-                fetch("http://localhost:5000/user/generateToken", registerOptions)
+                fetch("https://127.0.0.1:5000/user/generateToken", registerOptions)
                 .then(response => {
                     if (!response.ok) {
                     throw new Error("Network response was not ok");
@@ -186,7 +186,7 @@ export default function Signup(props) {
                     setAuthToken(token); // Update the authToken value
 
                     // Request token validation from the server
-                    return fetch("http://localhost:5000/user/validateToken", {
+                    return fetch("https://127.0.0.1:5000/user/validateToken", {
                         method: "GET",
                         headers: {
                             "Authorization": `Bearer ${token}`
@@ -214,7 +214,7 @@ export default function Signup(props) {
                 };
             
                 // Call the API to add the user
-                fetch("http://localhost:5000/user/addUser", requestOptions);
+                fetch("https://127.0.0.1:5000/user/addUser", requestOptions);
             
                 setIsRegistered(true);
                 props.onRegistrationComplete()

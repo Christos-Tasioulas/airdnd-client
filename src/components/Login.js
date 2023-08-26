@@ -54,7 +54,7 @@ export default function Login(props) {
         try {
             // Check if the username exists
             const usernameTakenResponse = await fetch(
-                `http://localhost:5000/user/isUsernameTaken/${formData.username}`,
+                `https://127.0.0.1:5000/user/isUsernameTaken/${formData.username}`,
                 {
                     method: "GET",
                 }
@@ -72,7 +72,7 @@ export default function Login(props) {
             }
     
             const userResponse = await fetch(
-                `http://localhost:5000/user/getUserByUsername/${formData.username}`,
+                `https://127.0.0.1:5000/user/getUserByUsername/${formData.username}`,
                 {
                     method: "GET",
                 }
@@ -103,7 +103,7 @@ export default function Login(props) {
                 })
             };
     
-            const generateTokenResponse = await fetch("http://localhost:5000/user/generateToken", requestOptions);
+            const generateTokenResponse = await fetch("https://127.0.0.1:5000/user/generateToken", requestOptions);
     
             if (!generateTokenResponse.ok) {
                 throw new Error("Network response was not ok");
@@ -112,7 +112,7 @@ export default function Login(props) {
             const generateTokenData = await generateTokenResponse.json();
             const token = generateTokenData.token;
     
-            const validationResponse = await fetch("http://localhost:5000/user/validateToken", {
+            const validationResponse = await fetch("https://127.0.0.1:5000/user/validateToken", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`

@@ -14,7 +14,7 @@ export default function UserInfo() {
 
     // Getting the current user from the server app updating the state
     useEffect(() => {
-        fetch('http://localhost:5000/user/validateToken', {
+        fetch('https://127.0.0.1:5000/user/validateToken', {
             method: 'GET',
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -29,7 +29,7 @@ export default function UserInfo() {
         .then(validationData => {
 
             // Token validation succeeded, now decode the token to check if the user is an admin
-            return fetch("http://localhost:5000/user/decodeToken", {
+            return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -44,7 +44,7 @@ export default function UserInfo() {
             .then(decodeData => {
                 setIsAdmin(decodeData.isAdmin)
                 if(decodeData.isAdmin) {
-                    fetch(`http://localhost:5000/user/getUserById/${id}`)
+                    fetch(`https://127.0.0.1:5000/user/getUserById/${id}`)
                         .then((response) => response.json())
                         .then((data) => setUser(data.message))
                 }
@@ -122,7 +122,7 @@ export default function UserInfo() {
         }))
 
 
-        fetch('http://localhost:5000/user/validateToken', {
+        fetch('https://127.0.0.1:5000/user/validateToken', {
             method: 'GET',
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -137,7 +137,7 @@ export default function UserInfo() {
         .then(validationData => {
 
             // Token validation succeeded, now decode the token to check if the user is an admin
-            return fetch("http://localhost:5000/user/decodeToken", {
+            return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -159,7 +159,7 @@ export default function UserInfo() {
                         body: JSON.stringify({id:user.id, isApproved:formData.isApproved})
                     }
 
-                    fetch('http://localhost:5000/user/approveUser', requestOptions)
+                    fetch('https://127.0.0.1:5000/user/approveUser', requestOptions)
                 }
                 
             })

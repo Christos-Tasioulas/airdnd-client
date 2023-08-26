@@ -25,7 +25,7 @@ export default function Home(props) {
         }
 
         // Validating and decoding the JSON Web Token
-        fetch("http://localhost:5000/user/validateToken", {
+        fetch("https://127.0.0.1:5000/user/validateToken", {
             method: "GET",
             headers: {
             "Authorization": `Bearer ${props.token}`
@@ -40,7 +40,7 @@ export default function Home(props) {
         .then(validationData => {
 
             // Token validation succeeded, now decode the token to check if the user is an admin
-            return fetch("http://localhost:5000/user/decodeToken", {
+            return fetch("https://127.0.0.1:5000/user/decodeToken", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${props.token}`
@@ -209,7 +209,7 @@ export default function Home(props) {
                 }
             }
 
-            const url = `http://localhost:5000/listing/searchListings?${searchParams.toString()}`;
+            const url = `https://127.0.0.1:5000/listing/searchListings?${searchParams.toString()}`;
 
             const searchOptions = {
                 method: 'GET',

@@ -76,7 +76,7 @@ export default function SafetyHazard(props) {
         };
 
         // Updating the JWT token according to the new data
-        const generateTokenResponse = await fetch("http://localhost:5000/user/generateToken", requestOptions);
+        const generateTokenResponse = await fetch("https://127.0.0.1:5000/user/generateToken", requestOptions);
 
         if (!generateTokenResponse.ok) {
             throw new Error("Network response was not ok");
@@ -85,7 +85,7 @@ export default function SafetyHazard(props) {
         const generateTokenData = await generateTokenResponse.json();
         const token = generateTokenData.token;
 
-        const validationResponse = await fetch("http://localhost:5000/user/validateToken", {
+        const validationResponse = await fetch("https://127.0.0.1:5000/user/validateToken", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -105,7 +105,7 @@ export default function SafetyHazard(props) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user),
         }
-        fetch("http://localhost:5000/user/updateUser", userOptions)
+        fetch("https://127.0.0.1:5000/user/updateUser", userOptions)
 
 
         // Navigating the user back to their profile page

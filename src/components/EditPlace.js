@@ -63,7 +63,7 @@ export default function EditPlace(props) {
     useEffect(() => {
 
         // Validating and decoding the JSON Web Token
-        fetch("http://localhost:5000/user/validateToken", {
+        fetch("https://127.0.0.1:5000/user/validateToken", {
             method: "GET",
             headers: {
             "Authorization": `Bearer ${props.token}`
@@ -78,7 +78,7 @@ export default function EditPlace(props) {
         .then(validationData => {
 
             // Token validation succeeded, now decode the token to check if the user is an admin
-            return fetch("http://localhost:5000/user/decodeToken", {
+            return fetch("https://127.0.0.1:5000/user/decodeToken", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${props.token}`
@@ -95,7 +95,7 @@ export default function EditPlace(props) {
                 // Passing the information for the role of the user
                 if (decodeData.isLandlord)
                 {
-                    fetch(`http://localhost:5000/listing/getPlacesByLandlordId/${decodeData.id}`)
+                    fetch(`https://127.0.0.1:5000/listing/getPlacesByLandlordId/${decodeData.id}`)
                         .then((response) => response.json())
                         .then((data) => setLandlordPlaces(data.message))
                 }
@@ -118,7 +118,7 @@ export default function EditPlace(props) {
     // Another Bugfix that returns the landlords data for the verified users
     useEffect(() => {
         if(isVerified && isTheLandlord) {
-            fetch(`http://localhost:5000/listing/getListingById/${id}`)
+            fetch(`https://127.0.0.1:5000/listing/getListingById/${id}`)
             .then((response) => response.json())
             .then((data) => {
                 setPlace(data.message);
@@ -559,7 +559,7 @@ export default function EditPlace(props) {
             placeCopy.checkIn = dayjs(place.checkIn).format("YYYY/MM/DD")
             placeCopy.checkOut = dayjs(place.checkOut).format("YYYY/MM/DD")
 
-            fetch("http://localhost:5000/user/validateToken", {
+            fetch("https://127.0.0.1:5000/user/validateToken", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${props.token}`
@@ -580,7 +580,7 @@ export default function EditPlace(props) {
                 }
     
                 console.log(placeCopy)
-                fetch("http://localhost:5000/listing/updateListing", placeOptions)
+                fetch("https://127.0.0.1:5000/listing/updateListing", placeOptions)
                 
                 navigate("/")
             });
@@ -608,7 +608,7 @@ export default function EditPlace(props) {
     {
         event.preventDefault()
 
-        fetch("http://localhost:5000/user/validateToken", {
+        fetch("https://127.0.0.1:5000/user/validateToken", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${props.token}`
@@ -627,7 +627,7 @@ export default function EditPlace(props) {
                 headers: { "Content-Type": "application/json" },
             }
 
-            fetch(`http://localhost:5000/listing/deleteListing/${id}`, placeOptions)
+            fetch(`https://127.0.0.1:5000/listing/deleteListing/${id}`, placeOptions)
             
             navigate("/")
         });

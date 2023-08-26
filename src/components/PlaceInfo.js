@@ -22,7 +22,7 @@ export default function PlaceInfo() {
 
     // Getting the current place from the server app updating the state
     useEffect(() => {
-        fetch('http://localhost:5000/user/validateToken', {
+        fetch('https://127.0.0.1:5000/user/validateToken', {
             method: 'GET',
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -37,7 +37,7 @@ export default function PlaceInfo() {
         .then(validationData => {
 
             // Token validation succeeded, now decode the token to check if the user is an admin
-            return fetch("http://localhost:5000/user/decodeToken", {
+            return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -57,7 +57,7 @@ export default function PlaceInfo() {
 
                 if (decodeData.isLandlord) {
                     
-                    fetch(`http://localhost:5000/listing/getPlacesByLandlordId/${decodeData.id}`)
+                    fetch(`https://127.0.0.1:5000/listing/getPlacesByLandlordId/${decodeData.id}`)
                         .then((response) => response.json())
                         .then((data) => setLandlordPlaces(data.message))
                 }
@@ -78,7 +78,7 @@ export default function PlaceInfo() {
     // Another Bugfix that returns the landlords data for the verified users
     useEffect(() => {
         if(isVerified) {
-            fetch(`http://localhost:5000/listing/getListingById/${id}`)
+            fetch(`https://127.0.0.1:5000/listing/getListingById/${id}`)
             .then((response) => response.json())
             .then((data) => {
                 setPlace(data.message);
@@ -88,7 +88,7 @@ export default function PlaceInfo() {
                 )))
     
                 // Now that the place state is updated, fetch the landlord's details
-                fetch(`http://localhost:5000/user/getUserById/${data.message.userId}`)
+                fetch(`https://127.0.0.1:5000/user/getUserById/${data.message.userId}`)
                     .then((response) => response.json())
                     .then((data) => setTheLandlord(data.message))
                     .catch((error) => {
