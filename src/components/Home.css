@@ -109,14 +109,9 @@
     width: 80%;
 }
 
-.react-datepicker-popper div{
-    background: #f7b6b8 !important;
-    padding: 0px !important;
+.react-datepicker__day--selected{
+    background-color: #ff585d;
 }
-
-/* .react-datepicker-popper div div{ */
-    /* color: #484848 !important; */
-/* } */
 
 .App-home-form-text-inputs {
     display: flex;

@@ -1,5 +1,5 @@
 .App-add-place-container {
-    height: 100vh;
+    height: 120vh;
     padding: 20px;
     padding: 20px;
     display: flex;
@@ -8,7 +8,7 @@
     align-items: center;
 }
 
-.App-add-location {
+.App-add-place {
     display: flex;
     flex-direction: column;
     width: 100%;

@@ -113,7 +113,7 @@ export default function Home(props) {
     
     const MyContainer = ({ className, children }) => {
         return (
-          <div style={{ padding: "16px", background: "#216ba5", color: "#fff" }}>
+          <div style={{ padding: "16px", background: "#ff585d", color: "#fff" }}>
             <div className={className}>
               <div style={{ position: "relative" }}>{children}</div>
             </div>

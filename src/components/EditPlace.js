@@ -6,19 +6,11 @@ import TextInput from './TextInput';
 // import ListForm from '../../../trash/trash-app/src/ListForm';
 import DatePicker from "react-datepicker";
 import dayjs from "dayjs";
+import ListItem from './ListItem';
 
 import './Signup.css' // We are reusing some css from the signup component
 import './Profile.css' // We are reusing some css from the profile component
 import './EditPlace.css' // Must be imported last so that overrides are accepted correctly
-
-const ListItem = React.memo(({ key, item, onRemove }) => (
-    <li className='App-edit-place-list-input-value'>
-        <span>{item}</span>
-        <div className='App-edit-place-list-input-remove'>
-            <button onClick={onRemove}>Remove</button>
-        </div>
-    </li>
-));
 
 export default function EditPlace(props) {
 
@@ -272,7 +264,7 @@ export default function EditPlace(props) {
 
     const MyContainer = ({ className, children }) => {
         return (
-          <div style={{ padding: "16px", background: "#216ba5", color: "#fff" }}>
+          <div style={{ padding: "16px", background: "#ff585d", color: "#fff" }}>
             <div className={className}>
               <div style={{ position: "relative" }}>{children}</div>
             </div>
