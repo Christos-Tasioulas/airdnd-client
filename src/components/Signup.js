@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import './Signup.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import TextInput from './TextInput';
 
 export default function Signup(props) {
+
+    const navigate = useNavigate()
 
     // State used to determine if the user is registered or not
     const [isRegistered, setIsRegistered] = useState(false);
@@ -66,11 +68,46 @@ export default function Signup(props) {
     
     // This is where we change the formData members accordingly
     function handleChange(event) {
-        const {name, value, type, checked} = event.target
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            [name]: type === "checkbox" ? checked : value
-        }))
+        const { name, value, type, checked, files } = event.target;
+
+        if (type === "file" && files.length > 0) {
+            // Handle file upload here
+            const file = files[0]; // Get the first file from the list
+            const formDataCopy = new FormData(); // Create a FormData object to send the file
+
+            formDataCopy.append("image", file); // Append the file to the FormData object
+
+            // Make the POST request to upload the file
+            const requestOptions = {
+                method: "POST",
+                body: formDataCopy, // Send the FormData object with the file
+            };
+
+            fetch("https://127.0.0.1:5000/upload", requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Image upload failed");
+                    }
+                    return response.json(); // Assuming your server returns some JSON response
+                })
+                .then(data => {
+                    const imagePath = "https://127.0.0.1:5000/" + data.filename
+                    setFormData(prevFormData => ({
+                        ...prevFormData,
+                        [name]: imagePath
+                    }));
+                })
+                .catch(error => {
+                    console.error("Image upload error:", error);
+                });
+
+        } else {
+            // Handle other form fields
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                [name]: type === "checkbox" ? checked : value
+            }));
+        }
     }
 
     // Registration process begins and ends here
@@ -217,7 +254,6 @@ export default function Signup(props) {
                 fetch("https://127.0.0.1:5000/user/addUser", requestOptions);
             
                 setIsRegistered(true);
-                props.onRegistrationComplete()
             })
             .catch(error => {
                 console.log(error);
@@ -251,7 +287,6 @@ export default function Signup(props) {
                                     className="App-signup-form-image-uploader"
                                     name="image"
                                     onChange={handleChange}
-                                    value={formData.image}
                                     accept="image/png, image/jpeg, image/jpg"
                                 />
                                 <label htmlFor="ProfilePicture"><img src={formData.image !== "" ? formData.image : "https://i.pinimg.com/originals/46/72/f8/4672f876389036583190d93a71aa6cb2.jpg"} alt="prof"/></label>
@@ -300,13 +335,13 @@ export default function Signup(props) {
                 {/* Letting the user know they are successfully registered and approved, giving them a link tor retrun to the home page */}
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Eo_circle_light-green_checkmark.svg/2048px-Eo_circle_light-green_checkmark.svg.png" alt="success"/>
                 <h2>Sucessfully Registered</h2>
-                <h4>Return to <Link to="/" style={{color: "black", textDecoration: 'none'}}>Home Page</Link></h4>
+                <h4>Go to <Link to="/login" style={{color: "black", textDecoration: 'none'}}>Login</Link></h4>
             </div>}
             {isRegistered && !userIsApproved && <div className="App-waiting-for-approval">
                 {/* Letting the user know they are successfully registered but need to be approved as landlord, giving them a link tor retrun to the home page */}
                 <img src="https://icones.pro/wp-content/uploads/2021/03/icone-d-horloge-rouge.png" alt="pending"/>
                 <h2>Waiting for approval to become landlord</h2>
-                <h4>Return to <Link to="/" style={{color: "#d04b4d", textDecoration: 'none'}}>Home Page</Link></h4>
+                <h4>Go to <Link to="/login" style={{color: "#d04b4d", textDecoration: 'none'}}>Login</Link></h4>
             </div>}
         </main>
     )

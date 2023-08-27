@@ -137,12 +137,48 @@ export default function EditProfile(props) {
     
     // This is where we change the formData members accordingly
     function handleChange(event) {
-        const {name, value, type, checked} = event.target
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            [name]: type === "checkbox" ? checked : value
-        }))
+        const { name, value, type, checked, files } = event.target;
+
+        if (type === "file" && files.length > 0) {
+            // Handle file upload here
+            const file = files[0]; // Get the first file from the list
+            const formDataCopy = new FormData(); // Create a FormData object to send the file
+
+            formDataCopy.append("image", file); // Append the file to the FormData object
+
+            // Make the POST request to upload the file
+            const requestOptions = {
+                method: "POST",
+                body: formDataCopy, // Send the FormData object with the file
+            };
+
+            fetch("https://127.0.0.1:5000/upload", requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Image upload failed");
+                    }
+                    return response.json(); // Assuming your server returns some JSON response
+                })
+                .then(data => {
+                    const imagePath = "https://127.0.0.1:5000/" + data.filename
+                    setFormData(prevFormData => ({
+                        ...prevFormData,
+                        [name]: imagePath
+                    }));
+                })
+                .catch(error => {
+                    console.error("Image upload error:", error);
+                });
+
+        } else {
+            // Handle other form fields
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                [name]: type === "checkbox" ? checked : value
+            }));
+        }
     }
+
 
     // Profile update process begins and ends here
     function handleSubmit(event) {
@@ -296,7 +332,7 @@ export default function EditProfile(props) {
                                 className="App-signup-form-image-uploader"
                                 name="image"
                                 onChange={handleChange}
-                                value={formData.image}
+                                // value={formData.image}
                                 accept="image/jpeg, image/png, image/jpg"
                             />
                             <label htmlFor="ProfilePicture"><img src={formData.image !== "" ? formData.image : "https://i.pinimg.com/originals/46/72/f8/4672f876389036583190d93a71aa6cb2.jpg"} alt="prof"/></label>
