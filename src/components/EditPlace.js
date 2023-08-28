@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Assurance from './Assurance';
 import { useParams, useNavigate } from 'react-router-dom';
-
+import ImageCarousel from "./ImageCarousel";
 import TextInput from './TextInput';
 // import ListForm from '../../../trash/trash-app/src/ListForm';
 import DatePicker from "react-datepicker";
@@ -50,7 +50,7 @@ export default function EditPlace(props) {
     const [houseRulesElements, setHouseRulesElements] = useState(null)
     const [photoItems, setPhotoItems] = useState([])
     const [newPhotoItem , setNewPhotoItem] = useState("")
-    const [photoElements, setPhotoElements] = useState(null)
+    const [photoElements, setPhotoElements] = useState([])
     const [transitItems, setTransitItems] = useState([])
     const [newTransitItem , setNewTransitItem] = useState("")
     const [transitElements, setTransitElements] = useState(null)
@@ -166,16 +166,64 @@ export default function EditPlace(props) {
             setHouseRulesItems(place.houseRules)
             setPhotoItems(place.photos)
             setTransitItems(place.transit)
+
+            if(place.photos)
+            {
+                const newPhotoElements = place.photos.map(photoUrl => ({
+                    url: photoUrl
+                }));
+                setPhotoElements(newPhotoElements)
+            }
         }
     }, [place])
+
+    useEffect(() => {
+        console.log(photoElements)
+    }, [photoElements])
 
     function handleAdd(event, name, value) {
         event.preventDefault(); // prevents re-rendering
 
         // const { name, value } = event.target
-        console.log(value)
+        // console.log(value)
+        if (value === null) {
 
-        if (value.trim() !== '') {
+            const { files } = event.target
+
+            if (files.length > 0) {
+                const formDataCopy = new FormData(); // Create a FormData object to send the file
+
+                const file = files[0]; // Get the first file from the list
+                formDataCopy.append("image", file); // Append the file to the FormData object
+
+                // Make the POST request to upload the file
+                const requestOptions = {
+                    method: "POST",
+                    body: formDataCopy, // Send the FormData object with the file
+                };
+
+                fetch("https://127.0.0.1:5000/upload", requestOptions)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Image upload failed");
+                        }
+                        return response.json(); // Assuming your server returns some JSON response
+                    })
+                    .then(data => {
+                        const imagePath = "https://127.0.0.1:5000/" + data.filename
+                        setNewPhotoItem(imagePath)
+                        setPhotoItems([...photoItems, imagePath])
+                        const photoElement = {
+                            url: imagePath
+                        }
+                        setPhotoElements([...photoElements, photoElement])
+                    })
+                    .catch(error => {
+                        console.error("Image upload error:", error);
+                    });
+            }
+        }
+        else if (value.trim() !== '') {
             if (name === 'amenities') {
                 setAmenitiesItems([...amenitiesItems, newAmenitiesItem])
                 setNewAmenitiesItem('')
@@ -187,10 +235,6 @@ export default function EditPlace(props) {
             else if (name === 'transit') {
                 setTransitItems([...transitItems, newTransitItem])
                 setNewTransitItem('')
-            }
-            else if (name === 'photos') {
-                setPhotoItems([...photoItems, newPhotoItem])
-                setNewPhotoItem('')
             }
         }
     };
@@ -241,14 +285,6 @@ export default function EditPlace(props) {
         {id:15, type: 'text', placeholder: 'Add House Rule', className: 'App-edit-place-list-input', name: 'houseRules', value: newHouseRulesItem, title: "House Rules", items: houseRulesItems,  elements: houseRulesElements},
         {id:16, type: 'text', placeholder: 'Add Transit', className: 'App-edit-place-list-input', name: 'transit', value: newTransitItem, title: 'Transit', items: transitItems,  elements: transitElements}
     ]
-
-    // {id:13, type: 'text', placeholder: 'Change ', className: '', name: 'hasLivingRoom',value:}
-    // {id:17, type: 'date', placeholder: 'Change ', className: '', name: 'checkIn', value:},
-    // {id:18, type: 'date', placeholder: 'Change ', className: '', name: 'checkOut', value:},
-    // {id:19, type: 'text', placeholder: 'Change ', className: '', name: 'description', value:},
-
-    // const intInputs = [
-    // ]
 
     const textInputElements = textInputs.map(textInput => (
         <TextInput
@@ -644,7 +680,19 @@ export default function EditPlace(props) {
                     </div>
                     <div className="App-signup-form-other-inputs">
                         <div className='App-edit-place-photos'>
-                            {/* {photoElements} */}
+                            <h3>Add Photo</h3>
+                            <div className="App-add-place-image">
+                                <input
+                                    id="PlacePhotos"
+                                    type="file"
+                                    multiple
+                                    className="App-add-place-image-uploader"
+                                    name="image"
+                                    onChange={(event) => handleAdd(event, "image", null)}
+                                    accept="image/png, image/jpeg, image/jpg"
+                                />
+                            </div>
+                            {photoElements && <ImageCarousel images={photoElements} />}
                         </div>
                         <div className='App-edit-place-date-inputs'>
                             {dateElements}

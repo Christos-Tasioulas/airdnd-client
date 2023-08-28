@@ -278,7 +278,6 @@ export default function Signup(props) {
                     </div>
                     <div className="App-signup-form-other-inputs">
                         <div className="App-signup-form-image-container">
-                            {/* Profile picture section in the form, not working yet, it is here because of looks */}
                             <h3>Add your Profile Picture</h3>
                             <div className="App-signup-form-image">
                                 <input

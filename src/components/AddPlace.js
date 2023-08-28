@@ -6,6 +6,7 @@ import TextInput from "./TextInput";
 import Map from './Map'
 import DatePicker from "react-datepicker";
 import ListItem from "./ListItem";
+import ImageCarousel from "./ImageCarousel";
 
 export default function AddPlace(props) {
 
@@ -190,7 +191,7 @@ export default function AddPlace(props) {
     const [houseRulesElements, setHouseRulesElements] = useState(null)
     const [photoItems, setPhotoItems] = useState([])
     const [newPhotoItem , setNewPhotoItem] = useState("")
-    const [photoElements, setPhotoElements] = useState(null)
+    const [photoElements, setPhotoElements] = useState([])
     const [transitItems, setTransitItems] = useState([])
     const [newTransitItem , setNewTransitItem] = useState("")
     const [transitElements, setTransitElements] = useState(null)
@@ -297,8 +298,44 @@ export default function AddPlace(props) {
 
         // const { name, value } = event.target
         // console.log(value)
+        if (value === null) {
 
-        if (value.trim() !== '') {
+            const { files } = event.target
+
+            if (files.length > 0) {
+                const formDataCopy = new FormData(); // Create a FormData object to send the file
+
+                const file = files[0]; // Get the first file from the list
+                formDataCopy.append("image", file); // Append the file to the FormData object
+
+                // Make the POST request to upload the file
+                const requestOptions = {
+                    method: "POST",
+                    body: formDataCopy, // Send the FormData object with the file
+                };
+
+                fetch("https://127.0.0.1:5000/upload", requestOptions)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Image upload failed");
+                        }
+                        return response.json(); // Assuming your server returns some JSON response
+                    })
+                    .then(data => {
+                        const imagePath = "https://127.0.0.1:5000/" + data.filename
+                        setNewPhotoItem(imagePath)
+                        setPhotoItems([...photoItems, imagePath])
+                        const photoElement = {
+                            url: imagePath
+                        }
+                        setPhotoElements([...photoElements, photoElement])
+                    })
+                    .catch(error => {
+                        console.error("Image upload error:", error);
+                    });
+            }
+        }
+        else if (value.trim() !== '') {
             if (name === 'amenities') {
                 setAmenitiesItems([...amenitiesItems, newAmenitiesItem])
                 setNewAmenitiesItem('')
@@ -310,10 +347,6 @@ export default function AddPlace(props) {
             else if (name === 'transit') {
                 setTransitItems([...transitItems, newTransitItem])
                 setNewTransitItem('')
-            }
-            else if (name === 'photos') {
-                setPhotoItems([...photoItems, newPhotoItem])
-                setNewPhotoItem('')
             }
         }
     };
@@ -508,11 +541,12 @@ export default function AddPlace(props) {
         .catch(error => {
             console.error(error);
         }) 
-        
     }
-        
-        return(
-            <main className={hasGivenLocation ? "App-edit-place-container" : "App-add-place-container"}>
+
+    console.log(photoElements)
+
+    return(
+        <main className={hasGivenLocation ? "App-edit-place-container" : "App-add-place-container"}>
             <form className="App-edit-place-form">
                 {isLandlord && !hasGivenLocation && <div className="App-add-place">
                     <h1>Add The Location Of Your Place!</h1>
@@ -532,7 +566,19 @@ export default function AddPlace(props) {
                         </div>
                         <div className="App-signup-form-other-inputs">
                             <div className='App-edit-place-photos'>
-                                {/* {photoElements} */}
+                                <h3>Add Photo</h3>
+                                <div className="App-add-place-image">
+                                    <input
+                                        id="PlacePhotos"
+                                        type="file"
+                                        multiple
+                                        className="App-add-place-image-uploader"
+                                        name="image"
+                                        onChange={(event) => handleAdd(event, "image", null)}
+                                        accept="image/png, image/jpeg, image/jpg"
+                                    />
+                                </div>
+                                <ImageCarousel images={photoElements} />
                             </div>
                             <div className='App-edit-place-date-inputs'>
                                 {dateElements}
