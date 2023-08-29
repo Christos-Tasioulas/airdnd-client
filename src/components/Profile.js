@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import './Profile.css'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Profile(props) {
 
+    const navigate = useNavigate();
+    
     const [currentUser, setCurrentUser] = useState({})
 
     useEffect(() => {
@@ -82,6 +84,32 @@ export default function Profile(props) {
         </div>
     )
 
+    function handleBooked() {
+
+        // Validating and decoding the JSON Web Token
+        fetch("https://127.0.0.1:5000/user/validateToken", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${props.token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(validationData => {
+
+            navigate(`/landlordbooked`)
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    }
+
     return (
         <main className="App-profile-container">
             <div className="App-profile">
@@ -114,7 +142,11 @@ export default function Profile(props) {
                         {/* Contact Section in the profile page */}
                         <div className='App-profile-contacts'>
                             <h2 className='App-profile-contacts-title'>Contact:</h2>
-                            {contactElements}
+                                {contactElements}
+                            <div className='App-profile-contact'>
+                                <img src="https://icons-for-free.com/iconfiles/png/512/chat+bubble+communication+message+icon-1320183420573987974.png" alt="chat"/>
+                                <h3><Link to="/inbox" style={{color: "#484848"}}>Inbox</Link></h3>
+                            </div>
                         </div>
                     </div>
                     {/* These are set to appear depending on the roles of the user, the user authentication is not ready yet */}
@@ -123,6 +155,13 @@ export default function Profile(props) {
                         {currentUser.isLandlord && <div className='App-profile-landlord'>
                             <h3>Landlord Info</h3>
                             {!currentUser.isApproved && <h2>Landlord not approved yet!!</h2>}
+                            {currentUser.isApproved && <div>
+                                <div className='App-profile-landlord-reviews'></div>
+                                <div className='App-profile-landlord-booked'>
+                                    <button className='App-profile-landlord-booked-button' onClick={handleBooked}>Booked Places</button>
+                                    <p className='App-profile-landlord-booked-link'> Here are your <Link to="/landlordbooked" style={{textDecoration: "underline" }}>booked places</Link> </p>
+                                </div>
+                            </div>}
                         </div>}
                         {currentUser.isTenant && <div className='App-profile-tenant'>
                             <h3>Tenant Info</h3>

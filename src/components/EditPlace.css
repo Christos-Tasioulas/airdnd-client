@@ -1,5 +1,5 @@
 .App-edit-place-container {
-    height: 150vh;
+    height: 153vh;
     padding: 20px;
     padding: 20px;
     display: flex;
@@ -34,22 +34,22 @@
 }
 
 .App-edit-place-photos {
-    height: 45%;
+    height: 80%;
     width: 100%;
-    margin-top: 40px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
 }
 
 .App-edit-place-date-inputs {
+    height: 20%;
     display: flex;
     flex-direction: row;
-    height: 40%;
 }
 
 .date-picker-container {
     position: relative;
-    margin-top: 10px;
+    /* margin-top: 10px; */
 }
 
 .react-datepicker-popper {
@@ -59,7 +59,6 @@
 }
 
 .App-edit-place-check-in-check-out {
-    /* margin: 5px; */
     margin-right: 5px;
     width: 80%;
     height: 10px;
@@ -67,7 +66,6 @@
     /* border: none; */
     padding: 5px 10px;
     font-size: medium;
-    /* border-bottom: 1px solid #ff585d; */
     border: 1px solid #ff585d;
     outline: none;
 }

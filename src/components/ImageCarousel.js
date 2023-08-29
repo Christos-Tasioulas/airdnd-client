@@ -10,8 +10,14 @@ function ImageCarousel(props) {
     return (
         <Carousel>
             {images.map((image, index) => (
-                <div key={index}>
-                    <img src={image.url} alt={`Image ${index}`} />
+                <div key={index} style={{ position: "relative" }}>
+                    <button
+                        className="remove-button"
+                        onClick={(event) => props.onImageRemove(event, "photos", index)}
+                    >
+                        X
+                    </button>
+                    <img src={image.url} alt={`House view ${index}`} />
                 </div>
             ))}
         </Carousel>

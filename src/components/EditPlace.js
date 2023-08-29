@@ -258,6 +258,8 @@ export default function EditPlace(props) {
         else if (name === 'photos') {
             const updatedItems = photoItems.filter((_, i) => i !== index);
             setPhotoItems(updatedItems)
+            const updatedElements = photoElements.filter((_, i) => i !== index);
+            setPhotoElements(updatedElements)
         }
     };
 
@@ -276,8 +278,8 @@ export default function EditPlace(props) {
     ]
 
     const dateInputs = [
-        { id:12, placeholder: "Check In", name: "checkIn", className: "App-edit-place-check-in-check-out", selected: formData.checkIn, minDate: new Date()},
-        { id:13, placeholder: "Check Out", name: "checkOut", className: "App-edit-place-check-in-check-out", selected: formData.checkOut, minDate: formData.checkIn },
+        { id:12, placeholder: "Check In", name: "checkIn", className: "App-edit-place-check-in-check-out", selected: formData.checkIn, minDate: new Date(), title: "Availiable From:"},
+        { id:13, placeholder: "Check Out", name: "checkOut", className: "App-edit-place-check-in-check-out", selected: formData.checkOut, minDate: formData.checkIn, title: "Up Until:"},
     ];
     
     const listInputs = [
@@ -310,6 +312,7 @@ export default function EditPlace(props) {
 
     const dateElements = dateInputs.map((dateInput) => (
         <div className="date-picker-container">
+            <h3>{dateInput.title}</h3>
             <DatePicker
                 key={dateInput.id}
                 placeholderText={dateInput.placeholder}
@@ -692,7 +695,7 @@ export default function EditPlace(props) {
                                     accept="image/png, image/jpeg, image/jpg"
                                 />
                             </div>
-                            {photoElements && <ImageCarousel images={photoElements} />}
+                            {photoElements && <ImageCarousel images={photoElements} onImageRemove={handleRemoveItem}/>}
                         </div>
                         <div className='App-edit-place-date-inputs'>
                             {dateElements}
@@ -707,7 +710,7 @@ export default function EditPlace(props) {
                                 checked={formData.hasLivingRoom}
                             />
                             <div className='App-edit-place-checkbox-text'>
-                                <label htmlFor="hasLivingRoom">Does It Have A Living Room?</label>
+                                <label htmlFor="hasLivingRoom">Living Room</label>
                             </div>
                         </div>
                     </div>

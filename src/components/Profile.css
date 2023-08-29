@@ -150,6 +150,18 @@
     color: #ff585d;
 }
 
+.App-profile-landlord-booked-button {
+    background-color: white;
+    border-color: #bababa;
+    padding: 5%;
+    font-weight: bolder;
+    font-size: larger;
+}
+
+.App-profile-landlord-booked-button:hover {
+    background-color: #bababa;
+}
+
 .App-profile-tenant {
     height: 47%;
 }

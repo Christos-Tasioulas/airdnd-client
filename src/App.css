@@ -124,6 +124,44 @@
   font-weight: normal;
 }
 
+.App-message {
+  text-align: left;
+  font-size: larger;
+  font-weight: 700;
+}
+
+.App-message-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.App-message-textarea {
+  width: 70%;
+  align-self: center;
+  padding: 20px;
+  margin-top: 10%;
+  font-size: large;
+}
+
+.App-message-button {
+  width: 8%;
+  margin-top: 2%;
+  padding: 8px;
+  border-radius: 5px;
+  color: white;
+  background-color: #ff585d;
+  align-self: center;
+  border: none;   
+  cursor: pointer;
+  font-size: large;
+}
+
+.App-message-button:hover {
+  cursor: pointer;
+  background-color: #ee696d;
+}
+
 .App-footer {
   text-align: left;
   background-color: #ff585d;

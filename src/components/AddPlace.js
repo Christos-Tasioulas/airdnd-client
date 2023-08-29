@@ -370,6 +370,8 @@ export default function AddPlace(props) {
         else if (name === 'photos') {
             const updatedItems = photoItems.filter((_, i) => i !== index);
             setPhotoItems(updatedItems)
+            const updatedElements = photoElements.filter((_, i) => i !== index);
+            setPhotoElements(updatedElements)
         }
     };
 
@@ -578,7 +580,7 @@ export default function AddPlace(props) {
                                         accept="image/png, image/jpeg, image/jpg"
                                     />
                                 </div>
-                                <ImageCarousel images={photoElements} />
+                                {photoElements && <ImageCarousel images={photoElements} onImageRemove={handleRemoveItem}/>}
                             </div>
                             <div className='App-edit-place-date-inputs'>
                                 {dateElements}
@@ -593,7 +595,7 @@ export default function AddPlace(props) {
                                     checked={formData.hasLivingRoom}
                                     />
                                 <div className='App-edit-place-checkbox-text'>
-                                    <label htmlFor="hasLivingRoom">Does It Have A Living Room?</label>
+                                    <label htmlFor="hasLivingRoom">Living Room</label>
                                 </div>
                             </div>
                         </div>
