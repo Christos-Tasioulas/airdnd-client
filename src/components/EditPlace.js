@@ -741,7 +741,8 @@ export default function EditPlace(props) {
                     </div>
                 </div>
             </form>}
-            { wantsToDelete && <Assurance title="Are you sure you want to delete the place?" onYes={handleYes} onNo={handleNo}/>}
+            <br /><br /><br />
+            { wantsToDelete && <Assurance title="Are you sure you want to delete the place?" className="App-edit-place-destroy-buttons-form" onYes={handleYes} onNo={handleNo}/>}
         </main>
     )
 }

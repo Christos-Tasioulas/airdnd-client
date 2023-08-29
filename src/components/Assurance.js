@@ -3,7 +3,7 @@ import React from "react";
 export default function Assurance(props) {
     
     return (
-        <form className='App-edit-place-destroy-buttons-form'>
+        <form className={props.className}>
             <h1>{props.title}</h1>
             <br/>
             <div className='App-edit-place-destroy-buttons'>

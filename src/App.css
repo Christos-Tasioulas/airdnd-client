@@ -144,10 +144,38 @@
   font-size: large;
 }
 
+.App-message-buttons {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
 .App-message-button {
-  width: 8%;
+  width: 10%;
   margin-top: 2%;
-  padding: 8px;
+  padding: 10px 20px 10px 20px;
+  border-radius: 5px;
+  color: white;
+  /* background-color: #ff585d; */
+  background-color: #484848;
+  align-self: center;
+  border: none;   
+  cursor: pointer;
+  font-size: large;
+  margin-left: 21%;
+  margin-right: 21%;
+}
+
+.App-message-button:hover {
+  cursor: pointer;
+  /* background-color: #ee696d; */
+  background-color: #5a5a5a;
+}
+
+.App-message-delete {
+  width: 10%;
+  margin-top: 2%;
+  padding: 10px 20px 10px 20px;
   border-radius: 5px;
   color: white;
   background-color: #ff585d;
@@ -155,11 +183,17 @@
   border: none;   
   cursor: pointer;
   font-size: large;
+  margin-left: 21%;
+  margin-right: 21%;
 }
 
-.App-message-button:hover {
+.App-message-delete:hover {
   cursor: pointer;
   background-color: #ee696d;
+}
+
+.App-delete-message-assurance {
+  margin-top: 5%;
 }
 
 .App-footer {
