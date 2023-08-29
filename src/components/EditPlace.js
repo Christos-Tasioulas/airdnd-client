@@ -700,6 +700,7 @@ export default function EditPlace(props) {
                         <div className='App-edit-place-date-inputs'>
                             {dateElements}
                         </div>
+                        <br />
                         <div className='App-edit-place-checkbox'>
                             <input
                                 id="hasLivingRoom"

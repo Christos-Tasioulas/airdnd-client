@@ -11,6 +11,46 @@
     height: 100%;
 }
 
+.App-tenant-home-top {
+    display: flex;
+    flex-direction: row;
+}
+
+.App-role-button-container {
+    width: 15%;
+}
+
+.App-role-button {
+    margin-top: 25%;
+    background-color: #ff585d;
+    color: white;
+    border: none;
+    border-radius: 15%;
+    padding: 20px 20px 20px 20px;
+    cursor: pointer;
+    font-size: large;
+    font-weight: bold;
+    width: 80%;
+    align-self: center;
+    height: 40%;
+}
+
+.App-role-button-2 {
+    background-color: #ff585d;
+    color: white;
+    border: none;
+    border-radius: 15%;
+    padding: 20px 20px 20px 20px;
+    cursor: pointer;
+    font-size: large;
+    font-weight: bold;
+    align-self: center;
+}
+
+.App-role-button:hover, .App-role-button-2:hover {
+    background-color: #ee696d;
+}
+
 .App-home-image {
     height: 450px;
     width: 450px;
@@ -21,8 +61,8 @@
     box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
     display: flex;
     flex-direction: column;
-    height: 22%;
-    width: 100%;
+    height: 100%;
+    width: 85%;
     /* margin-top: -270px; */
 }
 

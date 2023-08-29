@@ -18,6 +18,8 @@ export default function Home(props) {
     const [hasSearchedOnce, setHasSearchedOnce] = useState(false)
     const [searchResults, setSearchResults] = useState([])
 
+    const [showLandlordHome, setShowLandlordHome] = useState(false)
+
     useEffect(() => {
 
         if(!props.token) {
@@ -241,43 +243,54 @@ export default function Home(props) {
             <h6>{searchResult.description}</h6>
         </div> 
     ))
+
+    function handleRoleChange() {
+        setShowLandlordHome(!showLandlordHome)
+    }
     
     return(
         <main className='App-home'>
             {isAdmin && <AdminHome token={props.token}/>}
-            {!isAdmin && (isTenant || isAnonymous) && <div className='App-tenant-home'>
-                <form onSubmit={handleSubmit} className='App-home-form'>
-                    <div className='App-home-form-details'>
-                        <div className='App-home-form-location'>
-                            <h3>Location</h3>
-                            <div className='App-home-form-location-inputs'>
-                                {locationElements}
-                            </div> 
-                        </div>
-                        <div className='App-home-form-date'>
-                            <h3>Check In/Out Dates</h3>
-                            <div className='App-home-form-date-inputs'>
-                                {dateElements}
-                            </div>
-                        </div>
-                        <div className='App-home-form-other'>
-                            <div className='App-home-form-text'>
-                                <h3>Number Of Guests</h3>
-                                <div className='App-home-form-text-inputs'>
-                                    {textElements}
+            {!isAdmin && isLandlord && isTenant && showLandlordHome && <button className='App-role-button-2' onClick={handleRoleChange}>Show Tenant</button>}
+            {!isAdmin && (isTenant || isAnonymous) && !showLandlordHome && <div className='App-tenant-home'>
+                <div className='App-tenant-home-top'>
+                    <form onSubmit={handleSubmit} className='App-home-form'>
+                        <div className='App-home-form-details'>
+                            <div className='App-home-form-location'>
+                                <h3>Location</h3>
+                                <div className='App-home-form-location-inputs'>
+                                    {locationElements}
                                 </div> 
                             </div>
-                            <div className='App-home-form-submit-container'>
-                                <button className='App-home-form-submit-button'>Search</button>
+                            <div className='App-home-form-date'>
+                                <h3>Check In/Out Dates</h3>
+                                <div className='App-home-form-date-inputs'>
+                                    {dateElements}
+                                </div>
                             </div>
-                        </div>           
+                            <div className='App-home-form-other'>
+                                <div className='App-home-form-text'>
+                                    <h3>Number Of Guests</h3>
+                                    <div className='App-home-form-text-inputs'>
+                                        {textElements}
+                                    </div> 
+                                </div>
+                                <div className='App-home-form-submit-container'>
+                                    <button className='App-home-form-submit-button'>Search</button>
+                                </div>
+                            </div>           
+                        </div>
+                    </form>
+                    {!isAdmin && isLandlord && isTenant && !showLandlordHome && <div className='App-role-button-container'>
+                        <button className='App-role-button' onClick={handleRoleChange}>Show Landlord</button>
                     </div>
-                </form>
+                    }
+                </div>
                 <div className='App-home-search-results'>
                     {hasSearchedOnce && resultElements}
                 </div>  
             </div>}
-            {!isAdmin && !isTenant && isLandlord && <LandlordHome token={props.token}/>}
+            {!isAdmin && ((!isTenant && isLandlord) || showLandlordHome) && <LandlordHome token={props.token}/>}
         </main>
     )
 }
