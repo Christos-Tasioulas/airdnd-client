@@ -116,7 +116,15 @@ export default function Profile(props) {
                 {/* In Link components you can only change the style using javascript styles similar to CSS
                   * but different syntax inside the style attribute of the tag
                   * This is a Link to the edit profile component 
-                  */}
+                */}
+                <Link to='/inbox' style={{position: "relative", right: "35%"}}>
+                    <button className='App-profile-inbox-button'>
+                        <p> airdndChat </p>
+                        <div class="App-profile-inbox-button-image-container">
+                            <img src = "https://icons-for-free.com/iconfiles/png/512/chat+bubble+communication+message+icon-1320183420573987974.png" />
+                        </div>
+                    </button>
+                </Link>
                 <Link to='/editprofile' style={{position: "relative", left: "35%"}}>
                     <div className="App-profile-edit">
                         <div className="App-profile-edit-button">
@@ -127,7 +135,7 @@ export default function Profile(props) {
                         </div>
                     </div>
                 </Link> 
-                <br /><br />
+                <br /><br /><br /><br />
                 <div className="App-profile-user">
                     <div className="App-profile-userInfo">
                         {/* Displays the profile image of the user. For now it is the default profile image, profile images are not working yet in the app. */}
@@ -143,10 +151,6 @@ export default function Profile(props) {
                         <div className='App-profile-contacts'>
                             <h2 className='App-profile-contacts-title'>Contact:</h2>
                                 {contactElements}
-                            <div className='App-profile-contact'>
-                                <img src="https://icons-for-free.com/iconfiles/png/512/chat+bubble+communication+message+icon-1320183420573987974.png" alt="chat"/>
-                                <h3><Link to="/inbox" style={{color: "#484848"}}>Inbox</Link></h3>
-                            </div>
                         </div>
                     </div>
                     {/* These are set to appear depending on the roles of the user, the user authentication is not ready yet */}
@@ -156,10 +160,9 @@ export default function Profile(props) {
                             <h3>Landlord Info</h3>
                             {!currentUser.isApproved && <h2>Landlord not approved yet!!</h2>}
                             {currentUser.isApproved && <div>
-                                <div className='App-profile-landlord-reviews'></div>
+                                <div className='App-profile-landlord-reviews'>N reviews</div>
                                 <div className='App-profile-landlord-booked'>
-                                    <button className='App-profile-landlord-booked-button' onClick={handleBooked}>Booked Places</button>
-                                    <p className='App-profile-landlord-booked-link'> Here are your <Link to="/landlordbooked" style={{textDecoration: "underline" }}>booked places</Link> </p>
+                                    <button className='App-profile-landlord-booked-button' onClick={handleBooked}>View Your Booked Places</button>
                                 </div>
                             </div>}
                         </div>}

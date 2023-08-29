@@ -20,7 +20,12 @@
     height: 100%;
 }
 
- .App-profile-edit-cog img {
+.App-profile-funky-buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.App-profile-edit-cog img {
     margin: 5px 0px -15px 0px;
 }
 
@@ -71,6 +76,62 @@
     height: 50px;
     margin: 5px 0px;
     cursor: pointer;
+}
+
+.App-profile-inbox-button {
+    width: 270px;
+    height: 70px;
+    border: 0;
+    outline: none;
+    background: #ff585D;
+    color: #fff;
+    font-size: 22px;
+    border-radius: 40px;
+    text-align:center;
+    box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.App-profile-inbox-button img{
+    width: 70px;
+    height:70px;
+}
+
+.App-profile-inbox-button-image-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    box-shadow: 0 0 12px -2px rgba(0,0,0,0.5);
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0;
+}
+
+.App-profile-inbox-button-image-container img{
+    margin-top: 20%;
+    width: 40px;
+    height: 40px;
+
+}
+
+.App-profile-inbox-button:hover{
+    background:#2f2f2f;
+    transition: 1s;
+
+}
+
+.App-profile-inbox-button:hover .App-profile-inbox-button-image-container{
+    transition: 1s;
+    opacity:1;
+}
+
+.App-profile-inbox-button:hover p{
+    transform: translateX(-30px);
+    transition: 1s;
+
 }
 
 /* More CSS */
@@ -151,15 +212,20 @@
 }
 
 .App-profile-landlord-booked-button {
-    background-color: white;
+    background-color: #ff585d;
+    color: white;
     border-color: #bababa;
-    padding: 5%;
+    padding: 3%;
     font-weight: bolder;
     font-size: larger;
+    border: none;
+    margin: 3%;
+    border-radius: 7.5px;
 }
 
 .App-profile-landlord-booked-button:hover {
-    background-color: #bababa;
+    background-color: #ee696d;
+    cursor: pointer;
 }
 
 .App-profile-tenant {
