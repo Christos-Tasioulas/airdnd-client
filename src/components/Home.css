@@ -1,5 +1,5 @@
 .App-home {
-    height: 100vh;
+    height: 110vh;
     padding: 20px;
     justify-content: center;
     align-items: center;
@@ -11,17 +11,33 @@
     height: 100%;
 }
 
-.App-tenant-home-top {
+.App-tenant-home-container {
     display: flex;
     flex-direction: row;
+    height: 100%;
+}
+
+.App-tenant-home-left {
+    display: flex;
+    flex-direction: column;
+    width: 85%;
+    height: 100%;
+}
+
+.App-tenant-home-right {
+    display: flex;
+    flex-direction: column;
+    width: 15%;
+    height: 100%;
 }
 
 .App-role-button-container {
-    width: 15%;
+    width: 100%;
+    height: 30%;
 }
 
 .App-role-button {
-    margin-top: 25%;
+    margin-top: 20%;
     background-color: #ff585d;
     color: white;
     border: none;
@@ -51,6 +67,12 @@
     background-color: #ee696d;
 }
 
+.App-tenant-home-filters {
+    height: 80%;
+    background-color: white;
+    box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
+}
+
 .App-home-image {
     height: 450px;
     width: 450px;
@@ -61,9 +83,9 @@
     box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
     display: flex;
     flex-direction: column;
-    height: 100%;
-    width: 85%;
-    /* margin-top: -270px; */
+    height: 20%;
+    width: 90%;
+    margin-left: 5%;
 }
 
 .App-home-form-details {
@@ -195,14 +217,16 @@
 }
 
 .App-home-search-results {
-    height: 67%;
-    width: 100%; /* new */
-    /* box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75); /* new */
-    margin-bottom: -130px; /* new */
+    margin-top: 5%;
+    height: 75%;
+    width: 90%;
+    background-color: white;
+    box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
+    margin-left: 5%;
 }
 
 .App-home-template-result {
-    height: 30%;
+    height: 10%;
     width: 90%;
     padding: auto;
     margin-top: auto;

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import './Profile.css' // We are reusing some css from the profile component
 import './PlaceInfo.css'
 
-export default function PlaceInfo() {
+export default function PlaceInfo(props) {
 
     // Retrieving the id of the place from the url parameter
     const { id } = useParams()
-    const location = useLocation();
-    const token = location.state?.token
+    const token = props.token
 
     // State variable with the current place
     const [place, setPlace] = useState({})

@@ -4,7 +4,6 @@
     width: 90%;
 }
 
-
 .scroll {
     width: 95%;
     font-size: larger;
@@ -54,6 +53,7 @@
     border: none;   
     font-size: large;
     align-self: center;
+    cursor: pointer;
 }
 
 .Add-place-button:hover {

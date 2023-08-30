@@ -120,7 +120,7 @@ export default function Profile(props) {
                 <Link to='/inbox' style={{position: "relative", right: "35%"}}>
                     <button className='App-profile-inbox-button'>
                         <p> airdndChat </p>
-                        <div class="App-profile-inbox-button-image-container">
+                        <div className="App-profile-inbox-button-image-container">
                             <img src = "https://icons-for-free.com/iconfiles/png/512/chat+bubble+communication+message+icon-1320183420573987974.png" alt="airdnd-chat"/>
                         </div>
                     </button>
