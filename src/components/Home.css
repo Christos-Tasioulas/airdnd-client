@@ -232,6 +232,24 @@
     margin-top: auto;
 }
 
+.App-tenant-home-dropdown {
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    height: 40px;
+    display: block;
+    border: 5px solid white;
+    padding: 5px 10px;
+    font-size: large;
+    border-bottom: 1px solid #ff585d;
+    outline: none;
+}
+
+.App-tenant-home-dropdown:focus {
+    border: 5px solid white;
+    border-bottom: 1px solid #ff585d;
+}
+
 .App-landlord-home {
     background-color: white;
     width: 80%;
@@ -257,4 +275,75 @@
     background-color: #ff585d;
     color: white;
     cursor: pointer;
+}
+
+/* new*/
+.price-filter {
+    width: 90%;
+    margin-top: 10%;
+    margin-left: 5%;
+    color: black;
+}
+
+.rc-slider-rail {
+    background-color: #5a5a5a;
+}
+
+.rc-slider-track-1 {
+    background-color: #ff585d;
+}
+
+.price-minmax {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-right: auto;
+}
+
+.price-minmax span {
+    width: 50%;
+}
+
+.rc-slider-handle {
+    border: solid 2px #ff585d !important;
+}
+
+.rc-slider-handle:active {
+    box-shadow: 0px 0px 0px 5px #ee696d !important;
+}
+
+.App-tenant-home-filter-checkboxes {
+    margin-left: 25%;
+}
+
+.App-tenant-home-filter-checkbox {
+    margin: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.App-tenant-home-filter-checkbox input {
+    flex: none;
+}
+
+.App-tenant-home-filter-button-container {
+    height: 10%;
+    align-items: center;
+}
+
+.App-tenant-home-filter-apply {
+    width: 40%;
+    height: 50%;
+    padding: 8px;
+    border-radius: 5px;
+    color: white;
+    background-color: #ff585d;
+    border: none;   
+    cursor: pointer;
+    font-size: medium;
+    margin-top: 10%; 
+}
+
+.App-tenant-home-filter-apply:hover {
+    background-color: #ee696d;
 }

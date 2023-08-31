@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminHome from './AdminHome';
 import "react-datepicker/dist/react-datepicker.css";
+import 'rc-slider/assets/index.css';
+import Slider from 'rc-slider';
 import './Home.css';
 import TextInput from './TextInput';
 import DatePicker from "react-datepicker";
@@ -11,19 +13,59 @@ import PaginatedGrid from './PaginatedGrid';
 import Card from './Card';
 
 export default function Home(props) {
-
+    
     const [isAdmin, setIsAdmin] = useState(false) 
     const [isLandlord, setIsLandlord] = useState(false)
     const [isTenant, setIsTenant] = useState(false)
     const [isAnonymous, setIsAnonymous] = useState(true)
-
+    
     const [hasSearched, setHasSearched] = useState(false)
     const [hasSearchedOnce, setHasSearchedOnce] = useState(false)
+    const [hasAddedFilters, setHasAddedFilters] = useState(false)
     const [searchResults, setSearchResults] = useState([])
-
+    
     const [showLandlordHome, setShowLandlordHome] = useState(false)
-
+    const [spaceTypeOptions, setSpaceTypeOptions] = useState([])
     const navigate = useNavigate();
+    const [maxPrice, setMaxPrice] = useState(0)
+    const [priceRange, setPriceRange] = useState([]);
+
+
+    useEffect(() => {
+        fetch('https://127.0.0.1:5000/listing/getAllUniqueSpaceTypes', {
+            method: 'GET'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("SpaceTypes Not Found");
+            }
+            return response.json();
+        })
+        .then(data => {
+            setSpaceTypeOptions(data.message);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+        fetch('https://127.0.0.1:5000/listing/getMaxDailyPrice', {
+            method: 'GET'
+        })
+        .then(response=> {
+            if (!response.ok) {
+                throw new Error("Max daily price Not Found");
+            }
+            return response.json();
+        })
+        .then(data => {
+            setMaxPrice(data.message);
+            setPriceRange([0, data.message])
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    }, []);
 
     useEffect(() => {
 
@@ -88,6 +130,18 @@ export default function Home(props) {
         checkInDate: currentDate,
         checkOutDate: currentDate,
         numPeople: "",
+    })
+
+    const [filterData, setFilterData] = useState({
+        spaceType: "",
+        hasSetAmenities: false,
+        hasFreeWifi: false,
+        hasCoolingSystem: false,
+        hasHeatingSystem: false,
+        hasKitchen: false,
+        hasTV: false,
+        hasParking: false,
+        hasElevator: false
     })
 
     // Only the home page for the admin is ready now
@@ -197,12 +251,51 @@ export default function Home(props) {
         );
     }
 
+    function convertToHumanReadable(inputString) {
+        // Split the input string by capital letters
+        const words = inputString.split(/(?=[A-Z])/);
+    
+        // Convert each word to lowercase and capitalize the first letter
+        const formattedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+    
+        // Remove the first word if it starts with "Has"
+        if (formattedWords[0] === "Has") {
+            formattedWords.shift();
+        }
+    
+        // Join the words to form the human-readable string
+        const humanReadableString = formattedWords.join(' ');
+    
+        return humanReadableString;
+    }
+
+    function removeSpaces(inputString) {
+        // Remove all spaces from the input string
+        const stringWithoutSpaces = inputString.replace(/\s+/g, '');
+    
+        return stringWithoutSpaces;
+    }
+
     // Bugfix so that the search button works at the first search submission
     // Use the useEffect hook to trigger the search when hasSearched changes
     useEffect(() => {
         if (hasSearched) {
             // Construct the URL and perform the search
             const formDataCopy = { ...formData };
+
+            const filterDataCopy = {...filterData}
+
+            filterDataCopy.minPrice = priceRange[0]
+            filterDataCopy.maxPrice = priceRange[1]
+    
+
+            filterDataCopy.hasSetAmenities = filterDataCopy.hasFreeWifi ||
+                                            filterDataCopy.hasCoolingSystem ||
+                                            filterDataCopy.hasHeatingSystem ||
+                                            filterDataCopy.hasKitchen ||
+                                            filterDataCopy.hasTV ||
+                                            filterDataCopy.hasParking ||
+                                            filterDataCopy.hasElevator
 
             const searchParams = new URLSearchParams();
 
@@ -212,6 +305,35 @@ export default function Home(props) {
             for (const key in formDataCopy) {
                 if (formDataCopy.hasOwnProperty(key) && (formDataCopy[key] !== "" && formDataCopy[key] !== "Invalid Date")) {
                     searchParams.append(key, formDataCopy[key]);  
+                }
+            }
+
+            if(hasAddedFilters) {
+
+                let amenitiesQuery = ""
+
+                for (const key in filterDataCopy) {
+                    if (filterDataCopy.hasOwnProperty(key) && (filterDataCopy[key] !== "" && filterDataCopy[key] !== undefined)) {
+                        if(key === "spaceType") {
+                            searchParams.append(key, filterDataCopy[key]);
+                        }
+                        else if(key === "minPrice" || key === "maxPrice") {
+                            searchParams.append(key, filterDataCopy[key] + "");
+                        }
+                        else if(key !== "hasSetAmenities")  {
+                            if(filterDataCopy[key] === true) {
+                                let humanReadable = convertToHumanReadable(key)
+                                if(humanReadable === "T V") {
+                                    humanReadable = removeSpaces(humanReadable)
+                                }
+                                amenitiesQuery += humanReadable + ","
+                            }
+                        }
+                    }
+                }
+
+                if (filterDataCopy.hasSetAmenities) {
+                    searchParams.append("amenities", amenitiesQuery)
                 }
             }
 
@@ -251,6 +373,72 @@ export default function Home(props) {
 
     function handleRoleChange() {
         setShowLandlordHome(!showLandlordHome)
+    }
+
+    const spaceTypeOptionElements = spaceTypeOptions.map((option, index) => (
+        <option key={index} value={option}>
+            {option}
+        </option>
+    ))
+
+    function handleFilterChange(event) {
+        const {name, value, type, checked} = event.target
+        setFilterData(prevFilterData => ({
+            ...prevFilterData,
+            [name]: type === "checkbox" ? checked : value
+        }))
+    }
+
+    const handlePriceChange = (values) => {
+        setPriceRange(values);
+    };
+
+    const checkboxes = [
+        {id:1, label:"Free Wifi", name: "hasFreeWifi", value: filterData.hasFreeWifi},
+        {id:2, label:"Cooling System", name: "hasCoolingSystem", value: filterData.hasCoolingSystem},
+        {id:3, label:"Heating System", name: "hasHeatingSystem", value: filterData.hasHeatingSystem},
+        {id:4, label:"Kitchen", name: "hasKitchen", value: filterData.hasKitchen},
+        {id:5, label:"TV", name: "hasTV", value: filterData.hasTV},
+        {id:6, label:"Parking", name: "hasParking", value: filterData.hasParking},
+        {id:7, label:"Elevator", name: "hasElevator", value: filterData.hasElevator}
+    ]
+
+    const checkboxElements = checkboxes.map(checkbox => (
+        <div key={checkbox.id} className='App-tenant-home-filter-checkbox'>
+            <input
+                id={checkbox.id}
+                type="checkbox"
+                name={checkbox.name}
+                checked={checkbox.value}
+                onChange={handleFilterChange} 
+            />
+            <label htmlFor={checkbox.id}>{checkbox.label}</label>
+        </div>
+    ))
+
+    function handleApply(event) {
+        event.preventDefault()
+        setHasAddedFilters(true)
+
+        // Update the hasSearched state for each condition
+        setHasSearched(
+            formData.city !== "" ||
+            formData.country !== "" ||
+            formData.neighborhood !== "" ||
+            formData.checkInDate !== null ||
+            formData.checkOutDate !== null ||
+            formData.numPeople !== ""
+        );
+
+        // Update the hasSearched state for each condition
+        setHasSearchedOnce(
+            formData.city !== "" ||
+            formData.country !== "" ||
+            formData.neighborhood !== "" ||
+            formData.checkInDate !== null ||
+            formData.checkOutDate !== null ||
+            formData.numPeople !== ""
+        );
     }
 
     return(
@@ -296,9 +484,36 @@ export default function Home(props) {
                             {!isAdmin && isLandlord && isTenant && !showLandlordHome && 
                                 <button className='App-role-button' onClick={handleRoleChange}>Show Landlord</button>}
                         </div>
-                        <div className='App-tenant-home-filters'>
-
-                        </div>
+                        <form className='App-tenant-home-filters' onSubmit={handleApply}>
+                            <h2>Add Filters</h2><br />
+                            <h3>Select Type:</h3>
+                            <select className="App-tenant-home-dropdown" name="spaceType" value={filterData.spaceType} onChange={handleFilterChange}>
+                                {spaceTypeOptionElements}
+                            </select>
+                            <div className="price-filter">
+                                <h3>Price Range:</h3>
+                                <Slider
+                                    range
+                                    min={0}
+                                    max={maxPrice}
+                                    value={priceRange}
+                                    onChange={handlePriceChange}
+                                />
+                                <div className="price-minmax">
+                                    <span>Min: ${priceRange[0]}</span>
+                                    <span>Max: ${priceRange[1]}</span>
+                                </div>
+                            </div>
+                            <div className='App-tenant-home-filter-checkboxes-container'> 
+                                <h3>Amenities:</h3>
+                                <div className='App-tenant-home-filter-checkboxes'>
+                                {checkboxElements}
+                                </div>
+                            </div>
+                            <div className='App-tenant-home-filter-button-container'>
+                                <button className='App-tenant-home-filter-apply'>Apply</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>}
