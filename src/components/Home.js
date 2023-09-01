@@ -366,6 +366,9 @@ export default function Home(props) {
 
     const resultElements = searchResults.map((searchResult) => (
         <Card
+            checkInDate={formData.checkInDate}
+            checkOutDate={formData.checkOutDate}
+            numPeople={formData.numPeople}
             key={searchResult.id}
             {...searchResult} 
         />

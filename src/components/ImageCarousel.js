@@ -6,17 +6,18 @@ import { Carousel } from "react-responsive-carousel";
 function ImageCarousel(props) {
 
     const images = props.images
+    const isTheLandlord = props.isTheLandlord
 
     return (
         <Carousel>
             {images.map((image, index) => (
                 <div key={index} style={{ position: "relative" }}>
-                    <button
+                    {isTheLandlord && <button
                         className="remove-button"
                         onClick={(event) => props.onImageRemove(event, "photos", index)}
                     >
                         X
-                    </button>
+                    </button>}
                     <img src={image.url} alt={`House view ${index}`} />
                 </div>
             ))}

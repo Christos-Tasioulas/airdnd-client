@@ -695,7 +695,7 @@ export default function EditPlace(props) {
                                     accept="image/png, image/jpeg, image/jpg"
                                 />
                             </div>
-                            {photoElements && <ImageCarousel images={photoElements} onImageRemove={handleRemoveItem}/>}
+                            {photoElements && <ImageCarousel isTheLandlord={true} images={photoElements} onImageRemove={handleRemoveItem}/>}
                         </div>
                         <div className='App-edit-place-date-inputs'>
                             {dateElements}

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
+import Map from './Map'
+import ImageCarousel from './ImageCarousel';
 import './Profile.css' // We are reusing some css from the profile component
 import './PlaceInfo.css'
 
@@ -9,15 +11,57 @@ export default function PlaceInfo(props) {
     const { id } = useParams()
     const token = props.token
 
+    const location = useLocation();
+    const navigate = useNavigate();
+    const searchParams = new URLSearchParams(location.search);
+    
+    // Access the checkIn and checkOut parameters
+    const checkInDate = searchParams.get('checkIn');
+    const checkOutDate = searchParams.get('checkOut');
+    const numPeople = searchParams.get('numPeople')
+
     // State variable with the current place
     const [place, setPlace] = useState({})
     const [landlordPlaces, setLandlordPlaces] = useState([])
     const [isTheLandlord, setIsTheLandlord] = useState(false)
-    const [isTenant, setIsTenant] = useState(true)
+    const [isTenant, setIsTenant] = useState(false)
     const [theLandlord, setTheLandlord] = useState({})
     const [isVerified, setIsVerified] = useState(false)
     const [transitElements, setTransitElements] = useState(null)
-    const [placeId, setPlaceId] = useState(null)
+    const [amenitiesElements, setAmenitiesElements] = useState(null)
+    const [houseRulesElements, setHouseRulesElements] = useState(null)
+    const [photoElements, setPhotoElements] = useState([])
+    const [placeId, setPlaceId] = useState({
+        // id: 0,
+        // name: "",
+        // address: "",
+        // photos: [],
+        // houseRules: [],
+        // amenities: [],
+        // minimumLengthStay: 0,
+        // checkIn: new Date(),
+        // checkOut: new Date(),
+        // maxGuests: 0,
+        // bedsNumber: 0,
+        // bathroomsNumber: 0,
+        // bedroomsNumber: 0,
+        // squareMeters: 0.0,
+        // spaceType: "",
+        // additionalPrice: 0,
+        // dailyPrice: 0,
+        // latitude: 0.0,
+        // longtitude: 0.0,
+        // country: "",
+        // city: "",
+        // neighborhood: "",
+        // transit: [],
+        // reviewCount: 0,
+        // reviewAvg: 0.0,
+        // hasLivingRoom: false,
+        // description: "",
+        // isBooked: false
+    })
+    const [position, setPosition] = useState([])
 
     // Getting the current place from the server app updating the state
     useEffect(() => {
@@ -71,20 +115,29 @@ export default function PlaceInfo(props) {
         .catch(error => {
             console.error(error);
         })
-        
-    }, [id, token])
 
-    // Another Bugfix that returns the landlords data for the verified users
-    useEffect(() => {
-        if(isVerified) {
-            fetch(`https://127.0.0.1:5000/listing/getListingById/${id}`)
+        fetch(`https://127.0.0.1:5000/listing/getListingById/${id}`)
             .then((response) => response.json())
             .then((data) => {
                 setPlace(data.message);
 
                 setTransitElements(data.message.transit.map((transit, index) => (
-                    <span key={index}>{transit} </span>
+                    <span key={index}>{transit}{data.message.transit.length !== index+1 && " • "}</span>
                 )))
+
+                setAmenitiesElements(data.message.amenities.map((amenity, index) => (
+                    <li key={index}>{amenity}</li>
+                )))
+                    
+                setHouseRulesElements(data.message.houseRules.map((houseRule, index) => (
+                    <li key={index}>{houseRule}</li>
+                )))
+
+                setPhotoElements(data.message.photos.map((photo, index) => (
+                    { key: index, url: photo }
+                )))
+
+                setPosition([data.message.latitude, data.message.longtitude])
     
                 // Now that the place state is updated, fetch the landlord's details
                 fetch(`https://127.0.0.1:5000/user/getUserById/${data.message.userId}`)
@@ -96,11 +149,9 @@ export default function PlaceInfo(props) {
             })
             .catch((error) => {
                 console.log(error);
-            });
-        }
+            })
         
-    }, [id, isVerified]);
-
+    }, [id, token])
 
     // Bugfix that controls whether the user is the landlord
     useEffect(() => {
@@ -119,14 +170,20 @@ export default function PlaceInfo(props) {
         if(place)
         {
             setPlaceId(place.id);
+            console.log(place.photos)
         }
     }, [place])
     
+    function handleClick(event) {
+        event.preventDefault();
+
+        navigate(`/booking/${id}`, {state: {checkInDate: checkInDate, checkOutDate: checkOutDate, numPeople: numPeople}})
+    }
 
     return (
         <main className='App-place-container'>
             <div className='App-place'>
-                {isTheLandlord && <Link to='/editplace' state={{ id: placeId }}  style={{position: "relative", left: "35%"}}>
+                {/* {isTheLandlord && <Link to='/editplace' state={{ id: placeId }}  style={{position: "relative", left: "35%"}}>
                     <div className="App-profile-edit">
                         <div className="App-profile-edit-button">
                             <div className="App-profile-edit-cog">
@@ -135,7 +192,7 @@ export default function PlaceInfo(props) {
                             <span>Edit Place</span>
                         </div>
                     </div>
-                </Link>}
+                </Link>} */}
                 <br/><br/>
                 <div className='App-place-info-container'>
                     <h2>{place.name}</h2>
@@ -147,12 +204,17 @@ export default function PlaceInfo(props) {
                         {isTheLandlord && place.isBooked ? <span>Booked</span> : <span>Not Booked</span>}
                     </div>
                     <div className='App-place-photos'>
-                        <span>{place.photos}</span>
+                        {place.photos && place.photos.length > 0 ? (
+                            <ImageCarousel isTheLandlord={false} images={photoElements} />
+                        ) : (
+                            <span>No Photos Available</span>
+                        )}
                     </div>
                     <div className='App-place-first-mini-container'>
                         <div className='App-place-basic-info'>
                             <div className='App-place-type-and-host'>
-                                <h3>{place.spaceType}</h3>{isTenant && !isTheLandlord && <h3>Host: {theLandlord.firstname} {theLandlord.lastname}</h3>}
+                                <h2>{place.spaceType}</h2>
+                                {isTenant && !isTheLandlord && <h3>Host: {theLandlord.firstname} {theLandlord.lastname}</h3>}
                             </div>
                             <div className='App-place-guests-and-rooms'>
                                 <span>{place.maxGuests} Guests • </span>
@@ -169,6 +231,11 @@ export default function PlaceInfo(props) {
                                 <div className='App-place-additional-price'>
                                     <h4>Additional per person: {place.additionalPrice}$/person</h4>
                                 </div>
+                            </div>
+                            <div className='App-place-reservation-button'>
+                                {isTenant && checkInDate && checkOutDate && <button onClick={handleClick}>
+                                    Booking
+                                </button>}
                             </div>
                         </div>
                     </div>
@@ -201,16 +268,24 @@ export default function PlaceInfo(props) {
                     </div>
                     <div className='App-place-third-mini-container'>
                         <div className='App-place-amenities'>
-                            {place.amenities !== [] ? <span>{place.amenities}</span> : <span>No Amenities</span>}
+                            <h3>Amenities</h3>
+                            {place.amenities !== [] ? <ul>{amenitiesElements}</ul> : <span>No Amenities</span>}
                         </div>
                         <div className='App-place-rules'>
-                            {place.houseRules !== [] ? <span>{place.houseRules}</span> : <span>No House Rules</span>}
+                            <h3>House Rules</h3>
+                            {place.houseRules !== [] ? <ul>{houseRulesElements}</ul> : <span>No House Rules</span>}
                         </div>
                     </div>
                     <div className='App-place-location'>
                         <h5 className='App-place-address'>{place.address}</h5>
-                        <h6 className='App-place-transit'>{transitElements}</h6>
-                        <span>{place.map}</span>
+                        {place.transit !== [] ? <h6 className='App-place-transit'>You can reach us by: {transitElements}</h6> : <span>No Transit</span>}
+                        {position.length === 2 ? (
+                            <div>
+                                <Map position={position} />
+                            </div>
+                        ) : (
+                            <span>Loading Map...</span>
+                        )}
                     </div>
                 </div>
             </div>

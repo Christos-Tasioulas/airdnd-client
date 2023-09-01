@@ -52,12 +52,13 @@
     width: 100%;
     margin: 10px;
     height: 40px;
-    display: block;
+    display: flex;
     border: none;
     padding: 5px 10px;
     font-size: large;
     border-bottom: 1px solid #ff585d;
     outline: none;
+    justify-self: center;
 }
 
 .App-signup-form-other-inputs {

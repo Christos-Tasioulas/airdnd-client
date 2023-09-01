@@ -5,7 +5,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 210vh;
+    height: 290vh;
 }
 
 .App-place {
@@ -47,15 +47,22 @@
 .App-place-photos {
     display: flex;
     flex-direction: row;
-    height: 25vh;
+    /* height: 25vh; */
     margin: 3%;
+}
+
+.App-place-photos .carousel-slider {
+    height: 70% !important;
+}
+
+.carousel {
+    height: 20% !important;
 }
 
 .App-place-first-mini-container {
     display: flex;
     flex-direction: row;
-    height: 20vh;
-    margin: 3%;
+    height: 30vh;
 }
 
 .App-place-basic-info {
@@ -63,18 +70,32 @@
     flex-direction: column;
     width: 50%;
     margin: 1%;
+    border-bottom: 2px groove rgba(0,0,0,0.25);
 }
 
 .App-place-type-and-host {
     height: 50%;
+    display: flex;
+    flex-direction: column;
+    /* box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75); */
+    /* align-items: center; */
 }
 
-.App-place-type-and-host h3 {
-    font-weight: 400;
+.App-place-type-and-host h2 {
+    text-align: center !important;
+    /* flex-direction: column;
+    justify-self: center; */
 }
 
 .App-place-guests-and-rooms {
     height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.App-place-guests-and-rooms span{
+    margin-right: 2px;
 }
 
 .App-place-reservation {
@@ -86,6 +107,30 @@
     box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
     color: white;
     margin: 1%;
+}
+
+.App-place-reservation-button {
+    height: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center
+    ;
+}
+
+.App-place-reservation-button button {
+    color: white;
+    background-color: #484848;
+    /* background-color: #969696; */
+    width: 40%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;   
+    cursor: pointer;
+    font-size: large;
+}
+
+.App-place-reservation-button button:hover {
+    background-color: #5a5a5a;
 }
 
 .App-place-price {
@@ -102,10 +147,12 @@
     width: 40%;
 }
 
+
 .App-place-description {
     height: 10vh;
     margin: 3%;
     text-align: left !important;
+    border-bottom: 2px groove rgba(0,0,0,0.25);
 }
 
 .App-place-second-mini-container {
@@ -117,17 +164,19 @@
 
 .App-place-additional-space-info {
     width: 50%;
+    border-bottom: 2px groove rgba(0,0,0,0.25);
 }
 
 .App-place-time-info {
     width: 50%;
     display: flex;
     flex-direction: column;
+    /* border-bottom: 2px groove rgba(0,0,0,0.25); */
 }
 
 .App-place-days-available {
     height: 30%;
-    background-color: #969696;
+    background-color: #484848;
     box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
     color: white;
 }
@@ -157,16 +206,27 @@
     width: 50%;
     display: flex;
     flex-direction: column;
-    box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
+    border: 2px groove rgba(0,0,0,0.25);
     margin: 10px;
+}
+
+.App-place-amenities ul{
+    list-style: none;
+    padding: 0;
 }
 
 .App-place-rules {
     width: 50%;
     display: flex;
     flex-direction: column;
-    box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
+    border: 2px groove rgba(0,0,0,0.25);
+    /* box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75); */
     margin: 10px;
+}
+
+.App-place-rules ul {
+    list-style: none;
+    padding: 0;
 }
 
 .App-place-location {

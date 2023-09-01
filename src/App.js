@@ -15,6 +15,7 @@ import Logout from './components/Logout';
 import EditProfile from './components/EditProfile';
 import AddPlace from './components/AddPlace';
 import PlaceInfo from './components/PlaceInfo';
+import Booking from './components/Booking';
 import EditPlace from './components/EditPlace';
 import UserInfo from './components/UserInfo';
 import LandlordBooked from './components/LandlordBooked';
@@ -59,6 +60,7 @@ function App() {
             <Route path="/editprofile" element={<EditProfile token={jsonWebToken}/>}/>
             <Route path="/addplace" element={<AddPlace token={jsonWebToken}/>}/>
             <Route path="/placeinfo/:id" element={<PlaceInfo token={jsonWebToken}/>}/>
+            <Route path="/booking/:id" element={<Booking token={jsonWebToken}/>}/>
             <Route path="/editplace/:id" element={<EditPlace token={jsonWebToken}/>}/>
             <Route path="/userinfo/:id" element={<UserInfo />}/>
             <Route path="/landlordbooked" element={<LandlordBooked token={jsonWebToken}/>}/>

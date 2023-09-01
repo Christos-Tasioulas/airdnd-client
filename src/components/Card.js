@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import './Card.css';
 
 export default function Card(props) {
-
-    const url = `/placeinfo/${props.id}`
+    
+    const url = `/placeinfo/${props.id}?checkIn=${props.checkInDate}&checkOut=${props.checkOutDate}&numPeople=${props.numPeople}`
 
     return (
         <Link to={url} style={{textDecoration: "none", color: "black"}}>
