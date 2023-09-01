@@ -16,8 +16,8 @@ export default function PlaceInfo(props) {
     const searchParams = new URLSearchParams(location.search);
     
     // Access the checkIn and checkOut parameters
-    const checkInDate = searchParams.get('checkIn');
-    const checkOutDate = searchParams.get('checkOut');
+    const checkInDate = new Date(searchParams.get('checkIn'));
+    const checkOutDate = new Date(searchParams.get('checkOut'));
     const numPeople = searchParams.get('numPeople')
 
     // State variable with the current place
@@ -170,7 +170,6 @@ export default function PlaceInfo(props) {
         if(place)
         {
             setPlaceId(place.id);
-            console.log(place.photos)
         }
     }, [place])
     
@@ -179,6 +178,8 @@ export default function PlaceInfo(props) {
 
         navigate(`/booking/${id}`, {state: {checkInDate: checkInDate, checkOutDate: checkOutDate, numPeople: numPeople}})
     }
+
+    const url = `/userinfo/${theLandlord.id}`
 
     return (
         <main className='App-place-container'>
@@ -214,7 +215,9 @@ export default function PlaceInfo(props) {
                         <div className='App-place-basic-info'>
                             <div className='App-place-type-and-host'>
                                 <h2>{place.spaceType}</h2>
-                                {isTenant && !isTheLandlord && <h3>Host: {theLandlord.firstname} {theLandlord.lastname}</h3>}
+                                {isTenant && !isTheLandlord && 
+                                    <h3>Host: <Link to={url} style={{color:"black"}}>{theLandlord.firstname} {theLandlord.lastname}</Link></h3>
+                                }
                             </div>
                             <div className='App-place-guests-and-rooms'>
                                 <span>{place.maxGuests} Guests • </span>
@@ -233,9 +236,11 @@ export default function PlaceInfo(props) {
                                 </div>
                             </div>
                             <div className='App-place-reservation-button'>
-                                {isTenant && checkInDate && checkOutDate && <button onClick={handleClick}>
+                            {isTenant && checkInDate.toString() !== "Invalid Date" && checkOutDate.toString() !== "Invalid Date" && (
+                                <button onClick={handleClick}>
                                     Booking
-                                </button>}
+                                </button>
+                            )}
                             </div>
                         </div>
                     </div>

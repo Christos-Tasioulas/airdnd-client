@@ -10,13 +10,14 @@ export default function Booking(props) {
     const location = useLocation();
     const { checkInDate, checkOutDate, numPeople } = location.state;
     const navigate = useNavigate()
+    const [message, setMessage] = useState('')
 
     const [bookingData, setBookingData] = useState({
         userId: 0,
-        placeId: id,
+        placeId: parseInt(id),
         numPeople: numPeople,
-        checkInDate: checkInDate,
-        checkOutDate: checkOutDate,
+        checkIn: checkInDate,
+        checkOut: checkOutDate,
         price: 0
     })
 
@@ -101,11 +102,58 @@ export default function Booking(props) {
 
     function handleYes(event) {
         event.preventDefault()
+
+        if(bookingData.numPeople === '') {
+            setMessage("Please, Add Number Of Guests")
+            return
+        }
+
+        fetch("https://127.0.0.1:5000/user/validateToken", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${props.token}`
+            }
+        }).then((response) => {
+
+            if (!response.ok) {
+                throw new Error("Token validation failed");
+            }
+
+            return response.json()
+
+        }).then((data) => {
+
+            const placeOptions = {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({id:bookingData.placeId})
+            }
+
+            fetch(`https://127.0.0.1:5000/listing/bookListing`, placeOptions)
+
+            const bookingDataCopy = {...bookingData}
+
+            bookingDataCopy.date = new Date()
+            bookingDataCopy.date = bookingDataCopy.date.toISOString()
+            bookingDataCopy.checkIn = bookingDataCopy.checkIn.toISOString()
+            bookingDataCopy.checkOut = bookingDataCopy.checkOut.toISOString()
+            bookingDataCopy.numPeople = parseInt(bookingDataCopy.numPeople)
+
+            const bookingOptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(bookingDataCopy) 
+            }
+            
+            fetch('https://127.0.0.1:5000/booking/addBooking', bookingOptions)
+            navigate("/")
+        });
     }
 
     return(
         <main className='App-booking-container'>
             <div className='App-booking'>
+                {message !== '' && <h3 className="App-signup-form-message">{message}</h3>}
                 <h1>Book This Place</h1>
                 <div className='App-booking-info'>
                     <div className='App-booking-guests-and-price'>
@@ -121,8 +169,8 @@ export default function Booking(props) {
                         <h2>Total: {bookingData.price}$/night</h2>
                     </div>
                     <div className='App-booking-dates'>
-                        <h2>Check In:</h2> <span>{dayjs(bookingData.checkInDate).format("DD/MM/YYYY")}</span>
-                        <h2>Check Out:</h2> <span>{dayjs(bookingData.checkOutDate).format("DD/MM/YYYY")}</span>
+                        <h2>Check In:</h2> <span>{dayjs(bookingData.checkIn).format("DD/MM/YYYY")}</span>
+                        <h2>Check Out:</h2> <span>{dayjs(bookingData.checkOut).format("DD/MM/YYYY")}</span>
                     </div>
                 </div>
                 <Assurance className="App-booking-assurance" title="Confirm?" onNo={handleNo} onYes={handleYes}/>

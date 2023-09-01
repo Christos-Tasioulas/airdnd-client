@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 
-export default function UserInfo() {
+export default function UserInfo(props) {
 
     // Retrieving the id of the user from the url parameter
     const { id } = useParams()
     const location = useLocation();
-    const token = location.state?.token
+    const token = props.token
 
     // State variable with the current user
     const [user, setUser] = useState({})
@@ -43,11 +43,9 @@ export default function UserInfo() {
             })
             .then(decodeData => {
                 setIsAdmin(decodeData.isAdmin)
-                if(decodeData.isAdmin) {
-                    fetch(`https://127.0.0.1:5000/user/getUserById/${id}`)
-                        .then((response) => response.json())
-                        .then((data) => setUser(data.message))
-                }
+                fetch(`https://127.0.0.1:5000/user/getUserById/${id}`)
+                    .then((response) => response.json())
+                    .then((data) => setUser(data.message))
                 
             })
             .catch(error => {
@@ -173,6 +171,8 @@ export default function UserInfo() {
         })
     }
 
+    const url = `/startmessage/${user.id}`
+
     return (
         <main className="App-profile-container">
             <div className="App-profile"> 
@@ -191,6 +191,10 @@ export default function UserInfo() {
                         <div className='App-profile-contacts'>
                             <h2 className='App-profile-contacts-title'>Contact:</h2>
                             {contactElements}
+                            {!isAdmin && <div className='App-profile-contact'>
+                                <img src="https://icons-for-free.com/iconfiles/png/512/chat+bubble+communication+message+icon-1320183420573987974.png" alt="airdnd-chat" />
+                                <Link to={url} style={{color: '#484848'}}><h3>airdndChat</h3></Link>
+                            </div>}
                         </div>
                     </div>
                     <div className='App-profile-userHistory'>

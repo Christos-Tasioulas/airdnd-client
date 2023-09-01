@@ -59,7 +59,7 @@ export default function AdminHome(props) {
     async function handleClick(event, user) {
         const id = user.id
 
-        navigate(`/userinfo/${id}`, { state: { token: props.token } })
+        navigate(`/userinfo/${id}`)
     }
 
     // This is every user row in the admin table

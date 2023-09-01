@@ -1,0 +1,33 @@
+.App-start-message-container {
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    height: 80vh;
+    flex-direction: column;
+}
+
+.App-start-message {
+    background-color: white;
+    width: 60%;
+    height: 70%;
+    padding: 50px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
+}
+
+.App-start-message-button {
+    width: 30%;
+    margin-top: 10%;
+    padding: 20px 30px 20px 30px; 
+    border-radius: 5px;
+    color: white;
+    /* background-color: #ff585d; */
+    background-color: #484848;
+    align-self: center;
+    border: none;   
+    cursor: pointer;
+    font-size: large;
+}

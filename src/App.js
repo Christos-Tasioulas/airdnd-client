@@ -21,6 +21,7 @@ import UserInfo from './components/UserInfo';
 import LandlordBooked from './components/LandlordBooked';
 import Inbox from './components/Inbox';
 import Message from './components/Message';
+import StartMessage from './components/StartMessage'
 
 function App() {
   
@@ -62,10 +63,11 @@ function App() {
             <Route path="/placeinfo/:id" element={<PlaceInfo token={jsonWebToken}/>}/>
             <Route path="/booking/:id" element={<Booking token={jsonWebToken}/>}/>
             <Route path="/editplace/:id" element={<EditPlace token={jsonWebToken}/>}/>
-            <Route path="/userinfo/:id" element={<UserInfo />}/>
+            <Route path="/userinfo/:id" element={<UserInfo token={jsonWebToken}/>}/>
             <Route path="/landlordbooked" element={<LandlordBooked token={jsonWebToken}/>}/>
             <Route path="/inbox" element={<Inbox token={jsonWebToken}/>}/>
             <Route path="/message/:id" element={<Message token={jsonWebToken}/>}/>
+            <Route path="/startmessage/:id" element={<StartMessage token={jsonWebToken}/>}/>
           </Routes>
         </div>
         <Footer />
