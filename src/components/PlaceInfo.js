@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import Map from './Map'
 import ImageCarousel from './ImageCarousel';
+import Reviews from './Reviews';
 import './Profile.css' // We are reusing some css from the profile component
 import './PlaceInfo.css'
 
@@ -219,6 +220,7 @@ export default function PlaceInfo(props) {
                                     <h3>Host: <Link to={url} style={{color:"black"}}>{theLandlord.firstname} {theLandlord.lastname}</Link></h3>
                                 }
                             </div>
+                            <br/>
                             <div className='App-place-guests-and-rooms'>
                                 <span>{place.maxGuests} Guests • </span>
                                 <span>{place.bedroomsNumber} Bedrooms • </span>
@@ -291,6 +293,9 @@ export default function PlaceInfo(props) {
                         ) : (
                             <span>Loading Map...</span>
                         )}
+                    </div>
+                    <div className='App-place-reviews'>
+                        <Reviews reviewed="place" token={token} id={id} />
                     </div>
                 </div>
             </div>

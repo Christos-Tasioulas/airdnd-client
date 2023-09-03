@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import './App.css';
 
-// All Components
+// All Components (the ones we navigate to)
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
@@ -22,6 +22,7 @@ import LandlordBooked from './components/LandlordBooked';
 import Inbox from './components/Inbox';
 import Message from './components/Message';
 import StartMessage from './components/StartMessage'
+import HostReviews from './components/HostReviews'
 
 function App() {
   
@@ -68,6 +69,7 @@ function App() {
             <Route path="/inbox" element={<Inbox token={jsonWebToken}/>}/>
             <Route path="/message/:id" element={<Message token={jsonWebToken}/>}/>
             <Route path="/startmessage/:id" element={<StartMessage token={jsonWebToken}/>}/>
+            <Route path="/hostreviews/:id" element={<HostReviews token={jsonWebToken}/>}/>
           </Routes>
         </div>
         <Footer />

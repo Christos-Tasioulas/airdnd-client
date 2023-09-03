@@ -1,0 +1,33 @@
+.App-review {
+    height: 100%;
+}
+
+.App-review-vitals {
+    display: flex;
+    flex-direction: row;
+    /* border-bottom: 0.5px groove #969696; */
+}
+
+.App-review-name-date {
+    font-size: medium;
+    margin-left: 5px;
+    margin-right: auto;
+}
+
+.App-review-name-date b {
+    color: #484848;
+}
+
+
+.App-review-name-date span {
+    color: #484848;
+}
+
+.App-review-rating {
+    margin-left: auto;
+}
+
+.App-review-text {
+    margin: 5px;
+    text-align: left;
+}

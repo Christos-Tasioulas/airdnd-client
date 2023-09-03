@@ -173,6 +173,8 @@ export default function UserInfo(props) {
 
     const url = `/startmessage/${user.id}`
 
+    const url1 = `/hostreviews/${user.id}`
+
     return (
         <main className="App-profile-container">
             <div className="App-profile"> 
@@ -201,6 +203,7 @@ export default function UserInfo(props) {
                         {/* These are set to appear depending on the roles of the user, we don't have the corresponding info yet in the database */}
                         {user.isLandlord && <div className='App-profile-landlord'>
                             <h3>Landlord Info</h3>
+                            <Link to={url1} style={{color: 'black'}}><div className='App-profile-landlord-reviews'>N reviews (Rate User)</div></Link>
                         </div>}
                         {user.isTenant && <div className='App-profile-tenant'>
                             <h3>Tenant Info</h3>

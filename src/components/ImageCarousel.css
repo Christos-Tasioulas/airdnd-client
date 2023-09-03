@@ -1,3 +1,7 @@
+.carousel-container {
+    height: 100%;
+}
+
 .remove-button {
     position: absolute;
     top: 0;
@@ -23,8 +27,13 @@
 }
 
 .carousel {
-    height: 70%;
+    height: 10%;
 }
+
+.carousel-slider {
+    height: 80%;
+}
+
 
 .carousel.carousel-slider .control-arrow {
     top: 0;

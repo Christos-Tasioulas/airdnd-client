@@ -110,6 +110,8 @@ export default function Profile(props) {
 
     }
 
+    const url1 = `/hostreviews/${currentUser.id}`
+
     return (
         <main className="App-profile-container">
             <div className="App-profile">
@@ -160,7 +162,7 @@ export default function Profile(props) {
                             <h3>Landlord Info</h3>
                             {!currentUser.isApproved && <h2>Landlord not approved yet!!</h2>}
                             {currentUser.isApproved && <div>
-                                <div className='App-profile-landlord-reviews'>N reviews</div>
+                                <Link to={url1} style={{color: 'black'}}><div className='App-profile-landlord-reviews'>N reviews</div></Link>
                                 <div className='App-profile-landlord-booked'>
                                     <button className='App-profile-landlord-booked-button' onClick={handleBooked}>View Your Booked Places</button>
                                 </div>

@@ -9,7 +9,7 @@ function ImageCarousel(props) {
     const isTheLandlord = props.isTheLandlord
 
     return (
-        <Carousel>
+        <Carousel className="carousel-container">
             {images.map((image, index) => (
                 <div key={index} style={{ position: "relative" }}>
                     {isTheLandlord && <button

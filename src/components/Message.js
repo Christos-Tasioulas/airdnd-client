@@ -80,7 +80,7 @@ export default function Message(props) {
         const { name, value } = event.target
         setFormData(prevFormData => ({
             ...prevFormData,
-            [name]:value
+            [name]: value
         }))
     }
 

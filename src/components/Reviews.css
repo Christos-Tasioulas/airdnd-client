@@ -1,0 +1,97 @@
+.App-review-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.App-review-star-system {
+    margin-bottom: 2%;
+}
+
+.App-review-textarea {
+    height: 40%;
+    width: 70%;
+    align-self: center;
+    padding: 20px;
+    font-size: large;
+}
+
+.App-review-button {
+    width: 20%;
+    margin-top: 2%;
+    padding: 10px 20px 10px 20px;
+    border-radius: 5px;
+    color: white;
+    /* background-color: #ff585d; */
+    background-color: #484848;
+    align-self: center;
+    border: none;   
+    cursor: pointer;
+    font-size: large;
+    justify-content: center;
+}
+
+.App-reviews-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.App-reviews-container .review-scroll-container {
+    margin-top: 10%;
+}
+
+.review-scroll-container {
+    max-height: 350px;
+    /* overflow-y: review-scroll; */
+    /* overflow-x: hidden; */
+    /* can also do ^ */
+    overflow-y: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2%;
+    border: 2px groove rgba(0,0,0,0.25);
+} 
+
+.review-scroll {
+    height: 80%;
+    width: 100%;
+    font-size: larger;
+    border-collapse: collapse;
+    /* margin: auto; */
+    /* justify-content: center; */
+}
+
+/* .App-reviews-header { */
+.review-scroll thead {
+    display: flex;
+    justify-content: center;
+    background-color: #484848;
+    color: white;
+}
+
+.Header-row {
+    width: 100%;
+    /* text-align: center !important; */
+    /* justify-content: center; */
+    justify-self: center;
+}
+
+.review-scroll-body {
+    width: 80%;
+    box-sizing: border-box;
+}
+
+.review-scroll-body tr {
+    width: 100%;
+    height: 20%;
+    /* border-bottom: 1px groove #484848; */
+    border-bottom: 2px groove rgba(0,0,0,0.25);
+}
+
+.review-scroll tr:nth-child(even) 
+{
+    background-color: whitesmoke;
+}

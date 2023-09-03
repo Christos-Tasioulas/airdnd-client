@@ -5,7 +5,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 290vh;
+    height: 360vh;
 }
 
 .App-place {
@@ -47,16 +47,16 @@
 .App-place-photos {
     display: flex;
     flex-direction: row;
-    /* height: 25vh; */
-    margin: 3%;
+    justify-content: center;
+    margin-top: 3%;
 }
 
-.App-place-photos .carousel-slider {
-    height: 70% !important;
-}
+/* .App-place-photos .carousel {
+    height: 60% !important;
+} */
 
 .carousel {
-    height: 20% !important;
+    /* height: 20% !important; */
 }
 
 .App-place-first-mini-container {
@@ -147,9 +147,8 @@
     width: 40%;
 }
 
-
 .App-place-description {
-    height: 10vh;
+    height: 12vh;
     margin: 3%;
     text-align: left !important;
     border-bottom: 2px groove rgba(0,0,0,0.25);
@@ -245,6 +244,10 @@
 .App-place-location h5, h6 {
     margin-top: 1em !important;
     margin-bottom: 1em !important;
+}
+
+.App-place-reviews {
+    margin-top: 20%;
 }
 
 /**
