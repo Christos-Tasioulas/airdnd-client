@@ -18,6 +18,7 @@ export default function Home(props) {
     const [isLandlord, setIsLandlord] = useState(false)
     const [isTenant, setIsTenant] = useState(false)
     const [isAnonymous, setIsAnonymous] = useState(true)
+    const [userId, setUserId] = useState(0) 
     
     const [hasSearched, setHasSearched] = useState(false)
     const [hasSearchedOnce, setHasSearchedOnce] = useState(false)
@@ -107,6 +108,7 @@ export default function Home(props) {
                 setIsLandlord(decodeData.isLandlord);
                 setIsTenant(decodeData.isTenant);
                 setIsAnonymous(false)
+                setUserId(decodeData.id)
             })
             .catch(error => {
                 console.error(error);
@@ -249,6 +251,32 @@ export default function Home(props) {
             formData.checkOutDate !== null ||
             formData.numPeople !== ""
         );
+
+        if(
+            formData.city !== "" ||
+            formData.country !== "" ||
+            formData.neighborhood !== "" ||
+            formData.checkInDate !== null ||
+            formData.checkOutDate !== null ||
+            formData.numPeople !== ""
+        ) {
+
+            if(isTenant) {
+                const formDataCopy = {...formData}
+                
+                formDataCopy.userId = userId
+                formDataCopy.checkInDate = dayjs(formDataCopy.checkInDate).format("YYYY/MM/DD")
+                formDataCopy.checkOutDate = dayjs(formDataCopy.checkOutDate).format("YYYY/MM/DD")
+
+                const requestOptions = {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formDataCopy)
+                }
+
+                fetch("https://127.0.0.1:5000/userSearch/addUserSearch", requestOptions)
+            }
+        }
     }
 
     function convertToHumanReadable(inputString) {

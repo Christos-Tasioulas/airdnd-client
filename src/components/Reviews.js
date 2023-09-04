@@ -22,6 +22,7 @@ export default function Reviews(props) {
     const [reviews, setReviews] = useState([])
     const [rating, setRating] = useState(0.0)
     const [isTheReviewed, setIsTheReviewed] = useState(false)
+    const [message, setMessage] = useState('')
 
     useEffect(() => {
 
@@ -101,6 +102,11 @@ export default function Reviews(props) {
     function handleSubmit(event) {
         event.preventDefault()
 
+        if(formData.reviewText === "") {
+            setMessage("Please write a review")
+            return;
+        }
+
         const formDataCopy = {...formData}
 
         formDataCopy.userId = userId
@@ -157,6 +163,7 @@ export default function Reviews(props) {
     return (
         <div className='App-reviews-container'>
             {!isTheReviewed && <form className='App-review-form'>
+                {message !== '' && <h3 className="App-signup-form-message">{message}</h3>}
                 <h3>Rate this {props.reviewed}</h3>
                 <div className='App-review-star-system'>
                     <Box

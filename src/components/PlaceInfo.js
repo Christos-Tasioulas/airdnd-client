@@ -107,6 +107,38 @@ export default function PlaceInfo(props) {
                 }
 
                 setIsVerified(true)
+
+
+                fetch(`https://127.0.0.1:5000/userListing/getUserListing/${decodeData.id}/${id}`, {method: 'GET'})
+                .then((resposnse) => {
+                    if(!resposnse.ok) {
+                        throw new Error('User Listing Not Found')
+                    }
+
+                    return resposnse.json()
+                })
+                .then((data) => {
+                    if(data.message) {
+                        const requestOptions = {
+                            method:'PUT',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({userId: decodeData.id, listingId: id})
+                        }
+
+                        fetch('https://127.0.0.1:5000/userListing/incrementUserListing', requestOptions)
+
+                    } else {
+
+                        const requestOptions = {
+                            method:'POST',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({userId: decodeData.id, listingId: id})
+                        }
+
+                        fetch('https://127.0.0.1:5000/userListing/addUserListing', requestOptions)
+
+                    }
+                })
                 
             })
             .catch(error => {
@@ -152,7 +184,7 @@ export default function PlaceInfo(props) {
                 console.log(error);
             })
         
-    }, [id, token])
+    }, [])
 
     // Bugfix that controls whether the user is the landlord
     useEffect(() => {
