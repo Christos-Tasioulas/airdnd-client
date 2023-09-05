@@ -30,6 +30,7 @@ export default function Home(props) {
     const navigate = useNavigate();
     const [maxPrice, setMaxPrice] = useState(0)
     const [priceRange, setPriceRange] = useState([]);
+    const [recommendedPlaces, setRecommendedPlaces] = useState([]);
 
 
     useEffect(() => {
@@ -109,6 +110,19 @@ export default function Home(props) {
                 setIsTenant(decodeData.isTenant);
                 setIsAnonymous(false)
                 setUserId(decodeData.id)
+
+                return fetch(`https://127.0.0.1:5000/user/recommend/${decodeData.id}`)
+                .then(recommendRes => {
+                    if(!recommendRes.ok) {
+                        throw new Error('Error at recommendation')
+                    }
+
+                    return recommendRes.json()
+                })
+                .then(recommendData => {
+                    setRecommendedPlaces(recommendData.message)
+                })
+
             })
             .catch(error => {
                 console.error(error);
@@ -402,6 +416,16 @@ export default function Home(props) {
         />
     ))
 
+    const recommendedPlacesElements = recommendedPlaces.map((recommendedPlace) => (
+        <Card
+            checkInDate={formData.checkInDate}
+            checkOutDate={formData.checkOutDate}
+            numPeople={formData.numPeople}
+            key={recommendedPlace.id}
+            {...recommendedPlace} 
+        />
+    ))
+
     function handleRoleChange() {
         setShowLandlordHome(!showLandlordHome)
     }
@@ -507,7 +531,7 @@ export default function Home(props) {
                             </div>
                         </form>
                         <div className='App-home-search-results'>
-                            <PaginatedGrid results={hasSearchedOnce ? resultElements : []}/>
+                            <PaginatedGrid results={hasSearchedOnce ? resultElements : recommendedPlacesElements}/>
                         </div>
                     </div>  
                     <div className='App-tenant-home-right'>
