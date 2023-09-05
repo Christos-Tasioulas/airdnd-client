@@ -108,7 +108,6 @@ export default function PlaceInfo(props) {
 
                 setIsVerified(true)
 
-
                 fetch(`https://127.0.0.1:5000/userListing/getUserListing/${decodeData.id}/${id}`, {method: 'GET'})
                 .then((resposnse) => {
                     if(!resposnse.ok) {
