@@ -8,14 +8,17 @@ function PaginatedGrid(props) {
 
     const results = props.results
 
+    // Current Page is the first one
     const [currentPage, setCurrentPage] = useState(1);
 
+    // Paging the results
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = results.slice(indexOfFirstItem, indexOfLastItem);
 
     const totalPages = Math.ceil(results.length / itemsPerPage);
 
+    // Page handling for each button 
     function handleFirstPage() {
         setCurrentPage(1)
     };
@@ -38,6 +41,7 @@ function PaginatedGrid(props) {
 
     return (
         <div className='grid'>
+        {/* This is a 5x2 grid displaying the items given */}
         <Grid container spacing={2} columns={5}>
             {currentItems.map((item, index) => (
             <Grid key={index} item xs={1}>
@@ -45,6 +49,7 @@ function PaginatedGrid(props) {
             </Grid>
             ))}
         </Grid>
+        {/* Page Buttons enabled and disabled accordingly */}
         <div className='grid-buttons'>
             <Button onClick={handleFirstPage} disabled={currentPage === 1}>
                 First Page

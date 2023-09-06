@@ -19,6 +19,7 @@ export default function AddPlace(props) {
 
     useEffect(() => {
 
+        // Token Validation
         fetch('https://127.0.0.1:5000/user/validateToken', {
             method: 'GET',
             headers: {
@@ -33,7 +34,7 @@ export default function AddPlace(props) {
         })
         .then(validationData => {
 
-            // Token validation succeeded, now decode the token to check if the user is an admin
+            // Token validation succeeded, now decode the token to check if the user is a Landlord
             return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {
@@ -69,6 +70,13 @@ export default function AddPlace(props) {
     const [hasGivenLocation, setHasGivenLocation] = useState(false)
 
     const currentDate = new Date()
+
+    /**
+     * State that contains the data obtained from the form.
+     * Changes whenever a field on the form changes
+     * Notice that the fields are assigned to values as if a user is not registered.
+     * That's because we need the authentication to work properly first to assign the values properly
+     */
     const [formData, setFormData] = useState({
         name: "",
         address: "",
@@ -90,14 +98,11 @@ export default function AddPlace(props) {
         city: "",
         neighborhood: "",
         transit: [],
-        // reviewCount: 0,
-        // reviewAvg: 0.0,
         hasLivingRoom: false,
         description: "",
-        // isBooked: false,
-        // userId: 0
     })
 
+    // Inputs regarding the location of the place
     const locationInputs = [ 
         {id:1, type:"text", placeholder:"Country", className:"App-login-form-input", name:"country", value:formData.country},
         {id:2, type:"text", placeholder:"City", className:"App-login-form-input", name:"city", value:formData.city},
@@ -117,6 +122,8 @@ export default function AddPlace(props) {
             />
         )
     )
+    
+    const [locationQuery, setLocationQuery] = useState("");
 
     // This is where we change the formData members accordingly
     function handleChange(event) {
@@ -125,17 +132,17 @@ export default function AddPlace(props) {
             ...prevFormData,
             [name]: type === "checkbox" ? checked : value
         }))
+        // Saving the address for map use
         if(name === "address")
         {
             setLocationQuery(value)
         }
     }
 
-    const [locationQuery, setLocationQuery] = useState("");
-
+    // get the position of the address in map coordinates (Buggy?)
     useEffect(() => {
 
-        // Construct the API URL
+        // Construct the openstreetmap API URL
         const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationQuery)}`;
     
         // Make the API request
@@ -155,10 +162,12 @@ export default function AddPlace(props) {
 
     }, [locationQuery])
 
+
     function handleNext(event)
     {
         event.preventDefault()
 
+        // Handling the blank fields
         if(formData.country === "") {
             setMessage("Please Add A Country")
             return
@@ -180,6 +189,7 @@ export default function AddPlace(props) {
         }
 
         setMessage("")
+        // Moving to the next form
         setHasGivenLocation(true)
     }
 
@@ -196,6 +206,7 @@ export default function AddPlace(props) {
     const [newTransitItem , setNewTransitItem] = useState("")
     const [transitElements, setTransitElements] = useState(null)
 
+    // Inputs on the second form
     const textInputs = [
         {id:1, type: 'text', placeholder: 'Name', className: 'App-signup-form-input', name: 'name', value: formData.name},
         {id:2, type: 'text', placeholder: 'Minimum Length Of Stay', className:'App-signup-form-input', name:'minimumLengthStay', value: formData.minimumLengthStay},
@@ -209,11 +220,13 @@ export default function AddPlace(props) {
         {id:10, type: 'text', placeholder: 'Additional Price Per Person', className: 'App-signup-form-input', name: 'additionalPrice', value: formData.additionalPrice},
     ]
 
+    // Date Inputs
     const dateInputs = [
         { id:11, placeholder: "Check In", name: "checkIn", className: "App-edit-place-check-in-check-out", selected: formData.checkIn, minDate: new Date()},
         { id:12, placeholder: "Check Out", name: "checkOut", className: "App-edit-place-check-in-check-out", selected: formData.checkOut, minDate: formData.checkIn },
     ];
     
+    // Inputs that have a list of elements
     const listInputs = [
         {id:13, type: 'text', placeholder: 'Add Amenity', className: 'App-edit-place-list-input', name: 'amenities', value: newAmenitiesItem, title: 'Amenities', items: amenitiesItems,  elements: amenitiesElements},
         {id:14, type: 'text', placeholder: 'Add House Rule', className: 'App-edit-place-list-input', name: 'houseRules', value: newHouseRulesItem, title: "House Rules", items: houseRulesItems,  elements: houseRulesElements},
@@ -232,6 +245,7 @@ export default function AddPlace(props) {
         />
     ))
 
+    // Calendar container
     const MyContainer = ({ className, children }) => {
         return (
           <div style={{ padding: "16px", background: "#ff585d", color: "#fff" }}>
@@ -269,8 +283,8 @@ export default function AddPlace(props) {
 
     useEffect(() => {
 
+        // Showcasing all list elements
         if (amenitiesItems) {
-            
             const updatedAmenitiesElements = amenitiesItems.map((item, index) => (
                 <ListItem key={index} item={item} onRemove={(event) => handleRemoveItem(event, "amenities", index)} />
             ))
@@ -296,8 +310,7 @@ export default function AddPlace(props) {
     function handleAdd(event, name, value) {
         event.preventDefault(); // prevents re-rendering
 
-        // const { name, value } = event.target
-        // console.log(value)
+        // Case we have added a picture
         if (value === null) {
 
             const { files } = event.target
@@ -336,14 +349,17 @@ export default function AddPlace(props) {
             }
         }
         else if (value.trim() !== '') {
+            // Case we have added an amenity
             if (name === 'amenities') {
                 setAmenitiesItems([...amenitiesItems, newAmenitiesItem])
                 setNewAmenitiesItem('')
             }
+            // Case we have added a house rule
             else if (name === 'houseRules') {
                 setHouseRulesItems([...houseRulesItems, newHouseRulesItem])
                 setNewHouseRulesItem('')
             }
+            // Case we have added transit
             else if (name === 'transit') {
                 setTransitItems([...transitItems, newTransitItem])
                 setNewTransitItem('')
@@ -355,18 +371,22 @@ export default function AddPlace(props) {
 
         event.preventDefault(); // prevents re-rendering
 
+        // case we will remove an amenity
         if (name === 'amenities') {
             const updatedItems = amenitiesItems.filter((_, i) => i !== index);
             setAmenitiesItems(updatedItems)
         }
+        // case we will remove a house rule
         else if (name === 'houseRules') {
             const updatedItems = houseRulesItems.filter((_, i) => i !== index);
             setHouseRulesItems(updatedItems)
         }
+        // case we will remove transit
         else if (name === 'transit') {
             const updatedItems = transitItems.filter((_, i) => i !== index);
             setTransitItems(updatedItems)
         }
+        // case we will remove a photo
         else if (name === 'photos') {
             const updatedItems = photoItems.filter((_, i) => i !== index);
             setPhotoItems(updatedItems)
@@ -375,6 +395,7 @@ export default function AddPlace(props) {
         }
     };
 
+    // All list inputs in HTML
     const listInputElements = listInputs.map(listInput => (
         <div key={listInput.id} className={listInput.className}>
             <h2>{listInput.title}</h2>
@@ -405,6 +426,7 @@ export default function AddPlace(props) {
         }
     }
     
+    // Visiting the location page for re-evaluation
     function handlePrev(event) {
         event.preventDefault()
         
@@ -414,7 +436,8 @@ export default function AddPlace(props) {
     function handleSubmit(event) {
         
         event.preventDefault()
-        
+
+        // Handling empty fields
         if (formData.name === "") {
             setMessage("Please enter a place name");
             return;
@@ -469,6 +492,7 @@ export default function AddPlace(props) {
         const timeDifference = formData.checkOut - formData.checkIn; // timeDiff is in milliseconds
         const differenceInDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
+        // We don't want dates to have less difference than the minimumLengthStay given 
         if (differenceInDays < formData.minimumLengthStay) {
             setMessage("Please enter valid available dates")
         }
@@ -479,17 +503,17 @@ export default function AddPlace(props) {
             houseRules: houseRulesItems,
             photos: photoItems,
             transit: transitItems,
-            latitude: position[0],
-            longtitude: position[1],
+            latitude: position[0], // position split in latitude and longtiude 
+            longtitude: position[1], 
             reviewCount: 0,
             reviewAvg: 0.0,
-            isBooked: false,
+            isBooked: false, // all new appartments are not booked
             userId: landlordId
         }
 
         console.log(formDataCopy)
 
-        
+        // Validate Token before adding the place in the database
         fetch('https://127.0.0.1:5000/user/validateToken', {
             method: 'GET',
             headers: {
@@ -519,6 +543,7 @@ export default function AddPlace(props) {
             })
             .then(decodeData => {
 
+                // Extra security check to ensure the landlord added the new place
                 if(decodeData.isLandlord)
                 {
                     // The request is a Post request with the copy of the form data object as JSON body
@@ -570,6 +595,7 @@ export default function AddPlace(props) {
                             <div className='App-edit-place-photos'>
                                 <h3>Add Photo</h3>
                                 <div className="App-add-place-image">
+                                    {/* Adding photos */}
                                     <input
                                         id="PlacePhotos"
                                         type="file"
@@ -580,11 +606,13 @@ export default function AddPlace(props) {
                                         accept="image/png, image/jpeg, image/jpg"
                                     />
                                 </div>
+                                {/* The Photos are presented in an image carousel. The landlord can remove the pictures */}
                                 {photoElements && <ImageCarousel isTheLandlord={true} images={photoElements} onImageRemove={handleRemoveItem}/>}
                             </div>
                             <div className='App-edit-place-date-inputs'>
                                 {dateElements}
                             </div>
+                            {/* Checkbox for the existance of a living room */}
                             <div className='App-edit-place-checkbox'>
                                 <input
                                     id="hasLivingRoom"
@@ -603,6 +631,7 @@ export default function AddPlace(props) {
                     <div className='App-edit-place-list-inputs'>
                         {listInputElements}
                     </div>
+                    {/* Text area for place description */}
                     <div className='App-edit-place-description'>
                         <textarea
                             placeholder='Add description'
@@ -625,10 +654,9 @@ export default function AddPlace(props) {
                         </div>
                     </div>
                 </div>}
+                {/* The error message will appear at the end of the form instead of the start as usual */}
                 {message !== "" && <h3 className="App-signup-form-message">{message}</h3>}
             </form>
         </main>
     )
 }
-
-// [37.9733483, 23.7266016] Tholou 15 Plaka

@@ -28,7 +28,7 @@ export default function Profile(props) {
         })
         .then(validationData => {
 
-            // Token validation succeeded, now decode the token to check if the user is an admin
+            // Token validation succeeded, now decode the token to retrieve their data
             return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {
@@ -84,6 +84,7 @@ export default function Profile(props) {
         </div>
     )
 
+    // Redirects landlord to their already booked places
     function handleBooked() {
 
         // Validating and decoding the JSON Web Token
@@ -110,6 +111,7 @@ export default function Profile(props) {
 
     }
 
+    // Url that redirects user to the host reviews
     const url1 = `/hostreviews/${currentUser.id}`
 
     return (
@@ -119,6 +121,7 @@ export default function Profile(props) {
                   * but different syntax inside the style attribute of the tag
                   * This is a Link to the edit profile component 
                 */}
+                {/* Inbox Button */}
                 <Link to='/inbox' style={{position: "relative", right: "35%"}}>
                     <button className='App-profile-inbox-button'>
                         <p> airdndChat </p>
@@ -127,6 +130,7 @@ export default function Profile(props) {
                         </div>
                     </button>
                 </Link>
+                {/* Edit Profile Button */}
                 <Link to='/editprofile' style={{position: "relative", left: "35%"}}>
                     <div className="App-profile-edit">
                         <div className="App-profile-edit-button">
@@ -160,6 +164,7 @@ export default function Profile(props) {
                     <div className='App-profile-userHistory'>
                         {currentUser.isLandlord && <div className='App-profile-landlord'>
                             <h3>Landlord Info</h3>
+                            {/* If landlored is approved, they can see their booked places and the reviews about them */}
                             {!currentUser.isApproved && <h2>Landlord not approved yet!!</h2>}
                             {currentUser.isApproved && <div>
                                 <Link to={url1} style={{color: 'black'}}><div className='App-profile-landlord-reviews'>N reviews</div></Link>

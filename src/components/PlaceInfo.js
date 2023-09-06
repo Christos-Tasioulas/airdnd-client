@@ -16,7 +16,7 @@ export default function PlaceInfo(props) {
     const navigate = useNavigate();
     const searchParams = new URLSearchParams(location.search);
     
-    // Access the checkIn and checkOut parameters
+    // Access the checkIn, checkOut and numPeople parameters
     const checkInDate = new Date(searchParams.get('checkIn'));
     const checkOutDate = new Date(searchParams.get('checkOut'));
     const numPeople = searchParams.get('numPeople')
@@ -24,44 +24,17 @@ export default function PlaceInfo(props) {
     // State variable with the current place
     const [place, setPlace] = useState({})
     const [landlordPlaces, setLandlordPlaces] = useState([])
-    const [isTheLandlord, setIsTheLandlord] = useState(false)
+    const [isTheLandlord, setIsTheLandlord] = useState(false) // The user by default is not the place landlord
     const [isTenant, setIsTenant] = useState(false)
-    const [theLandlord, setTheLandlord] = useState({})
+    const [theLandlord, setTheLandlord] = useState({}) // The landlord retrieved by place data
     const [isVerified, setIsVerified] = useState(false)
+
+    // Elements
     const [transitElements, setTransitElements] = useState(null)
     const [amenitiesElements, setAmenitiesElements] = useState(null)
     const [houseRulesElements, setHouseRulesElements] = useState(null)
     const [photoElements, setPhotoElements] = useState([])
-    const [placeId, setPlaceId] = useState({
-        // id: 0,
-        // name: "",
-        // address: "",
-        // photos: [],
-        // houseRules: [],
-        // amenities: [],
-        // minimumLengthStay: 0,
-        // checkIn: new Date(),
-        // checkOut: new Date(),
-        // maxGuests: 0,
-        // bedsNumber: 0,
-        // bathroomsNumber: 0,
-        // bedroomsNumber: 0,
-        // squareMeters: 0.0,
-        // spaceType: "",
-        // additionalPrice: 0,
-        // dailyPrice: 0,
-        // latitude: 0.0,
-        // longtitude: 0.0,
-        // country: "",
-        // city: "",
-        // neighborhood: "",
-        // transit: [],
-        // reviewCount: 0,
-        // reviewAvg: 0.0,
-        // hasLivingRoom: false,
-        // description: "",
-        // isBooked: false
-    })
+    const [placeId, setPlaceId] = useState(0)
     const [position, setPosition] = useState([])
 
     // Getting the current place from the server app updating the state
@@ -80,7 +53,7 @@ export default function PlaceInfo(props) {
         })
         .then(validationData => {
 
-            // Token validation succeeded, now decode the token to check if the user is an admin
+            // Token validation succeeded, now decode the token to check if the user is the landlord
             return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {
@@ -108,6 +81,7 @@ export default function PlaceInfo(props) {
 
                 setIsVerified(true)
 
+                // Tracking the users that clicked in the place info
                 fetch(`https://127.0.0.1:5000/userListing/getUserListing/${decodeData.id}/${id}`, {method: 'GET'})
                 .then((resposnse) => {
                     if(!resposnse.ok) {
@@ -117,6 +91,8 @@ export default function PlaceInfo(props) {
                     return resposnse.json()
                 })
                 .then((data) => {
+
+                    // Case it is not the first time the user clicked this place
                     if(data.message) {
                         const requestOptions = {
                             method:'PUT',
@@ -126,6 +102,7 @@ export default function PlaceInfo(props) {
 
                         fetch('https://127.0.0.1:5000/userListing/incrementUserListing', requestOptions)
 
+                    // Case it is the first time the user clicked this place
                     } else {
 
                         const requestOptions = {
@@ -148,11 +125,13 @@ export default function PlaceInfo(props) {
             console.error(error);
         })
 
+        // Getting the place
         fetch(`https://127.0.0.1:5000/listing/getListingById/${id}`)
             .then((response) => response.json())
             .then((data) => {
                 setPlace(data.message);
 
+                // Getting the html elements for list data and the position
                 setTransitElements(data.message.transit.map((transit, index) => (
                     <span key={index}>{transit}{data.message.transit.length !== index+1 && " • "}</span>
                 )))
@@ -205,27 +184,19 @@ export default function PlaceInfo(props) {
         }
     }, [place])
     
+    // Redirects the user to the booking form
     function handleClick(event) {
         event.preventDefault();
 
         navigate(`/booking/${id}`, {state: {checkInDate: checkInDate, checkOutDate: checkOutDate, numPeople: numPeople}})
     }
 
+    // Url that takes the user to the host info
     const url = `/userinfo/${theLandlord.id}`
 
     return (
         <main className='App-place-container'>
             <div className='App-place'>
-                {/* {isTheLandlord && <Link to='/editplace' state={{ id: placeId }}  style={{position: "relative", left: "35%"}}>
-                    <div className="App-profile-edit">
-                        <div className="App-profile-edit-button">
-                            <div className="App-profile-edit-cog">
-                                <img src="https://icon-library.com/images/white-gear-icon-png/white-gear-icon-png-12.jpg" alt="Edit-profile" className="App-profile-edit-favicon"/>
-                            </div>  
-                            <span>Edit Place</span>
-                        </div>
-                    </div>
-                </Link>} */}
                 <br/><br/>
                 <div className='App-place-info-container'>
                     <h2>{place.name}</h2>
@@ -237,6 +208,7 @@ export default function PlaceInfo(props) {
                         {isTheLandlord && place.isBooked ? <span>Booked</span> : <span>Not Booked</span>}
                     </div>
                     <div className='App-place-photos'>
+                        {/* Images are displayed in an image carousel. Cannot be removed in that page */}
                         {place.photos && place.photos.length > 0 ? (
                             <ImageCarousel isTheLandlord={false} images={photoElements} />
                         ) : (
@@ -247,6 +219,7 @@ export default function PlaceInfo(props) {
                         <div className='App-place-basic-info'>
                             <div className='App-place-type-and-host'>
                                 <h2>{place.spaceType}</h2>
+                                {/* Link to host info */}
                                 {isTenant && !isTheLandlord && 
                                     <h3>Host: <Link to={url} style={{color:"black"}}>{theLandlord.firstname} {theLandlord.lastname}</Link></h3>
                                 }
@@ -269,6 +242,7 @@ export default function PlaceInfo(props) {
                                 </div>
                             </div>
                             <div className='App-place-reservation-button'>
+                            {/* Booking Button appears only if the user has given dates to the search */}
                             {isTenant && checkInDate.toString() !== "Invalid Date" && checkOutDate.toString() !== "Invalid Date" && (
                                 <button onClick={handleClick}>
                                     Booking
@@ -317,6 +291,7 @@ export default function PlaceInfo(props) {
                     <div className='App-place-location'>
                         <h5 className='App-place-address'>{place.address}</h5>
                         {place.transit !== [] ? <h6 className='App-place-transit'>You can reach us by: {transitElements}</h6> : <span>No Transit</span>}
+                        {/* Renders the map if loaded (Buggy?) */}
                         {position.length === 2 ? (
                             <div>
                                 <Map position={position} />

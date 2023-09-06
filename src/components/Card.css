@@ -1,3 +1,4 @@
+/* This component pre dates the project code so it has slightly different CSS names */
 .cards-list {
     display: flex;
     flex-wrap: nowrap;
@@ -29,8 +30,6 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    /* margin-right: 2px; */
-    /* padding-right: 2%; */
 }
 
 .card--title {

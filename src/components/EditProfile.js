@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom'
 export default function EditProfile(props) {
 
     // This state is copy-pasted from the signup component
-    // TODO: Change this to user whenever possible
     const [user, setUser] = useState({});
       
     /**
@@ -188,6 +187,7 @@ export default function EditProfile(props) {
 
         setPrevPassword(user.password)
 
+        // Checking if the user has made any changes
         if (formData.username !== "" && formData.username !== user.username) {
             setHasMadeChanges(true)
             setUser(prevUser => ({
@@ -304,7 +304,6 @@ export default function EditProfile(props) {
             }
         }
 
-        // console.log(user)
         // The user has made changes to their profile, Safety Hazard triggered.
         // We probably need to edit this state to change whenever a change actually happens
         // The submit button can be pressed even if the user has not made changes

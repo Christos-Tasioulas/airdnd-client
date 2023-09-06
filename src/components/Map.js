@@ -4,6 +4,7 @@ import L from 'leaflet';  // Import Leaflet for custom icon
 
 import '../App.css';
 
+// Component that creates the map from OpenStreetMap (Buggy?)
 export default  function Map(props)
 {
     const customIcon = new L.Icon({

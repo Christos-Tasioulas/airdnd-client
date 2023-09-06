@@ -167,6 +167,7 @@
     /* margin-top: 30px; */
 }
 
+/* CSS for calendar */
 .react-datepicker-wrapper {
     width: 80%;
 }
@@ -277,7 +278,7 @@
     cursor: pointer;
 }
 
-/* new*/
+/* CSS for price slider */
 .price-filter {
     width: 90%;
     margin-top: 10%;
@@ -312,6 +313,7 @@
     box-shadow: 0px 0px 0px 5px #ee696d !important;
 }
 
+/* More CSS */
 .App-tenant-home-filter-checkboxes {
     margin-left: 25%;
 }

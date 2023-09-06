@@ -210,6 +210,7 @@ export default function Signup(props) {
                     })
                 }
 
+                // There is a bug that does not logs in the user automatically after registration
                 // Generating and validating a JSON Web Token for the user
                 fetch("https://127.0.0.1:5000/user/generateToken", registerOptions)
                 .then(response => {

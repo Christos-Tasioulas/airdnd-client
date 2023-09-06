@@ -2,6 +2,7 @@ import React  from "react";
 
 export default function ListItem(props) {
     
+    // Component for every list item in Add Place and Edit Place forms
     return (
         <li className='App-edit-place-list-input-value'>
             <span>{props.item}</span>

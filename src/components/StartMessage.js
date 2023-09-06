@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import './StartMessage.css';
 
+// Same as Message component but without previous message 
 export default function Message(props) {
 
-    const { id } = useParams()
+    const { id } = useParams() // recieverId
     const navigate = useNavigate()
     const currentDate = new Date()
 
@@ -34,7 +35,7 @@ export default function Message(props) {
         })
         .then(validationData => {
 
-            // Token validation succeeded, now decode the token to check if the user is an admin
+            // Token validation succeeded, now decode the token to check both user's data
             return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {

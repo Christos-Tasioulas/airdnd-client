@@ -3,7 +3,6 @@ import Assurance from './Assurance';
 import { useParams, useNavigate } from 'react-router-dom';
 import ImageCarousel from "./ImageCarousel";
 import TextInput from './TextInput';
-// import ListForm from '../../../trash/trash-app/src/ListForm';
 import DatePicker from "react-datepicker";
 import dayjs from "dayjs";
 import ListItem from './ListItem';
@@ -18,11 +17,18 @@ export default function EditPlace(props) {
     const navigate = useNavigate();
     
     const currentDate = new Date();
+    
+    /**
+     * State that contains the data obtained from the form.
+     * Changes whenever a field on the form changes
+     * Notice that the fields are assigned to values as if a user is not registered.
+     * That's because we need the authentication to work properly first to assign the values properly
+     */
     const [formData, setFormData] = useState({
         name: "",
         address: "",
         minimumLengthStay: "",
-        checkIn: currentDate,
+        checkIn: currentDate, // Dates start with current date 
         checkOut: currentDate,
         maxGuests: "",
         bedsNumber: "",
@@ -38,10 +44,13 @@ export default function EditPlace(props) {
 
     // State variable with the current place
     const [place, setPlace] = useState({})
+
+    // State variables for the token results
     const [landlordPlaces, setLandlordPlaces] = useState([])
     const [isTheLandlord, setIsTheLandlord] = useState(false)
     const [isVerified, setIsVerified] = useState(false)
     
+    // State variables for the list items
     const [amenitiesItems, setAmenitiesItems] = useState([])
     const [newAmenitiesItem , setNewAmenitiesItem] = useState("")
     const [amenitiesElements, setAmenitiesElements] = useState(null)
@@ -55,10 +64,10 @@ export default function EditPlace(props) {
     const [newTransitItem , setNewTransitItem] = useState("")
     const [transitElements, setTransitElements] = useState(null)
 
+    // State variables that determine what the user will do
     const [hasMadeChanges, setHasMadeChanges] = useState(false)
     const [wantsToDelete, setWantsToDelete] = useState(false)
 
-    // const [newItemValue, setNewItemValue] = useState("");
 
     useEffect(() => {
 
@@ -77,7 +86,7 @@ export default function EditPlace(props) {
         })
         .then(validationData => {
 
-            // Token validation succeeded, now decode the token to check if the user is an admin
+            // Token validation succeeded, now decode the token to check if the user is a landlord
             return fetch("https://127.0.0.1:5000/user/decodeToken", {
             method: "GET",
             headers: {
@@ -122,10 +131,6 @@ export default function EditPlace(props) {
             .then((response) => response.json())
             .then((data) => {
                 setPlace(data.message);
-                // setAmenitiesItems(data.message.amenities)
-                // setHouseRulesItems(data.message.houseRules)
-                // setPhotoItems(data.message.photos)
-                // setTransitItems(data.message.transit)
             })
             .catch((error) => {
                 console.log(error);
@@ -184,8 +189,7 @@ export default function EditPlace(props) {
     function handleAdd(event, name, value) {
         event.preventDefault(); // prevents re-rendering
 
-        // const { name, value } = event.target
-        // console.log(value)
+        // Case we have added a picture
         if (value === null) {
 
             const { files } = event.target
@@ -224,14 +228,17 @@ export default function EditPlace(props) {
             }
         }
         else if (value.trim() !== '') {
+            // Case we have added an amenity
             if (name === 'amenities') {
                 setAmenitiesItems([...amenitiesItems, newAmenitiesItem])
                 setNewAmenitiesItem('')
             }
+            // Case we have added a house rule
             else if (name === 'houseRules') {
                 setHouseRulesItems([...houseRulesItems, newHouseRulesItem])
                 setNewHouseRulesItem('')
             }
+            // Case we have added transit
             else if (name === 'transit') {
                 setTransitItems([...transitItems, newTransitItem])
                 setNewTransitItem('')
@@ -243,18 +250,22 @@ export default function EditPlace(props) {
 
         event.preventDefault(); // prevents re-rendering
 
+        // case we will remove an amenity
         if (name === 'amenities') {
             const updatedItems = amenitiesItems.filter((_, i) => i !== index);
             setAmenitiesItems(updatedItems)
         }
+        // case we will remove a house rule
         else if (name === 'houseRules') {
             const updatedItems = houseRulesItems.filter((_, i) => i !== index);
             setHouseRulesItems(updatedItems)
         }
+        // case we will remove transit
         else if (name === 'transit') {
             const updatedItems = transitItems.filter((_, i) => i !== index);
             setTransitItems(updatedItems)
         }
+        // case we will remove a photo
         else if (name === 'photos') {
             const updatedItems = photoItems.filter((_, i) => i !== index);
             setPhotoItems(updatedItems)
@@ -263,6 +274,7 @@ export default function EditPlace(props) {
         }
     };
 
+    // Text Inputs
     const textInputs = [
         {id:1, type: 'text', placeholder: 'Change Name', className: 'App-signup-form-input', name: 'name', value: formData.name},
         {id:2, type: 'text', placeholder: 'Change Address', className: 'App-signup-form-input', name: 'address', value: formData.address},
@@ -277,11 +289,13 @@ export default function EditPlace(props) {
         {id:11, type: 'text', placeholder: 'Change Additional Price Per Person', className: 'App-signup-form-input', name: 'additionalPrice', value: formData.additionalPrice},
     ]
 
+    // Date Inputs
     const dateInputs = [
         { id:12, placeholder: "Check In", name: "checkIn", className: "App-edit-place-check-in-check-out", selected: formData.checkIn, minDate: new Date(), title: "Availiable From:"},
         { id:13, placeholder: "Check Out", name: "checkOut", className: "App-edit-place-check-in-check-out", selected: formData.checkOut, minDate: formData.checkIn, title: "Up Until:"},
     ];
     
+    // Inputs that have a list of elements
     const listInputs = [
         {id:14, type: 'text', placeholder: 'Add Amenity', className: 'App-edit-place-list-input', name: 'amenities', value: newAmenitiesItem, title: 'Amenities', items: amenitiesItems,  elements: amenitiesElements},
         {id:15, type: 'text', placeholder: 'Add House Rule', className: 'App-edit-place-list-input', name: 'houseRules', value: newHouseRulesItem, title: "House Rules", items: houseRulesItems,  elements: houseRulesElements},
@@ -300,6 +314,7 @@ export default function EditPlace(props) {
         />
     ))
 
+    // Calendar container
     const MyContainer = ({ className, children }) => {
         return (
           <div style={{ padding: "16px", background: "#ff585d", color: "#fff" }}>
@@ -338,8 +353,8 @@ export default function EditPlace(props) {
 
     useEffect(() => {
 
+        // Showcasing all list elements
         if (amenitiesItems) {
-            
             const updatedAmenitiesElements = amenitiesItems.map((item, index) => (
                 <ListItem key={index} item={item} onRemove={(event) => handleRemoveItem(event, "amenities", index)} />
             ))
@@ -362,6 +377,7 @@ export default function EditPlace(props) {
             
     }, [amenitiesItems, transitItems, houseRulesItems])
 
+    // All list inputs in HTML
     const listInputElements = listInputs.map(listInput => (
         <div key={listInput.id} className={listInput.className}>
             <h2>{listInput.title}</h2>
@@ -404,8 +420,6 @@ export default function EditPlace(props) {
 
         event.preventDefault()
 
-        // let hasMadeChanges = false
-
         const updateData = {
             ...formData,
             amenities: amenitiesItems,
@@ -416,6 +430,7 @@ export default function EditPlace(props) {
 
         console.log(updateData)
         
+        // Checking if any change has happened
         if(updateData.name !== "" && updateData.name !== place.name)
         {
             setHasMadeChanges(true)
@@ -584,10 +599,12 @@ export default function EditPlace(props) {
 
     useEffect(() => {
 
+        // Adding the changes to the database
         if(hasMadeChanges){
 
             const placeCopy = {...place}
             
+            // Converting each value to the desired type (int, float, yyyy/mm/dd date)
             placeCopy.minimumLengthStay = parseInt(place.minimumLengthStay)
             placeCopy.bedsNumber = parseInt(place.bedsNumber)
             placeCopy.bedroomsNumber = parseInt(place.bedroomsNumber)
@@ -598,6 +615,7 @@ export default function EditPlace(props) {
             placeCopy.checkIn = dayjs(place.checkIn).format("YYYY/MM/DD")
             placeCopy.checkOut = dayjs(place.checkOut).format("YYYY/MM/DD")
 
+            // Validating the JWT for extra security
             fetch("https://127.0.0.1:5000/user/validateToken", {
                 method: "GET",
                 headers: {
@@ -618,6 +636,7 @@ export default function EditPlace(props) {
                     body: JSON.stringify(placeCopy),
                 }
     
+                // Editing the listing
                 console.log(placeCopy)
                 fetch("https://127.0.0.1:5000/listing/updateListing", placeOptions)
                 
@@ -631,8 +650,10 @@ export default function EditPlace(props) {
     {
         event.preventDefault()
 
+        // The user wants to delete
         setWantsToDelete(true)
 
+        // We move him to the top of the page smoothly
         window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
     }
 
@@ -640,6 +661,7 @@ export default function EditPlace(props) {
     {
         event.preventDefault()
 
+        // The user changed their minds
         setWantsToDelete(false)
     }
 
@@ -647,6 +669,7 @@ export default function EditPlace(props) {
     {
         event.preventDefault()
 
+        // Validate the JWT
         fetch("https://127.0.0.1:5000/user/validateToken", {
             method: "GET",
             headers: {
@@ -666,8 +689,10 @@ export default function EditPlace(props) {
                 headers: { "Content-Type": "application/json" },
             }
 
+            // delete the place 
             fetch(`https://127.0.0.1:5000/listing/deleteListing/${id}`, placeOptions)
             
+            // go to home page
             navigate("/")
         });
 
@@ -685,6 +710,7 @@ export default function EditPlace(props) {
                         <div className='App-edit-place-photos'>
                             <h3>Add Photo</h3>
                             <div className="App-add-place-image">
+                                {/* Adding photos */}
                                 <input
                                     id="PlacePhotos"
                                     type="file"
@@ -695,6 +721,7 @@ export default function EditPlace(props) {
                                     accept="image/png, image/jpeg, image/jpg"
                                 />
                             </div>
+                            {/* The Photos are presented in an image carousel. The landlord can remove the pictures */}
                             {photoElements && <ImageCarousel isTheLandlord={true} images={photoElements} onImageRemove={handleRemoveItem}/>}
                         </div>
                         <div className='App-edit-place-date-inputs'>
@@ -702,6 +729,7 @@ export default function EditPlace(props) {
                         </div>
                         <br />
                         <div className='App-edit-place-checkbox'>
+                            {/* Checkbox for the existance of a living room */}
                             <input
                                 id="hasLivingRoom"
                                 className="App-signup-form-checkbox"
@@ -720,6 +748,7 @@ export default function EditPlace(props) {
                     {listInputElements}
                 </div>
                 <div className='App-edit-place-description'>
+                    {/* Text area for place description */}
                     <textarea
                         placeholder='Change description'
                         className='App-edit-place-description-text'
@@ -729,13 +758,13 @@ export default function EditPlace(props) {
                     />
                 </div>
                 <div className='App-edit-place-buttons'>
+                    {/* User can select between editing or deleting the place */}
                     <div className='App-edit-place-buttons-save'>
                         <button onClick={handleSave}>
                             Save
                         </button>
                     </div>
                     <div className='App-edit-place-buttons-delete'>
-                        {/* <button > */}
                         <button onClick={handleDelete}>
                             Delete
                         </button>
@@ -743,6 +772,7 @@ export default function EditPlace(props) {
                 </div>
             </form>}
             <br /><br /><br />
+            {/* Asking the user if they want to delete the place */}
             { wantsToDelete && <Assurance title="Are you sure you want to delete the place?" className="App-edit-place-destroy-buttons-form" onYes={handleYes} onNo={handleNo}/>}
         </main>
     )

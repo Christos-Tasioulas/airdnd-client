@@ -2,8 +2,11 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import './Card.css';
 
+// Each place result is presented in this component
 export default function Card(props) {
     
+    // Each result is a Link to its info page with the id as URL parameter 
+    // and checkInDate, checkOutDate and numPeople as query parameters from the user search
     const url = `/placeinfo/${props.id}?checkIn=${props.checkInDate}&checkOut=${props.checkOutDate}&numPeople=${props.numPeople}`
 
     return (

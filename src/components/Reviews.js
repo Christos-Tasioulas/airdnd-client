@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import Review from "./Review";
 
+// Component that shows every review for a place or a host
 export default function Reviews(props) {
 
     const token = props.token;
@@ -12,6 +13,12 @@ export default function Reviews(props) {
     
     const [userId, setUserId] = useState(0)
     const [userUsername, setUserUsername] = useState("")
+
+    /**
+     * All the input fields inside the form
+     * In our formData object, the name attribute of the input is the name of the respective field as well
+     * In our formData object, the value attribute of the input is the value of respective the field as well
+     */
     const [formData, setFormData] = useState({
         listingId: props.reviewed === "place" ? parseInt(props.id) : null,
         landlordId: props.reviewed === "host" ? parseInt(props.id) : null,
@@ -40,7 +47,7 @@ export default function Reviews(props) {
         })
         .then(decodeData => {
 
-            // Verification for all roles in order to make the component reusable
+            // Decoding the user to check if the user is the one reviewed or not
 
             setUserId(decodeData.id)
 
@@ -58,6 +65,7 @@ export default function Reviews(props) {
             console.error(error);
         })
 
+        // Retrieving all reviews accordingly (API call changes depending on the reviewed object (host, place))
         if(props.reviewed === "place") {
             fetch(`https://127.0.0.1:5000/review/getReviewsByListingId/${props.id}`, {method: 'GET'})
             .then((res) => {
@@ -91,6 +99,7 @@ export default function Reviews(props) {
 
     }, [token])
 
+    // changes the text of the review form
     function handleChange(event) {
         const { name, value } = event.target
         setFormData(prevFormData => ({
@@ -102,6 +111,7 @@ export default function Reviews(props) {
     function handleSubmit(event) {
         event.preventDefault()
 
+        // checks if a review text exists
         if(formData.reviewText === "") {
             setMessage("Please write a review")
             return;
@@ -115,6 +125,7 @@ export default function Reviews(props) {
 
         console.log(formDataCopy)
 
+        // Extra security measure to ensure the user is logged in while the review is being sent
         fetch("https://127.0.0.1:5000/user/validateToken", {
             method: "GET",
             headers: {
@@ -152,16 +163,16 @@ export default function Reviews(props) {
         });
     }
 
+    // Reviews in HTML
     const reviewElements = reviews.map((review) => (
         <tr key={review.id}>
             <Review {...review}/>
         </tr>
     ))
-
-    console.log(isTheReviewed)
     
     return (
         <div className='App-reviews-container'>
+            {/* Hosts cannot review themselves */}
             {!isTheReviewed && <form className='App-review-form'>
                 {message !== '' && <h3 className="App-signup-form-message">{message}</h3>}
                 <h3>Rate this {props.reviewed}</h3>

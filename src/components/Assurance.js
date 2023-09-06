@@ -1,5 +1,6 @@
 import React from "react";
 
+// Reusable component that asks to the user yes or no questions
 export default function Assurance(props) {
     
     return (

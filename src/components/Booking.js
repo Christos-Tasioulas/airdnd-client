@@ -6,15 +6,18 @@ import dayjs from "dayjs";
 
 export default function Booking(props) {
 
+    // URL Parameters
     const { id } = useParams();
+
     const location = useLocation();
+    // Props carried via Link component
     const { checkInDate, checkOutDate, numPeople } = location.state;
     const navigate = useNavigate()
     const [message, setMessage] = useState('')
 
     const [bookingData, setBookingData] = useState({
         userId: 0,
-        placeId: parseInt(id),
+        placeId: parseInt(id), // url params are strings in react
         numPeople: numPeople,
         checkIn: checkInDate,
         checkOut: checkOutDate,
@@ -24,6 +27,8 @@ export default function Booking(props) {
     const [place, setPlace] = useState({})
 
     useEffect(() => {
+
+        // Token validation
         fetch('https://127.0.0.1:5000/user/validateToken', {
             method: 'GET',
             headers: {
@@ -38,7 +43,7 @@ export default function Booking(props) {
         })
         .then(validationData => {
     
-            // Token validation succeeded, now decode the token to check if the user is an admin
+            // Token validation succeeded, now decode the token to check if the user is a tenant
             return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {
@@ -56,7 +61,7 @@ export default function Booking(props) {
                 if(decodeData.isTenant) {
                     setBookingData(prevBookingData => ({
                         ...prevBookingData,
-                        userId: decodeData.id
+                        userId: decodeData.id // getting userId via JWT
                     }));
                 } else {
                     throw new Error("User is not Tenant");
@@ -71,6 +76,7 @@ export default function Booking(props) {
             console.error(error);
         });
     
+        // Getting the listing id and the accummulative price for the reservation
         fetch(`https://127.0.0.1:5000/listing/getListingById/${id}`)
             .then((response) => response.json())
             .then((data) => {
@@ -79,14 +85,17 @@ export default function Booking(props) {
 
                 setBookingData(prevBookingData => ({
                     ...prevBookingData,
+                    // Price = (numPeople-1) * additionalPrice + dailyPrice
                     price: (numPeople - 1) * data.message.additionalPrice + data.message.dailyPrice
                 }));
             });
+
     }, [props.token, id]);
     
 
     function handleNumberOfGuests(event) {
         const { value } = event.target
+        // Changing the num people and the price keys in booking data
         setBookingData(prevBookingData => ({
             ...prevBookingData,
             numPeople: value,
@@ -94,6 +103,7 @@ export default function Booking(props) {
         }));
     }
 
+    // Refusal to book returns the user back home directly
     function handleNo(event) {
         event.preventDefault()
 
@@ -103,11 +113,13 @@ export default function Booking(props) {
     function handleYes(event) {
         event.preventDefault()
 
+        // Handling Empty Number Of People Input Field
         if(bookingData.numPeople === '') {
             setMessage("Please, Add Number Of Guests")
             return
         }
 
+        // Token Validation
         fetch("https://127.0.0.1:5000/user/validateToken", {
             method: "GET",
             headers: {
@@ -123,6 +135,7 @@ export default function Booking(props) {
 
         }).then((data) => {
 
+            // Setting the isBooking field of teh listing to true
             const placeOptions = {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -136,8 +149,8 @@ export default function Booking(props) {
             bookingDataCopy.date = new Date()
             bookingDataCopy.date = bookingDataCopy.date.toISOString()
             bookingDataCopy.checkIn = bookingDataCopy.checkIn.toISOString()
-            bookingDataCopy.checkOut = bookingDataCopy.checkOut.toISOString()
-            bookingDataCopy.numPeople = parseInt(bookingDataCopy.numPeople)
+            bookingDataCopy.checkOut = bookingDataCopy.checkOut.toISOString() // Converting all dates to ISO strings yyyy/mm/dd to fit with MySQL
+            bookingDataCopy.numPeople = parseInt(bookingDataCopy.numPeople) // Converting numPeople to int
 
             const bookingOptions = {
                 method: "POST",
@@ -146,7 +159,7 @@ export default function Booking(props) {
             }
             
             fetch('https://127.0.0.1:5000/booking/addBooking', bookingOptions)
-            navigate("/")
+            navigate("/") // After the booking we are going to the home page
         });
     }
 
@@ -169,10 +182,12 @@ export default function Booking(props) {
                         <h2>Total: {bookingData.price}$/night</h2>
                     </div>
                     <div className='App-booking-dates'>
+                        {/* Dates will appear to the user in DD/MM/YYYY format */}
                         <h2>Check In:</h2> <span>{dayjs(bookingData.checkIn).format("DD/MM/YYYY")}</span>
                         <h2>Check Out:</h2> <span>{dayjs(bookingData.checkOut).format("DD/MM/YYYY")}</span>
                     </div>
                 </div>
+                {/* Assurance to confirm booking */}
                 <Assurance className="App-booking-assurance" title="Confirm?" onNo={handleNo} onYes={handleYes}/>
             </div>
         </main>

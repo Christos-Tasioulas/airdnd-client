@@ -5,7 +5,6 @@
 .App-review-vitals {
     display: flex;
     flex-direction: row;
-    /* border-bottom: 0.5px groove #969696; */
 }
 
 .App-review-name-date {

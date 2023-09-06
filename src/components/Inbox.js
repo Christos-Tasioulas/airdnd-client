@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import "./Inbox.css"
 
 function Inbox(props) {
     
     const [messages, setMessages] = useState([])
-    const [currentUserId, setCurrentUserId] = useState(0)
+    const [currentUserId, setCurrentUserId] = useState(0) // userId via JWT
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,7 +22,7 @@ function Inbox(props) {
         })
         .then(validationData => {
 
-            // Token validation succeeded, now decode the token to check if the user is an admin
+            // Token validation succeeded, now decode the token to get the messages of the user
             return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {

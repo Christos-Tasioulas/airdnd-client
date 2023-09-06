@@ -17,8 +17,6 @@
     flex-direction: column;
     align-items: center;
     box-shadow: 5px 5px 15px -1px rgba(0,0,0,0.75);
-    /* margin-top: -30px;
-    margin-bottom: 100px; */
 }
 
 .App-signup-form-message {
@@ -118,6 +116,7 @@
     background-color: #ee696d;
 }
 
+/* CSS for the approval or not messages */
 .App-approved {
     font-size: larger;
 }

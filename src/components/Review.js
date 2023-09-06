@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import './Review.css'
 
+// Component that contains each review with username, text and rating
 export default function Review(props) {
     
     

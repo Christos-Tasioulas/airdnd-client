@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'
 import Reviews from './Reviews';
 
+// Container component for the reviews component if the reviewed is a Host
 export default function HostReview(props) {
 
-    const [userId, setUserId] = useState(0)
-    const { id } = useParams() 
+    const [userId, setUserId] = useState(0) // fetching userId via JWT
+    const { id } = useParams() // id of the reviewed host
 
     useEffect(() => {
         fetch('https://127.0.0.1:5000/user/validateToken', {

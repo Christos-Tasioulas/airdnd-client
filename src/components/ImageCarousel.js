@@ -12,6 +12,7 @@ function ImageCarousel(props) {
         <Carousel className="carousel-container">
             {images.map((image, index) => (
                 <div key={index} style={{ position: "relative" }}>
+                    {/* This button only eixsts if the user is the landlord */}
                     {isTheLandlord && <button
                         className="remove-button"
                         onClick={(event) => props.onImageRemove(event, "photos", index)}

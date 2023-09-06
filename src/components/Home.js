@@ -14,18 +14,21 @@ import Card from './Card';
 
 export default function Home(props) {
     
+    // Token results
     const [isAdmin, setIsAdmin] = useState(false) 
     const [isLandlord, setIsLandlord] = useState(false)
     const [isTenant, setIsTenant] = useState(false)
-    const [isAnonymous, setIsAnonymous] = useState(true)
+    const [isAnonymous, setIsAnonymous] = useState(true) // user starts as anonymous
     const [userId, setUserId] = useState(0) 
     
+    // States depending on user actions
     const [hasSearched, setHasSearched] = useState(false)
     const [hasSearchedOnce, setHasSearchedOnce] = useState(false)
     const [hasAddedFilters, setHasAddedFilters] = useState(false)
     const [searchResults, setSearchResults] = useState([])
-    
     const [showLandlordHome, setShowLandlordHome] = useState(false)
+    
+    // States storing data
     const [spaceTypeOptions, setSpaceTypeOptions] = useState([])
     const navigate = useNavigate();
     const [maxPrice, setMaxPrice] = useState(0)
@@ -34,6 +37,8 @@ export default function Home(props) {
 
 
     useEffect(() => {
+
+        // Getting all unique space types from the database
         fetch('https://127.0.0.1:5000/listing/getAllUniqueSpaceTypes', {
             method: 'GET'
         })
@@ -50,6 +55,7 @@ export default function Home(props) {
             console.error(error);
         });
 
+        // Getting the maximum daily price from the database
         fetch('https://127.0.0.1:5000/listing/getMaxDailyPrice', {
             method: 'GET'
         })
@@ -90,7 +96,7 @@ export default function Home(props) {
         })
         .then(validationData => {
 
-            // Token validation succeeded, now decode the token to check if the user is an admin
+            // Token validation succeeded, now decode the token to check the role of the user
             return fetch("https://127.0.0.1:5000/user/decodeToken", {
             method: "GET",
             headers: {
@@ -109,6 +115,8 @@ export default function Home(props) {
                 setIsLandlord(decodeData.isLandlord);
                 setIsTenant(decodeData.isTenant);
                 setIsAnonymous(false)
+
+                // Getting the id of the user
                 setUserId(decodeData.id)
 
                 return fetch(`https://127.0.0.1:5000/user/recommend/${decodeData.id}`)
@@ -139,6 +147,12 @@ export default function Home(props) {
 
     const currentDate = new Date();
 
+    /**
+     * State that contains the data obtained from the form.
+     * Changes whenever a field on the form changes
+     * Notice that the fields are assigned to values as if a user is not registered.
+     * That's because we need the authentication to work properly first to assign the values properly
+     */
     const [formData, setFormData] = useState({
         neighborhood: "",
         city: "",
@@ -148,6 +162,9 @@ export default function Home(props) {
         numPeople: "",
     })
 
+    /**
+     * Similar to formData but handles everything about the filter section
+     */
     const [filterData, setFilterData] = useState({
         spaceType: "",
         hasSetAmenities: false,
@@ -160,22 +177,25 @@ export default function Home(props) {
         hasElevator: false
     })
 
-    // Only the home page for the admin is ready now
+    // Location Inputs of the search form
     const locationInputs = [
         { id:1, type: "text", placeholder: "Country", className: "App-home-form-location-input", name: "country", value: formData.country},
         { id:2, type: "text", placeholder: "City", className: "App-home-form-location-input", name: "city", value: formData.city},
         { id:3, type: "text", placeholder: "Neighborhood", className: "App-home-form-location-input", name: "neighborhood", value: formData.neighborhood}
     ]
 
+    // Date Inputs of the search form
     const dateInputs = [
         { id: 4, placeholder: "Check In", name: "checkInDate", className: "App-home-form-date-input", selected: formData.checkInDate, minDate: new Date()},
         { id: 5, placeholder: "Check Out", name: "checkOutDate", className: "App-home-form-date-input", selected: formData.checkOutDate, minDate: formData.checkInDate },
     ];
 
+    // Text Input of the search form
     const textInputs = [
         { id:6, type: "text", placeholder: "Number Of Guests", className: "App-home-form-text-input", name: "numPeople", value: formData.numPeople},
     ]
 
+    // Input Elements as HTML
     const locationElements = locationInputs.map(locationInput => (
         <TextInput
             key={locationInput.id}
@@ -188,6 +208,7 @@ export default function Home(props) {
         />
     ));
     
+    // Calendar container
     const MyContainer = ({ className, children }) => {
         return (
           <div style={{ padding: "16px", background: "#ff585d", color: "#fff" }}>
@@ -198,6 +219,7 @@ export default function Home(props) {
         );
     };
 
+    // DatePickers in HTML
     const dateElements = dateInputs.map((dateInput) => (
         <DatePicker
             key={dateInput.id}
@@ -266,6 +288,7 @@ export default function Home(props) {
             formData.numPeople !== ""
         );
 
+        // Adding the user search of the existing user in the database
         if(
             formData.city !== "" ||
             formData.country !== "" ||
@@ -279,8 +302,8 @@ export default function Home(props) {
                 const formDataCopy = {...formData}
                 
                 formDataCopy.userId = userId
-                formDataCopy.checkInDate = dayjs(formDataCopy.checkInDate).format("YYYY/MM/DD")
-                formDataCopy.checkOutDate = dayjs(formDataCopy.checkOutDate).format("YYYY/MM/DD")
+                formDataCopy.checkInDate = dayjs(formDataCopy.checkInDate).format("YYYY/MM/DD") // converting the dates to yyyy/mm/dd
+                formDataCopy.checkOutDate = dayjs(formDataCopy.checkOutDate).format("YYYY/MM/DD") 
 
                 const requestOptions = {
                     method: 'POST',
@@ -293,6 +316,7 @@ export default function Home(props) {
         }
     }
 
+    // Helper function for the amenities filters
     function convertToHumanReadable(inputString) {
         // Split the input string by capital letters
         const words = inputString.split(/(?=[A-Z])/);
@@ -311,6 +335,7 @@ export default function Home(props) {
         return humanReadableString;
     }
 
+    // Helper function for the amenities filters
     function removeSpaces(inputString) {
         // Remove all spaces from the input string
         const stringWithoutSpaces = inputString.replace(/\s+/g, '');
@@ -330,7 +355,7 @@ export default function Home(props) {
             filterDataCopy.minPrice = priceRange[0]
             filterDataCopy.maxPrice = priceRange[1]
     
-
+            // Checking if user has set amenities in the filter
             filterDataCopy.hasSetAmenities = filterDataCopy.hasFreeWifi ||
                                             filterDataCopy.hasCoolingSystem ||
                                             filterDataCopy.hasHeatingSystem ||
@@ -339,21 +364,27 @@ export default function Home(props) {
                                             filterDataCopy.hasParking ||
                                             filterDataCopy.hasElevator
 
+            // Constructing the URL
             const searchParams = new URLSearchParams();
 
+            // converting the dates to yyyy/mm/dd
             formDataCopy.checkInDate = dayjs(formDataCopy.checkInDate).format("YYYY/MM/DD")
             formDataCopy.checkOutDate = dayjs(formDataCopy.checkOutDate).format("YYYY/MM/DD")
 
+            // appending non empty search params in the url
             for (const key in formDataCopy) {
                 if (formDataCopy.hasOwnProperty(key) && (formDataCopy[key] !== "" && formDataCopy[key] !== "Invalid Date")) {
                     searchParams.append(key, formDataCopy[key]);  
                 }
             }
 
+            // case user has added filters
             if(hasAddedFilters) {
 
+                // storing the amenities query in this variable
                 let amenitiesQuery = ""
 
+                // appending non empty search params in the url
                 for (const key in filterDataCopy) {
                     if (filterDataCopy.hasOwnProperty(key) && (filterDataCopy[key] !== "" && filterDataCopy[key] !== undefined)) {
                         if(key === "spaceType") {
@@ -364,21 +395,26 @@ export default function Home(props) {
                         }
                         else if(key !== "hasSetAmenities")  {
                             if(filterDataCopy[key] === true) {
+                                // using the functions to convert the filter texts to url ready queries for the amenities search
                                 let humanReadable = convertToHumanReadable(key)
+                                // TV is returned as T V so we need to merge the letters
                                 if(humanReadable === "T V") {
                                     humanReadable = removeSpaces(humanReadable)
                                 }
+                                // each amenity is split by comma
                                 amenitiesQuery += humanReadable + ","
                             }
                         }
                     }
                 }
 
+                // append amenities in the url
                 if (filterDataCopy.hasSetAmenities) {
                     searchParams.append("amenities", amenitiesQuery)
                 }
             }
 
+            // Perform the search
             const url = `https://127.0.0.1:5000/listing/searchListings?${searchParams.toString()}`;
             console.log(url)
 
@@ -386,7 +422,6 @@ export default function Home(props) {
                 method: 'GET',
             };
 
-            // Search works only if all fields are filled
             fetch(url, searchOptions)
                 .then(response => {
                     if (!response.ok) {
@@ -406,6 +441,7 @@ export default function Home(props) {
         setHasSearched(false)
     }, [hasSearched]);
 
+    // Results and recommendations are both cards
     const resultElements = searchResults.map((searchResult) => (
         <Card
             checkInDate={formData.checkInDate}
@@ -426,16 +462,19 @@ export default function Home(props) {
         />
     ))
 
+    // Changes the home page accordingly
     function handleRoleChange() {
         setShowLandlordHome(!showLandlordHome)
     }
 
+    // shows each spaceType option in the dropdown
     const spaceTypeOptionElements = spaceTypeOptions.map((option, index) => (
         <option key={index} value={option}>
             {option}
         </option>
     ))
 
+    // handles any changes in the filter data
     function handleFilterChange(event) {
         const {name, value, type, checked} = event.target
         setFilterData(prevFilterData => ({
@@ -444,10 +483,12 @@ export default function Home(props) {
         }))
     }
 
+    // changes price range
     const handlePriceChange = (values) => {
         setPriceRange(values);
     };
 
+    // All checkbox inputs in the filter
     const checkboxes = [
         {id:1, label:"Free Wifi", name: "hasFreeWifi", value: filterData.hasFreeWifi},
         {id:2, label:"Cooling System", name: "hasCoolingSystem", value: filterData.hasCoolingSystem},
@@ -471,6 +512,7 @@ export default function Home(props) {
         </div>
     ))
 
+    // handles filter addition in searches
     function handleApply(event) {
         event.preventDefault()
         setHasAddedFilters(true)
@@ -498,13 +540,16 @@ export default function Home(props) {
 
     return(
         <main className='App-home'>
+            {/* renders different home page for each role. Admin Home is a separate component and so is Landlord Home. Anonymous users have the default home page (Tenant Home). */}
             {isAdmin && <AdminHome token={props.token}/>}
+            {/* Button that redirects tenant-landlord users to the tenant home page */}
             {!isAdmin && isLandlord && isTenant && showLandlordHome && <button className='App-role-button-2' onClick={handleRoleChange}>Show Tenant</button>}
             {!isAdmin && (isTenant || isAnonymous) && !showLandlordHome && <div className='App-tenant-home'>
                 <div className='App-tenant-home-container'>
                     <div className='App-tenant-home-left'>
                         <form onSubmit={handleSubmit} className='App-home-form'>
                             <div className='App-home-form-details'>
+                                {/* Search is divided in 3 sections: Location, Check In/Check Out Dates, Num People */}
                                 <div className='App-home-form-location'>
                                     <h3>Location</h3>
                                     <div className='App-home-form-location-inputs'>
@@ -530,15 +575,18 @@ export default function Home(props) {
                                 </div>           
                             </div>
                         </form>
+                        {/* Results are being presented in a paginated 5 x 2 grid It is determined whether the results are search or recommendations if the user has searched once or not*/}
                         <div className='App-home-search-results'>
                             <PaginatedGrid results={hasSearchedOnce ? resultElements : recommendedPlacesElements}/>
                         </div>
                     </div>  
                     <div className='App-tenant-home-right'>
+                        {/* Button that redirects tenant-landlord users to the landlord home page */}
                         <div className='App-role-button-container'>
                             {!isAdmin && isLandlord && isTenant && !showLandlordHome && 
                                 <button className='App-role-button' onClick={handleRoleChange}>Show Landlord</button>}
                         </div>
+                        {/* Search Filters consist of a dropdown with all space types, a bar with dynamic price range and checkboxes with basic amenities */}
                         <form className='App-tenant-home-filters' onSubmit={handleApply}>
                             <h2>Add Filters</h2><br />
                             <h3>Select Type:</h3>

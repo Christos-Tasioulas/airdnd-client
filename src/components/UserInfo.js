@@ -171,8 +171,10 @@ export default function UserInfo(props) {
         })
     }
 
+    // URL for start message
     const url = `/startmessage/${user.id}`
 
+    // URL for host reviews
     const url1 = `/hostreviews/${user.id}`
 
     return (

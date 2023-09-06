@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import './AdminHome.css';
+import './AdminHome.css'; // Reusing Admin Home css
 import './LandlordHome.css';
 
 export default function LandlordHome(props) {
@@ -8,7 +8,7 @@ export default function LandlordHome(props) {
     const [places, setPlaces] = useState([])
     const navigate = useNavigate();
 
-    // Retrieve all users
+    // Retrieve all uplaces by landlordId
     useEffect(() => {
 
         fetch('https://127.0.0.1:5000/user/validateToken', {
@@ -25,7 +25,7 @@ export default function LandlordHome(props) {
         })
         .then(validationData => {
 
-            // Token validation succeeded, now decode the token to check if the user is an admin
+            // Token validation succeeded, now decode the token to check if the user is a landlord and their places
             return fetch("https://127.0.0.1:5000/user/decodeToken", {
                 method: "GET",
                 headers: {
@@ -56,7 +56,7 @@ export default function LandlordHome(props) {
         })
     }, [props.token])
 
-    // Navigating the admin to each individual user's info page
+    // Navigating the table to each individual place's edit page
     async function handleClick(event, place) {
         const id = place.id
 

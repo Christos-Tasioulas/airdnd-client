@@ -2,6 +2,7 @@
     height: 100%;
 }
 
+/* CSS for remove button of images */
 .remove-button {
     position: absolute;
     top: 0;
@@ -19,6 +20,7 @@
     background-color: #ee696d;
 }
 
+/* More Image Carousel CSS */
 .carousel.carousel-slider {
     position: relative;
     margin: 0;
