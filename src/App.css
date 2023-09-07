@@ -240,6 +240,53 @@
   justify-content: center;
 }
 
+/* Export Buttons */
+.App-export-buttons {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-self: center;
+}
+
+.App-JSON-button {
+  color: white;
+  background-color: #484848;
+  width: 20%;
+  margin-top: 2%;
+  padding: 10px 20px 10px 20px;
+  border-radius: 5px;
+  align-self: center;
+  border: none;   
+  cursor: pointer;
+  font-size: large;
+  margin-right: 29%;
+  margin-left: 1%;
+}
+
+.App-JSON-button:hover {
+  background-color: #5a5a5a;
+}
+
+.App-XML-button {
+  color: white;
+  background-color: #484848;
+  width: 20%;
+  margin-top: 2%;
+  padding: 10px 20px 10px 20px;
+  border-radius: 5px;
+  align-self: center;
+  border: none;   
+  cursor: pointer;
+  font-size: large;
+  margin-left: 29%;
+  margin-right: 1%;
+}
+
+.App-XML-button:hover {
+  background-color: #5a5a5a;
+}
+
 /*
  * Default profile pic url:
  * https://i.pinimg.com/originals/46/72/f8/4672f876389036583190d93a71aa6cb2.jpg

@@ -27,6 +27,7 @@ export default function PlaceInfo(props) {
     const [isTheLandlord, setIsTheLandlord] = useState(false) // The user by default is not the place landlord
     const [isTenant, setIsTenant] = useState(false)
     const [theLandlord, setTheLandlord] = useState({}) // The landlord retrieved by place data
+    const [theLandlordReviewCount, setTheLandlordReviewCount] = useState(0)
     const [isVerified, setIsVerified] = useState(false)
 
     // Elements
@@ -69,7 +70,6 @@ export default function PlaceInfo(props) {
             .then(decodeData => {
 
                 // Verification for all roles in order to make the component reusable
-
                 setIsTenant(decodeData.isTenant)
 
                 if (decodeData.isLandlord) {
@@ -139,7 +139,7 @@ export default function PlaceInfo(props) {
                 setAmenitiesElements(data.message.amenities.map((amenity, index) => (
                     <li key={index}>{amenity}</li>
                 )))
-                    
+
                 setHouseRulesElements(data.message.houseRules.map((houseRule, index) => (
                     <li key={index}>{houseRule}</li>
                 )))
@@ -153,7 +153,14 @@ export default function PlaceInfo(props) {
                 // Now that the place state is updated, fetch the landlord's details
                 fetch(`https://127.0.0.1:5000/user/getUserById/${data.message.userId}`)
                     .then((response) => response.json())
-                    .then((data) => setTheLandlord(data.message))
+                    .then((data) => {
+                        setTheLandlord(data.message)
+
+                        fetch(`https://127.0.0.1:5000/review/countReviewsByLandlordId/${data.message.id}`)
+                        .then((response) => response.json())
+                        .then((data) => setTheLandlordReviewCount(data.message))
+
+                    })
                     .catch((error) => {
                         console.log(error);
                     });
@@ -221,7 +228,14 @@ export default function PlaceInfo(props) {
                                 <h2>{place.spaceType}</h2>
                                 {/* Link to host info */}
                                 {isTenant && !isTheLandlord && 
-                                    <h3>Host: <Link to={url} style={{color:"black"}}>{theLandlord.firstname} {theLandlord.lastname}</Link></h3>
+                                    <div className='App-place-host'>
+                                        <div className='App-place-host-name-and-image'>
+                                            <h3>Host: <Link to={url} style={{color:"black"}}>{theLandlord.firstname} {theLandlord.lastname}</Link></h3>
+                                            <img src={theLandlord.image} alt='profile' className='App-place-host-image'/>
+                                        </div>
+                                        {/* host image */}
+                                        <span>{theLandlordReviewCount} Host Review{theLandlordReviewCount !== 1 && 's'}</span>
+                                    </div>
                                 }
                             </div>
                             <br/>

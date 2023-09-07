@@ -329,11 +329,34 @@
 }
 
 .App-tenant-home-filter-button-container {
+    display: flex;
+    flex-direction: row;
     height: 10%;
     align-items: center;
 }
 
+.App-tenant-home-filter-remove {
+    margin-right: auto;
+    margin-left: 5%;
+    width: 40%;
+    height: 50%;
+    padding: 8px;
+    border-radius: 5px;
+    color: white;
+    background-color: #484848;
+    border: none;   
+    cursor: pointer;
+    font-size: medium;
+    margin-top: 10%; 
+}
+
+.App-tenant-home-filter-remove:hover {
+    background-color: #5a5a5a;
+}
+
 .App-tenant-home-filter-apply {
+    margin-left: auto;
+    margin-right: 5%;
     width: 40%;
     height: 50%;
     padding: 8px;

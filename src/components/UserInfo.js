@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation, Link } from 'react-router-dom';
+import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
 
 export default function UserInfo(props) {
 
     // Retrieving the id of the user from the url parameter
     const { id } = useParams()
     const location = useLocation();
+    const navigate = useNavigate();
     const token = props.token
 
     // State variable with the current user
     const [user, setUser] = useState({})
     const [isAdmin, setIsAdmin] = useState(false)
+    const [landlordReviewCount, setLandlordReviewCount] = useState(0)
 
     // Getting the current user from the server app updating the state
     useEffect(() => {
@@ -43,6 +45,7 @@ export default function UserInfo(props) {
             })
             .then(decodeData => {
                 setIsAdmin(decodeData.isAdmin)
+
                 fetch(`https://127.0.0.1:5000/user/getUserById/${id}`)
                     .then((response) => response.json())
                     .then((data) => setUser(data.message))
@@ -58,6 +61,16 @@ export default function UserInfo(props) {
         })
         
     }, [id, token])
+
+    // Getting the number of reviews about the landlord
+    useEffect(() => {
+        if(user.isLandlord) {
+            
+            fetch(`https://127.0.0.1:5000/review/countReviewsByLandlordId/${id}`)
+                .then((response) => response.json())
+                .then((data) => setLandlordReviewCount(data.message))
+        }
+    }, [user])
 
     /**
      * State that contains the data obtained from the form.
@@ -171,6 +184,58 @@ export default function UserInfo(props) {
         })
     }
 
+    // Redirects admin to the landlord's places
+    function handleBooked() {
+
+        // Validating and decoding the JSON Web Token
+        fetch("https://127.0.0.1:5000/user/validateToken", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${props.token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(validationData => {
+
+            navigate(`/landlordplaces/${user.id}`)
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    }
+
+    // Redirects admin to tenant's bookings
+    function handleBookings() {
+        // Validating and decoding the JSON Web Token
+        fetch("https://127.0.0.1:5000/user/validateToken", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${props.token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(validationData => {
+
+            navigate(`/tenantbooked/${user.id}`)
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
     // URL for start message
     const url = `/startmessage/${user.id}`
 
@@ -205,10 +270,14 @@ export default function UserInfo(props) {
                         {/* These are set to appear depending on the roles of the user, we don't have the corresponding info yet in the database */}
                         {user.isLandlord && <div className='App-profile-landlord'>
                             <h3>Landlord Info</h3>
-                            <Link to={url1} style={{color: 'black'}}><div className='App-profile-landlord-reviews'>N reviews (Rate User)</div></Link>
+                            <Link to={url1} style={{color: 'black'}}><div className='App-profile-landlord-reviews'>{landlordReviewCount} Review{landlordReviewCount !== 1 && 's'} (Rate User)</div></Link>
+                            {isAdmin && <div className='App-profile-landlord-booked'>
+                                <button className='App-profile-landlord-booked-button' onClick={handleBooked}>View Places</button>
+                            </div>}
                         </div>}
                         {user.isTenant && <div className='App-profile-tenant'>
                             <h3>Tenant Info</h3>
+                            {isAdmin && <button className='App-profile-landlord-booked-button' onClick={handleBookings}>User Bookings</button>}
                         </div>}
                         {isAdmin && user.isLandlord && <form className='App-approve-user' onSubmit={handleSubmit}>
                             {/* User Approval form using radio buttons because we can only choose one of them */}

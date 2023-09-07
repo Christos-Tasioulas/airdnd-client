@@ -512,6 +512,25 @@ export default function Home(props) {
         </div>
     ))
 
+    // handles filter removal in searches
+    function handleRemoveAll(event) {
+        event.preventDefault()
+
+        setFilterData({
+            spaceType: "",
+            hasSetAmenities: false,
+            hasFreeWifi: false,
+            hasCoolingSystem: false,
+            hasHeatingSystem: false,
+            hasKitchen: false,
+            hasTV: false,
+            hasParking: false,
+            hasElevator: false
+        })
+
+        setPriceRange([0, maxPrice])
+    }
+
     // handles filter addition in searches
     function handleApply(event) {
         event.preventDefault()
@@ -591,6 +610,9 @@ export default function Home(props) {
                             <h2>Add Filters</h2><br />
                             <h3>Select Type:</h3>
                             <select className="App-tenant-home-dropdown" name="spaceType" value={filterData.spaceType} onChange={handleFilterChange}>
+                                <option value="">
+                                    No Space Type
+                                </option>
                                 {spaceTypeOptionElements}
                             </select>
                             <div className="price-filter">
@@ -614,6 +636,7 @@ export default function Home(props) {
                                 </div>
                             </div>
                             <div className='App-tenant-home-filter-button-container'>
+                                <button onClick={handleRemoveAll} className='App-tenant-home-filter-remove'>Remove All</button>
                                 <button className='App-tenant-home-filter-apply'>Apply</button>
                             </div>
                         </form>

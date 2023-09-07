@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useParams, useNavigate } from 'react-router-dom'
 import Assurance from './Assurance';
 import './Booking.css';
 import dayjs from "dayjs";
@@ -14,6 +14,7 @@ export default function Booking(props) {
     const { checkInDate, checkOutDate, numPeople } = location.state;
     const navigate = useNavigate()
     const [message, setMessage] = useState('')
+    const [hasBooked, setHasBooked] = useState(false)
 
     const [bookingData, setBookingData] = useState({
         userId: 0,
@@ -159,13 +160,20 @@ export default function Booking(props) {
             }
             
             fetch('https://127.0.0.1:5000/booking/addBooking', bookingOptions)
-            navigate("/") // After the booking we are going to the home page
+
+            setHasBooked(true)
         });
     }
 
     return(
         <main className='App-booking-container'>
-            <div className='App-booking'>
+            {/* Message to indicate successful booking */}
+            {hasBooked && <div className='App-approved'>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Eo_circle_light-green_checkmark.svg/2048px-Eo_circle_light-green_checkmark.svg.png" alt="success"/>
+                <h2>Sucessfully Booked</h2>
+                <h4>Go to <Link to="/" style={{color: "black", textDecoration: 'none'}}>Home Page</Link></h4>
+            </div>}
+            {!hasBooked && <div className='App-booking'>
                 {message !== '' && <h3 className="App-signup-form-message">{message}</h3>}
                 <h1>Book This Place</h1>
                 <div className='App-booking-info'>
@@ -189,7 +197,7 @@ export default function Booking(props) {
                 </div>
                 {/* Assurance to confirm booking */}
                 <Assurance className="App-booking-assurance" title="Confirm?" onNo={handleNo} onYes={handleYes}/>
-            </div>
+            </div>}
         </main>
     )
 }

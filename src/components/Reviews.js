@@ -4,6 +4,8 @@ import './Reviews.css';
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import Review from "./Review";
+import JSONButton from './JSONButton';
+import XMLButton from './XMLButton';
 
 // Component that shows every review for a place or a host
 export default function Reviews(props) {
@@ -13,6 +15,7 @@ export default function Reviews(props) {
     
     const [userId, setUserId] = useState(0)
     const [userUsername, setUserUsername] = useState("")
+    const [isAdmin, setIsAdmin] = useState(false)
 
     /**
      * All the input fields inside the form
@@ -50,6 +53,7 @@ export default function Reviews(props) {
             // Decoding the user to check if the user is the one reviewed or not
 
             setUserId(decodeData.id)
+            setIsAdmin(decodeData.isAdmin)
 
             if(props.reviewed === 'host') {
                 console.log(decodeData.id)
@@ -169,11 +173,13 @@ export default function Reviews(props) {
             <Review {...review}/>
         </tr>
     ))
+
+    const dataType = props.reviewed + "Review"
     
     return (
         <div className='App-reviews-container'>
             {/* Hosts cannot review themselves */}
-            {!isTheReviewed && <form className='App-review-form'>
+            {!isAdmin && !isTheReviewed && <form className='App-review-form'>
                 {message !== '' && <h3 className="App-signup-form-message">{message}</h3>}
                 <h3>Rate this {props.reviewed}</h3>
                 <div className='App-review-star-system'>
@@ -212,6 +218,10 @@ export default function Reviews(props) {
                     </tbody>  
                 </table>
             </div>
+            {isAdmin && <div className="App-export-buttons">
+                <XMLButton type={dataType} id={props.id} data={reviews}/>
+                <JSONButton type={dataType} id={props.id} data={reviews}/>
+            </div>}
         </div>
     )
 }

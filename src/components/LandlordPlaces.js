@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, useParams } from 'react-router-dom';
-import './AdminHome.css';
-import './LandlordHome.css'; // reusing AdminHome and LandlordHome css
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import JSONButton from "./JSONButton";
+import XMLButton from "./XMLButton";
 
-function LandlordBooked(props) {
+// Container component for the landlord home component if the user is the admin
+export default function LandlordPlaces(props) {
 
     const { id } = useParams()
-    const [places, setPlaces] = useState([])
-    const navigate = useNavigate();
     const [isAdmin, setIsAdmin] = useState(false)
+    const [places, setPlaces] = useState([])
+    const navigate = useNavigate()
 
-    // Retrieve all places by landlord id 
     useEffect(() => {
-
         fetch('https://127.0.0.1:5000/user/validateToken', {
             method: 'GET',
             headers: {
@@ -41,8 +40,8 @@ function LandlordBooked(props) {
                 return decodeResponse.json();
             })
             .then(decodeData => {
-                if(decodeData.isLandlord) {
-                    fetch(`https://127.0.0.1:5000/listing/getBookedPlacesByLandlordId/${id}`)
+                if(decodeData.isAdmin) {
+                    fetch(`https://127.0.0.1:5000/listing/getPlacesByLandlordId/${id}`)
                     .then((res) => res.json())
                     .then((data) => setPlaces(data.message))
                 }
@@ -64,7 +63,7 @@ function LandlordBooked(props) {
     async function handleClick(event, place) {
         const id = place.id
 
-        navigate(`/editplace/${id}`)
+        navigate(`/placeinfo/${id}`)
     }
     
     // This is every user row in the landlord table
@@ -81,7 +80,7 @@ function LandlordBooked(props) {
     return (
         <main className='App-home'>
             <div className='App-landlord-home'>
-                <h1>Booked Places</h1>
+                <h1>Places To Rent Info</h1>
                 <br />
                 <div className='scroll-container'>
                     <table className='scroll'>
@@ -99,9 +98,12 @@ function LandlordBooked(props) {
                         </tbody>  
                     </table>
                 </div>
+                <div className="App-export-buttons">
+                    <XMLButton type="Places" id={id} data={places}/>
+                    <JSONButton type="Places" id={id} data={places}/>
+                </div>
             </div>
         </main>
     )
-};
 
-export default LandlordBooked;
+}

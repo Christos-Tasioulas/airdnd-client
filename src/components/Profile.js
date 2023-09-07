@@ -7,6 +7,7 @@ export default function Profile(props) {
     const navigate = useNavigate();
     
     const [currentUser, setCurrentUser] = useState({})
+    const [landlordReviewCount, setLandlordReviewCount] = useState(0)
 
     useEffect(() => {
         if (!props.token) {
@@ -68,7 +69,16 @@ export default function Profile(props) {
         .catch(error => {
             console.error(error);
         });
-    }, [props.token]) 
+    }, [props.token])
+    
+    // Getting the number of reviews about the landlord
+    useEffect(() => {
+        if(currentUser.isLandlord) {
+            fetch(`https://127.0.0.1:5000/review/countReviewsByLandlordId/${currentUser.id}`)
+                .then((response) => response.json())
+                .then((data) => setLandlordReviewCount(data.message))
+        }
+    }, [currentUser])
 
     // All the favicons shown in the contact section of the user profile
     const contacts = [
@@ -102,13 +112,38 @@ export default function Profile(props) {
         })
         .then(validationData => {
 
-            navigate(`/landlordbooked`)
+            navigate(`/landlordbooked/${currentUser.id}`)
 
         })
         .catch(error => {
             console.error(error);
         });
 
+    }
+
+    // Redirects tenant to their bookings
+    function handleBookings() {
+        // Validating and decoding the JSON Web Token
+        fetch("https://127.0.0.1:5000/user/validateToken", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${props.token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(validationData => {
+
+            navigate(`/tenantbooked/${currentUser.id}`)
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
     }
 
     // Url that redirects user to the host reviews
@@ -167,7 +202,7 @@ export default function Profile(props) {
                             {/* If landlored is approved, they can see their booked places and the reviews about them */}
                             {!currentUser.isApproved && <h2>Landlord not approved yet!!</h2>}
                             {currentUser.isApproved && <div>
-                                <Link to={url1} style={{color: 'black'}}><div className='App-profile-landlord-reviews'>N reviews</div></Link>
+                                <Link to={url1} style={{color: 'black'}}><div className='App-profile-landlord-reviews'>{landlordReviewCount} Review{landlordReviewCount !== 1 && 's'}</div></Link>
                                 <div className='App-profile-landlord-booked'>
                                     <button className='App-profile-landlord-booked-button' onClick={handleBooked}>View Your Booked Places</button>
                                 </div>
@@ -175,6 +210,7 @@ export default function Profile(props) {
                         </div>}
                         {currentUser.isTenant && <div className='App-profile-tenant'>
                             <h3>Tenant Info</h3>
+                            <button className='App-profile-landlord-booked-button' onClick={handleBookings}>Your Bookings</button>
                         </div>}
                     </div>
                 </div>

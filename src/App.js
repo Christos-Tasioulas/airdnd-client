@@ -19,6 +19,8 @@ import Booking from './components/Booking';
 import EditPlace from './components/EditPlace';
 import UserInfo from './components/UserInfo';
 import LandlordBooked from './components/LandlordBooked';
+import LandlordPlaces from './components/LandlordPlaces';
+import TenantBooked from './components/TenantBooked';
 import Inbox from './components/Inbox';
 import Message from './components/Message';
 import StartMessage from './components/StartMessage'
@@ -65,7 +67,9 @@ function App() {
             <Route path="/booking/:id" element={<Booking token={jsonWebToken}/>}/>
             <Route path="/editplace/:id" element={<EditPlace token={jsonWebToken}/>}/>
             <Route path="/userinfo/:id" element={<UserInfo token={jsonWebToken}/>}/>
-            <Route path="/landlordbooked" element={<LandlordBooked token={jsonWebToken}/>}/>
+            <Route path="/landlordbooked/:id" element={<LandlordBooked token={jsonWebToken}/>}/>
+            <Route path="/landlordplaces/:id" element={<LandlordPlaces token={jsonWebToken}/>}/>
+            <Route path="/tenantbooked/:id" element={<TenantBooked token={jsonWebToken}/>}/>
             <Route path="/inbox" element={<Inbox token={jsonWebToken}/>}/>
             <Route path="/message/:id" element={<Message token={jsonWebToken}/>}/>
             <Route path="/startmessage/:id" element={<StartMessage token={jsonWebToken}/>}/>

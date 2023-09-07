@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import './AdminHome.css';
-import './LandlordHome.css'; // reusing AdminHome and LandlordHome css
+import './LandlordHome.css';
+import JSONButton from './JSONButton';
+import XMLButton from './XMLButton';
 
-function LandlordBooked(props) {
+function TenantBooked(props) {
 
     const { id } = useParams()
-    const [places, setPlaces] = useState([])
-    const navigate = useNavigate();
+    const token = props.token
+    const [bookings, setBookings] = useState([])
     const [isAdmin, setIsAdmin] = useState(false)
 
-    // Retrieve all places by landlord id 
+    // Validate The Token
     useEffect(() => {
-
         fetch('https://127.0.0.1:5000/user/validateToken', {
             method: 'GET',
             headers: {
@@ -41,10 +41,11 @@ function LandlordBooked(props) {
                 return decodeResponse.json();
             })
             .then(decodeData => {
-                if(decodeData.isLandlord) {
-                    fetch(`https://127.0.0.1:5000/listing/getBookedPlacesByLandlordId/${id}`)
+                // Extra security measure so that the data is returned only to tenants and admins
+                if(decodeData.isTenant || decodeData.isAdmin) {
+                    fetch(`https://127.0.0.1:5000/booking/getBookingsByUserId/${id}`)
                     .then((res) => res.json())
-                    .then((data) => setPlaces(data.message))
+                    .then((data) => setBookings(data.message))
                 }
 
                 setIsAdmin(decodeData.isAdmin)
@@ -58,23 +59,16 @@ function LandlordBooked(props) {
         .catch(error => {
             console.error(error);
         })
-    }, [props.token])
+    }, [token])
 
-    // Navigating the table to each individual place's edit page
-    async function handleClick(event, place) {
-        const id = place.id
-
-        navigate(`/editplace/${id}`)
-    }
-    
-    // This is every user row in the landlord table
-    const placeElements = places.map((place) => 
-        (<tr onClick={event => handleClick(event, place)} key={place.id} className='App-place-info'>
-            <td>{place.name}</td>
-            <td>{place.address}</td>
-            <td>{place.description}</td>
-            <td>{place.spaceType}</td>
-            <td>{place.dailyPrice}</td> 
+    // This is every user row in the tenant table
+    const bookingElements = bookings.map((booking) => 
+        (<tr key={booking.id} className='App-place-info'>
+            <td>{booking.date}</td>
+            <td>{booking.checkIn}</td>
+            <td>{booking.checkOut}</td>
+            <td>{booking.price}</td> 
+            <td>{booking.numGuests}</td> 
         </tr>)
     )
 
@@ -87,21 +81,26 @@ function LandlordBooked(props) {
                     <table className='scroll'>
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>Description</th>
-                                <th>Space Type</th>
-                                <th>Daily Price</th>
+                                <th>Booking Date</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Price</th>
+                                <th>Guests</th>
                             </tr>
                         </thead>
                         <tbody className='scroll-body'>
-                            {placeElements}
+                            {bookingElements}
                         </tbody>  
                     </table>
                 </div>
+                {isAdmin && <div className="App-export-buttons">
+                    <XMLButton type="Bookings" id={id} data={bookings}/>
+                    <JSONButton type="Bookings" id={id} data={bookings}/>
+                </div>}
             </div>
         </main>
     )
-};
+}
 
-export default LandlordBooked;
+
+export default TenantBooked;
